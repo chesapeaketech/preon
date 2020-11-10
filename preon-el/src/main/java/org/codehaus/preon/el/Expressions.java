@@ -301,6 +301,63 @@ public class Expressions {
     }
 
     /**
+     * Returns a new expression, representing the first {@link Expression} passed in minus the second {@link Expression}.
+     *
+     * @param <C>
+     *            The type of context of the expressions.
+     * @param first
+     *            The first expression.
+     * @param second
+     *            The second expression.
+     * @return A new {@link Expression}, representing the first argument
+     *         passed in minus the second argument.
+     *         Returns <code>null</code> if either one of the arguments
+     *         is <code>null</code>.
+     */
+    public static <C> Expression<Integer, C> subtract(Expression<Integer, C> first,
+                                                 Expression<Integer, C> second) {
+        return combine(Operator.minus, first, second);
+    }
+
+    /**
+     * Returns a new expression, representing the first {@link Expression} passed in divided by the second {@link Expression}.
+     *
+     * @param <C>
+     *            The type of context of the expressions.
+     * @param first
+     *            The first expression.
+     * @param second
+     *            The second expression.
+     * @return A new {@link Expression}, representing the first argument
+     *         passed in divided by the second argument.
+     *         Returns <code>null</code> if either one of the arguments
+     *         is <code>null</code>.
+     */
+    public static <C> Expression<Integer, C> divide(Expression<Integer, C> first,
+                                                      Expression<Integer, C> second) {
+        return combine(Operator.div, first, second);
+    }
+
+    /**
+     * Returns a new expression, representing the first {@link Expression} passed in modulo the second {@link Expression}.
+     *
+     * @param <C>
+     *            The type of context of the expressions.
+     * @param first
+     *            The first expression.
+     * @param second
+     *            The second expression.
+     * @return A new {@link Expression}, representing the first argument
+     *         passed in modulo the second argument.
+     *         Returns <code>null</code> if either one of the arguments
+     *         is <code>null</code>.
+     */
+    public static <C> Expression<Integer, C> modulo(Expression<Integer, C> first,
+                                                    Expression<Integer, C> second) {
+        return combine(Operator.mod, first, second);
+    }
+
+    /**
      * Returns a new {@link Node}.
      * 
      * @param <C>

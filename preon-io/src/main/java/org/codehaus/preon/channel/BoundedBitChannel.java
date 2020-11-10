@@ -10,8 +10,9 @@
  * Software is furnished to do so, subject to the following
  * conditions:
  *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
+ * Preon is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2, or (at your option) any later version.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
@@ -55,9 +56,9 @@ public class BoundedBitChannel implements BitChannel {
         this.maxBits = maxBits;
     }
 
-    public void write(boolean value) throws IOException {
+    public void write(boolean value, ByteOrder byteOrder) throws IOException {
         if (written + 1 <= maxBits) {
-            channel.write(value);
+            channel.write(value, byteOrder);
             written += 1;
         } else {
             throw new IOException(OVERRUN_MESSAGE);
@@ -67,6 +68,33 @@ public class BoundedBitChannel implements BitChannel {
     public void write(int nrbits, byte value) throws IOException {
         if (written + nrbits <= maxBits) {
             channel.write(nrbits, value);
+            written += nrbits;
+        } else {
+            throw new IOException(OVERRUN_MESSAGE);
+        }
+    }
+
+    public void writeLE(int nrbits, byte value) throws IOException {
+      if (written + nrbits <= maxBits) {
+          channel.writeLE(nrbits, value);
+          written += nrbits;
+      } else {
+          throw new IOException(OVERRUN_MESSAGE);
+      }
+    }
+    
+    public void write(int nrbits, float value, ByteOrder byteOrder) throws IOException {
+        if (written + nrbits <= maxBits) {
+            channel.write(nrbits, value, byteOrder);
+            written += nrbits;
+        } else {
+            throw new IOException(OVERRUN_MESSAGE);
+        }
+    }
+
+    public void write(int nrbits, double value, ByteOrder byteOrder) throws IOException {
+        if (written + nrbits <= maxBits) {
+            channel.write(nrbits, value, byteOrder);
             written += nrbits;
         } else {
             throw new IOException(OVERRUN_MESSAGE);
@@ -125,5 +153,9 @@ public class BoundedBitChannel implements BitChannel {
 
     public void close() throws IOException {
         channel.close();
+    }
+
+    public void flush(ByteOrder byteOrder) throws IOException {
+        channel.flush(byteOrder);
     }
 }

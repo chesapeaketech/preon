@@ -87,6 +87,18 @@ public class ArithmeticNode<E> extends AbstractNode<Integer, E> {
                 b.document(target);
             }
         },
+        mod {
+            <E> int eval(E context, Node<Integer, E> a, Node<Integer, E> b) {
+                return a.eval(context).intValue() % b.eval(context).intValue();
+            }
+
+            <E> void document(Node<Integer, E> a, Node<Integer, E> b,
+                              org.codehaus.preon.el.Document target) {
+                a.document(target);
+                target.text(" modulo ");
+                b.document(target);
+            }
+        },
         plus {
             <E> int eval(E context, Node<Integer, E> a, Node<Integer, E> b) {
                 return a.eval(context).intValue() + b.eval(context).intValue();

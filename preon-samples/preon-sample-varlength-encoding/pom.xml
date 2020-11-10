@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.codehaus.preon</groupId>
         <artifactId>preon-samples</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
     <artifactId>preon-sample-varlength-encoding</artifactId>
     <name>Preon Example Variable Length Encoding</name>
@@ -15,7 +15,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.8.5</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.preon</groupId>

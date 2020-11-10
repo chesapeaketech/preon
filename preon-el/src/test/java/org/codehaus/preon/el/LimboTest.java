@@ -105,6 +105,13 @@ public class LimboTest {
     }
 
     @Test
+    public void testModulo() throws RecognitionException, InvalidExpressionException {
+        assertEquals(2, arithmetic(context, resolver, "2 % 3"));
+        assertEquals(0, arithmetic(context, resolver, "4 % 2"));
+        assertEquals(1, arithmetic(context, resolver, "3 % 2"));
+    }
+
+    @Test
     public void testSimpleAddition() throws RecognitionException, InvalidExpressionException {
         assertEquals(8, arithmetic(context, resolver, "5 + 3"));
     }

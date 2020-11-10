@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.codehaus.preon</groupId>
     <artifactId>preon</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
   </parent>
   <artifactId>preon-binding</artifactId>
   <name>Preon Binding</name>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.codehaus.preon</groupId>
       <artifactId>preon-io</artifactId>
-      <version>1.1-SNAPSHOT</version>
+      <version>1.1.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -48,19 +48,17 @@
     <dependency>
       <groupId>org.codehaus.preon</groupId>
       <artifactId>preon-el</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
-      <version>2.2</version>
+      <version>2.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.8.0</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -74,6 +72,7 @@
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-fop-support</artifactId>
+        <version>2.0.17</version>
         <executions>
           <execution>
             <phase>pre-site</phase>
@@ -82,7 +81,9 @@
             </goals>
             <configuration>
               <ansi>true</ansi>
+	      <!--
               <sourceDirectory>${fonts.dir}</sourceDirectory>
+	      -->
             </configuration>
           </execution>
         </executions>
@@ -90,6 +91,7 @@
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
+        <version>2.0.17</version>
         <executions>
           <execution>
             <goals>
@@ -115,6 +117,7 @@
           <footerRule>0</footerRule>
           <foCustomization>${basedir}/src/docbkx/customizations.xsl</foCustomization>
           <htmlCustomization>${basedir}/src/docbkx/customizations-html.xsl</htmlCustomization>
+	  <!--
           <fonts>
             <font>
               <name>Consola</name>
@@ -145,6 +148,7 @@
               <metricsFile>${basedir}/target/fonts/calibrib-metrics.xml</metricsFile>
             </font>
           </fonts>
+	  -->
           <xincludeSupported>true</xincludeSupported>
           <sectionAutolabel>1</sectionAutolabel>
           <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
@@ -155,6 +159,6 @@
     </plugins>
   </build>
   <properties>
-    <fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>
+    <!--<fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>-->
   </properties>
 </project>

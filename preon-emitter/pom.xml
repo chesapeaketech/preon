@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.codehaus.preon</groupId>
     <artifactId>preon</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
   </parent>
   <artifactId>preon-emitter</artifactId>
   <name>Preon Emitter</name>
@@ -16,7 +16,7 @@
     <dependency>
       <groupId>org.codehaus.preon</groupId>
       <artifactId>preon-binding</artifactId>
-      <version>1.1-SNAPSHOT</version>
+      <version>1.1.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -25,8 +25,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.8.0</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>

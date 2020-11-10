@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.preon</groupId>
     <artifactId>preon</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
   </parent>
   <groupId>org.codehaus.preon</groupId>
   <artifactId>preon-el</artifactId>
@@ -24,8 +24,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.easymock</groupId>
@@ -58,15 +56,15 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr3-maven-plugin</artifactId>
-        <version>3.3</version>
+        <version>3.5.2</version>
         <executions>
             <execution>
                 <phase>generate-sources</phase>
@@ -111,6 +109,7 @@
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-fop-support</artifactId>
+        <version>2.0.17</version>
         <executions>
           <execution>
             <phase>pre-site</phase>
@@ -119,7 +118,7 @@
             </goals>
             <configuration>
               <ansi>true</ansi>
-              <sourceDirectory>${fonts.dir}</sourceDirectory>
+              <!--<sourceDirectory>${fonts.dir}</sourceDirectory>-->
             </configuration>
           </execution>
         </executions>
@@ -127,6 +126,7 @@
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
+        <version>2.0.17</version>
         <executions>
           <execution>
             <goals>
@@ -152,6 +152,7 @@
           <footerRule>0</footerRule>
           <foCustomization>${basedir}/src/docbkx/customizations.xsl</foCustomization>
           <htmlCustomization>${basedir}/src/docbkx/customizations-html.xsl</htmlCustomization>
+	  <!--
           <fonts>
             <font>
               <name>Consola</name>
@@ -182,6 +183,7 @@
               <metricsFile>${basedir}/target/fonts/calibrib-metrics.xml</metricsFile>
             </font>
           </fonts>
+	  -->
           <xincludeSupported>true</xincludeSupported>
           <sectionAutolabel>1</sectionAutolabel>
           <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
@@ -223,6 +225,6 @@
     </profile>
   </profiles>
   <properties>
-    <fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>
+    <!--<fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>-->
   </properties>
 </project>

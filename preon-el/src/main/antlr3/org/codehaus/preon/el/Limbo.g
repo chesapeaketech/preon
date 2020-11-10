@@ -37,7 +37,7 @@ additiveExpression
 	;
 
 multiplicativeExpression
-	: 	powExpression (('*'|'/')^ powExpression)*
+	: 	powExpression (('*'|'/'|'%')^ powExpression)*
 	;
 
 powExpression
