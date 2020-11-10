@@ -36,6 +36,7 @@ import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.el.*;
 
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,8 +145,13 @@ public class SelectFromCodec<T> implements Codec<T> {
         }
     }
 
-    public void encode(T value, BitChannel channel, Resolver resolver) {
-        throw new UnsupportedOperationException();
+    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+        for (int i = 0; i < conditions.size(); i++) {
+            if (conditions.get(i).eval(resolver)) {
+                Codec<T> codec = (Codec<T>) codecs.get(i);
+                codec.encode(value, channel, resolver);
+            }
+        }
     }
 
     public Expression<Integer, Resolver> getSize() {

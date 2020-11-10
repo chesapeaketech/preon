@@ -1,0 +1,20 @@
+print("Gradle is using Java version: " + JavaVersion.current())
+
+allprojects {
+    group = 'org.codehaus.preon'
+    version = '1.2.1-SNAPSHOT'
+}
+
+subprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
+    repositories {
+        mavenLocal()
+
+        maven { url "http://pecia.sourceforge.net/repository" }
+        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "https://maven.atlassian.com/repository/public" }
+    }
+}

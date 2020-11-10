@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p/>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p/>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p/>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,30 +24,10 @@
  */
 package org.codehaus.preon.codec;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Expressions;
-import org.codehaus.preon.el.Reference;
-import org.codehaus.preon.el.ReferenceContext;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import org.codehaus.preon.Builder;
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.CodecConstructionException;
-import org.codehaus.preon.CodecDescriptor;
-import org.codehaus.preon.CodecFactory;
-import org.codehaus.preon.Codecs;
-import org.codehaus.preon.DecodingException;
-import org.codehaus.preon.Resolver;
-import org.codehaus.preon.ResolverContext;
+import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.BoundObject;
 import org.codehaus.preon.annotation.Choices;
@@ -57,13 +37,19 @@ import org.codehaus.preon.buffer.SlicedBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.descriptor.NullCodecDescriptor2;
-import org.codehaus.preon.el.ContextReplacingReference;
+import org.codehaus.preon.el.*;
 import org.codehaus.preon.util.AnnotationWrapper;
 import org.codehaus.preon.util.CodecDescriptorHolder;
 import org.codehaus.preon.util.EvenlyDistributedLazyList;
 import org.codehaus.preon.util.ParaContentsDocument;
 
-import javax.annotation.Nullable;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A {@link CodecFactory} capable of supporting Lists. <p/> <p> There are a couple of cases that we need to clarify.
@@ -146,7 +132,12 @@ public class ListCodecFactory implements CodecFactory {
                         return new StaticListCodec(expr.rescope(context), codec, elementSize);
                     }
                 } else {
-                    return new DynamicListCodec(codec);
+                    if (expr != null) {
+                        return new BoundedDynamicListCodec(codec, expr);
+                    }
+                    else {
+                        return new DynamicListCodec(codec);
+                    }
                 }
             }
         } else {
@@ -158,7 +149,8 @@ public class ListCodecFactory implements CodecFactory {
     private <T> Codec<?> createElementCodec(ResolverContext context, BoundList settings) {
         if (settings.types().length > 0) {
             BoundObject objectSettings = getObjectSettings(settings);
-            return delegate.create(toAnnotatedElemented(objectSettings), objectSettings.type() == Void.class ? Object.class : objectSettings.type(), context);
+            Class typeClass = objectSettings.type() == Void.class ? Object.class : objectSettings.type();
+            return delegate.create(toAnnotatedElemented(objectSettings), typeClass, context);
         } else if (settings.type() != null) {
             return delegate.create(null, settings.type(), context);
         } else {
@@ -255,8 +247,13 @@ public class ListCodecFactory implements CodecFactory {
                     buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+            if (value == null) {
+                value = Collections.emptyList();
+            }
+            for (T t : value) {
+                codec.encode(t, channel, resolver);
+            }
         }
 
         public Class<?>[] getTypes() {
@@ -367,8 +364,10 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+            for (T valueItem : value) {
+                this.codec.encode(valueItem, channel, resolver);
+            }
         }
 
         public Class<?>[] getTypes() {
@@ -435,6 +434,115 @@ public class ListCodecFactory implements CodecFactory {
         }
 
     }
+
+
+    private static class BoundedDynamicListCodec<T> implements Codec<List<T>> {
+
+        private Codec<T> codec;
+        private Expression<Integer, Resolver> size;
+
+        public BoundedDynamicListCodec(Codec<T> codec, Expression<Integer, Resolver> expression) {
+            this.codec = codec;
+            this.size = expression;
+        }
+
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                Builder builder) throws DecodingException {
+            List<T> result = new LinkedList<T>();
+            long mark = buffer.getBitPos();
+            int numElements = size.eval(resolver);
+            try {
+                for (int count = 0; count < numElements; count++) {
+                    T value = codec.decode(buffer, resolver, builder);
+                    result.add(value);
+                    mark = buffer.getBitPos();
+                }
+            } catch (BitBufferUnderflowException oore) {
+                // Trying to read beyond the end of the file.
+                // TODO: Make a difference between failing half-way and failing
+                // starting to read the next element.
+            } catch (DecodingException de) {
+                // So we can't decode the element. Maybe it's no longer an
+                // element of this List. Let's consider this list to be
+                // completed.
+                buffer.setBitPos(mark);
+            }
+            return result;
+        }
+
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+            for (T valueItem : value) {
+                this.codec.encode(valueItem, channel, resolver);
+            }
+        }
+
+        public Class<?>[] getTypes() {
+            return codec.getTypes();
+        }
+
+        public Expression<Integer, Resolver> getSize() {
+            return null;
+        }
+
+        public Class<?> getType() {
+            return List.class;
+        }
+
+        public CodecDescriptor getCodecDescriptor() {
+            return new CodecDescriptor() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        final String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target
+                                    .para()
+                                    .text(
+                                            "The number of elements in the list is unknown at forehand. The codec will just decode as many elements as the buffer allows to decode.")
+                                    .end();
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                                target.document(codec.getCodecDescriptor().details(bufferReference));
+                            }
+
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        final Adjective adjective, final boolean startWithCapital) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.text(adjective.asTextPreferA(startWithCapital)).text(
+                                    "list of ").document(
+                                    codec.getCodecDescriptor().reference(
+                                            Adjective.NONE, false));
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.document(reference(Adjective.A, true)).text(".");
+                        }
+                    };
+                }
+
+            };
+        }
+
+    }
+
+
+
 
     /**
      * A {@link Codec} for Lists. The type of List that will be created is determined at runtime, right before the

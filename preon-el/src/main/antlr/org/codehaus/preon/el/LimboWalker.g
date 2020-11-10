@@ -67,6 +67,7 @@ vexpr returns [Node node]
 	|	^('-' a=vexpr b=vexpr) { $node = ArithmeticNode.create(Operator.minus, $a.node, $b.node); }
 	|	^('*' a=vexpr b=vexpr) { $node = ArithmeticNode.create(Operator.mult, $a.node, $b.node); }
 	|	^('/' a=vexpr b=vexpr) { $node = ArithmeticNode.create(Operator.div, $a.node, $b.node); }
+	|	^('%' a=vexpr b=vexpr) { $node = ArithmeticNode.create(Operator.mod, $a.node, $b.node); }
 	|   ^('^' a=vexpr b=vexpr) { $node = ArithmeticNode.create(Operator.pow, $a.node, $b.node); }
 	|	INT { $node = new IntegerNode(Integer.parseInt($INT.text)); }
 	|   BININT { $node = IntegerNode.fromBin($BININT.text); }
