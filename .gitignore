@@ -19,4 +19,10 @@ preon-samples/preon-sample-rtp/preon-sample-rtp.iml
 .classpath
 .settings
 .project
+
+#IntelliJ project files
 .idea
+
+#Gradle output
+.gradle
+build/

@@ -1,0 +1,5 @@
+description = 'Preon Example BMP'
+dependencies {
+    compile project(':preon-binding')
+    testCompile group: 'junit', name: 'junit', version: '4.8.1'
+}

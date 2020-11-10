@@ -1,0 +1,7 @@
+description = 'Preon Emitter'
+dependencies {
+    compile project(':preon-binding')
+    testCompile group: 'junit', name: 'junit', version: '4.8.1'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.5'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.1'
+}

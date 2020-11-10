@@ -195,7 +195,7 @@ public class LimboTest {
         Expression<Object, VariableResolver> expr = Expressions.create(context, "'abc'");
         assertEquals("abc", expr.eval(resolver));
     }
-    
+
     @Test
     public void testStringReferencesResolution() {
         EasyMock.expect(resolver.get("a")).andReturn("Whatever");
@@ -204,7 +204,7 @@ public class LimboTest {
         assertEquals("Whatever", expr.eval(resolver));
         EasyMock.verify(resolver);
     }
-    
+
     @Test(expected=BindingException.class)
     public void testAddingStrings() {
         EasyMock.expect(defs.getType("a")).andReturn(String.class).anyTimes();
@@ -215,7 +215,7 @@ public class LimboTest {
         } finally {
             EasyMock.verify(resolver, defs);
         }
-        
+
     }
 
     @Test
@@ -229,7 +229,7 @@ public class LimboTest {
     	assertFalse(condition(context, resolver, "a == b"));
     	assertTrue(condition(context, resolver, "b == b"));
     }
-    
+
     private <E> int arithmetic(ReferenceContext<VariableResolver> context,
             VariableResolver resolver, String exprString) throws InvalidExpressionException {
         Expression<Integer, VariableResolver> expr = Expressions.createInteger(context, exprString);
@@ -249,12 +249,12 @@ public class LimboTest {
         int c;
 
     }
-    
+
     public static enum Direction {
-    	
-    	LEFT, 
+
+    	LEFT,
     	RIGHT;
-    	
+
     }
 
 }

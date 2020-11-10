@@ -1,0 +1,4 @@
+description = 'Preon Example MPEG'
+dependencies {
+    compile project(':preon-binding')
+}

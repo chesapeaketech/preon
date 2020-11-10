@@ -1,0 +1,7 @@
+description = 'Preon Example Bytecode'
+dependencies {
+    compile project(':preon-binding')
+    compile project(':preon-emitter')
+    testCompile group: 'junit', name: 'junit', version: '4.8.1'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.1'
+}
