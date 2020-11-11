@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,21 +24,20 @@
  */
 package org.codehaus.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-import java.nio.ByteBuffer;
-
+import junit.framework.TestCase;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.DefaultBitBuffer;
 
+import java.lang.reflect.AnnotatedElement;
+import java.nio.ByteBuffer;
 
 import static org.easymock.EasyMock.*;
 
-import junit.framework.TestCase;
-
-public class BooleanCodecFactoryTest extends TestCase {
+public class BooleanCodecFactoryTest extends TestCase
+{
 
     private AnnotatedElement metadata;
 
@@ -46,33 +45,38 @@ public class BooleanCodecFactoryTest extends TestCase {
 
     private BooleanCodecFactory factory;
 
-    public void setUp() {
+    public void setUp()
+    {
         metadata = createMock(AnnotatedElement.class);
         factory = new BooleanCodecFactory();
     }
 
-    public void testConstructionBooleanPrimitive() {
+    public void testConstructionBooleanPrimitive()
+    {
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(true);
         replay(metadata);
         assertNotNull(factory.create(metadata, boolean.class, null));
         verify(metadata);
     }
 
-    public void testConstructionBooleanNonPrimitive() {
+    public void testConstructionBooleanNonPrimitive()
+    {
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(true);
         replay(metadata);
         assertNotNull(factory.create(metadata, Boolean.class, null));
         verify(metadata);
     }
 
-    public void testConstructionNoBound() {
+    public void testConstructionNoBound()
+    {
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false);
         replay(metadata);
         assertNull(factory.create(metadata, Boolean.class, null));
         verify(metadata);
     }
 
-    public void testDecoding() throws DecodingException {
+    public void testDecoding() throws DecodingException
+    {
         BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{(byte) 0xF0}));
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(true);
         replay(metadata);

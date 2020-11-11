@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,9 +24,7 @@
  */
 package org.codehaus.preon.codec;
 
-import java.nio.ByteBuffer;
-import java.util.List;
-
+import junit.framework.TestCase;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.DecodingException;
@@ -34,13 +32,15 @@ import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.BoundNumber;
 import org.codehaus.preon.annotation.Slice;
 
-import junit.framework.TestCase;
+import java.nio.ByteBuffer;
+import java.util.List;
 
-
-public class AgregatedListsTestObsolete extends TestCase {
+public class AgregatedListsTestObsolete extends TestCase
+{
 
     public void testVariableResolutionInClassReferedByAnotherClass()
-            throws DecodingException {
+            throws DecodingException
+    {
 
         Codec<Test2> codec = Codecs.create(Test2.class);
 
@@ -63,7 +63,8 @@ public class AgregatedListsTestObsolete extends TestCase {
         assertEquals(254, result.test3List.get(1).value);
     }
 
-    public void testSlicedUnboundedListOfLists() throws DecodingException {
+    public void testSlicedUnboundedListOfLists() throws DecodingException
+    {
 
         Codec<Test1> codec = Codecs.create(Test1.class);
 
@@ -90,10 +91,10 @@ public class AgregatedListsTestObsolete extends TestCase {
         assertEquals(255, test3List.get(0).value);
         assertEquals(8, test3List.get(1).valueBitSize);
         assertEquals(254, test3List.get(1).value);
-
     }
 
-    public static class Test1 {
+    public static class Test1
+    {
 
         @BoundNumber(size = "8")
         public int sliceByteSize;
@@ -104,7 +105,8 @@ public class AgregatedListsTestObsolete extends TestCase {
         public List<Test2> test2List;
     }
 
-    public static class Test2 {
+    public static class Test2
+    {
 
         @BoundNumber(size = "8")
         public int t3ListSize;
@@ -113,7 +115,8 @@ public class AgregatedListsTestObsolete extends TestCase {
         public List<Test3> test3List;
     }
 
-    public static class Test3 {
+    public static class Test3
+    {
 
         @BoundNumber(size = "8")
         public int valueBitSize;

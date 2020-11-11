@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -33,7 +33,8 @@ import java.nio.ByteBuffer;
  * basically allows itself to be configured with any combination of {link DumpFragment}s. Each {@link
  * org.codehaus.preon.hex.DumpFragment} represents a part of the line getting generated.
  */
-public class HexDumper {
+public class HexDumper
+{
 
     /**
      * The number of bytes that will be fed to every line.
@@ -52,13 +53,15 @@ public class HexDumper {
      * @param bytesPerLine
      * @param fragments
      */
-    public HexDumper(int bytesPerLine, DumpFragment... fragments) {
+    public HexDumper(int bytesPerLine, DumpFragment... fragments)
+    {
         this.bytesPerLine = bytesPerLine;
         this.fragments = fragments;
     }
 
-    public long dump(ByteBuffer in, Appendable out) throws HexDumperException {
-        return dump(in, new AppendableHexDumpTarget(out));        
+    public long dump(ByteBuffer in, Appendable out) throws HexDumperException
+    {
+        return dump(in, new AppendableHexDumpTarget(out));
     }
 
     /**
@@ -69,14 +72,17 @@ public class HexDumper {
      * @return The number of <em>bytes</em> generated
      * @throws IOException If the operation fails while writing.
      */
-    public long dump(ByteBuffer in, HexDumpTarget out) throws HexDumperException {
+    public long dump(ByteBuffer in, HexDumpTarget out) throws HexDumperException
+    {
         long lineNumber = 0;
         byte[] buffer = new byte[this.bytesPerLine];
         int written = 0;
         in.rewind();
-        while (in.hasRemaining()) {
+        while (in.hasRemaining())
+        {
             written = fillBuffer(in, buffer);
-            for (DumpFragment fragment : fragments) {
+            for (DumpFragment fragment : fragments)
+            {
                 fragment.dump(lineNumber, buffer, written, out);
             }
             lineNumber += 1;
@@ -92,17 +98,20 @@ public class HexDumper {
      * @return The number of bytes pushed into the buffer. (Might be less than {@link #bytesPerLine} in case of a buffer
      *         underflow.
      */
-    private int fillBuffer(ByteBuffer in, byte[] buffer) {
-        try {
+    private int fillBuffer(ByteBuffer in, byte[] buffer)
+    {
+        try
+        {
             in.get(buffer, 0, bytesPerLine);
             return bytesPerLine;
-        } catch (BufferUnderflowException bue) {
+        } catch (BufferUnderflowException bue)
+        {
             int i = 0;
-            while (in.hasRemaining()) {
+            while (in.hasRemaining())
+            {
                 buffer[i++] = in.get();
             }
             return i;
         }
     }
-
 }

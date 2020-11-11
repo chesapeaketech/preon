@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -40,7 +40,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Wilfred Springer
  * @param <T> The type of object referenced.
  */
-public class LazyLoadingReference<T> {
+public class LazyLoadingReference<T>
+{
 
     /**
      * An {@link AtomicReference} to a {@link SoftReference} to a {@link Future} producing an instance of {@link T}. The
@@ -58,7 +59,8 @@ public class LazyLoadingReference<T> {
      *
      * @param loader The {@link Loader} loading the data.
      */
-    public LazyLoadingReference(Loader<T> loader) {
+    public LazyLoadingReference(Loader<T> loader)
+    {
         this.loader = loader;
     }
 
@@ -69,10 +71,12 @@ public class LazyLoadingReference<T> {
      * @throws InterruptedException When blocking call is interrupted.
      * @throws ExcecutionException  When the {@link Loader} threw an exception trying to load the data.
      */
-    public T get() throws InterruptedException, ExecutionException {
+    public T get() throws InterruptedException, ExecutionException
+    {
 
         // We may need to try this a couple of times
-        while (true) {
+        while (true)
+        {
 
             // Let's first get the current SoftReference
             SoftReference<Future<T>> softReference = reference.get();
@@ -81,16 +85,18 @@ public class LazyLoadingReference<T> {
             boolean validSoftReference = true;
 
             // If the SoftReference is null
-            if (softReference == null) {
+            if (softReference == null)
+            {
 
                 // Then we need to prepare loading the data:
                 // (1) Define what needs to happen if we need to load the data
-                Callable<T> eval = new Callable<T>() {
+                Callable<T> eval = new Callable<T>()
+                {
 
-                    public T call() throws Exception {
+                    public T call() throws Exception
+                    {
                         return loader.load();
                     }
-
                 };
 
                 // (2) Create a FutureTask, that will eventually hold the result
@@ -102,12 +108,12 @@ public class LazyLoadingReference<T> {
 
                 // Now try to set the AtomicReference, if it's still null
                 if (validSoftReference = reference.compareAndSet(null,
-                        softReference)) {
+                        softReference))
+                {
 
                     // We've set the AtomicReference, now let's make sure there
                     // is a value held by the SoftReference.
                     task.run();
-
                 }
 
                 // Otherwise, if the AtomicReference has been populated
@@ -116,20 +122,23 @@ public class LazyLoadingReference<T> {
             }
 
             // In case we now have a valid SoftReference
-            if (validSoftReference) {
+            if (validSoftReference)
+            {
 
-                try {
+                try
+                {
 
                     // Obtain the Future
                     Future<T> future = softReference.get();
 
                     // ... and if it is not null
-                    if (future != null) {
+                    if (future != null)
+                    {
 
                         // ... we can return the value
                         return future.get();
-
-                    } else {
+                    } else
+                    {
 
                         // ... otherwise it's obviously a collected reference.
                         // In that case, we need to make sure it's getting
@@ -137,13 +146,12 @@ public class LazyLoadingReference<T> {
                         // loop.
                         reference.compareAndSet(softReference, null);
                     }
-
-                } catch (CancellationException e) {
+                } catch (CancellationException e)
+                {
 
                     // If Future.get throws a CancellationException, we need to
                     // set the AtomicReference to null.
                     reference.compareAndSet(softReference, null);
-
                 }
             }
         }
@@ -154,7 +162,8 @@ public class LazyLoadingReference<T> {
      *
      * @param <T> The type of object to be loaded.
      */
-    public interface Loader<T> {
+    public interface Loader<T>
+    {
 
         /**
          * Loads the instance of {@link T}.
@@ -163,7 +172,5 @@ public class LazyLoadingReference<T> {
          * @throws Exception If the {@link Loader} fails to
          */
         T load() throws Exception;
-
     }
-
 }

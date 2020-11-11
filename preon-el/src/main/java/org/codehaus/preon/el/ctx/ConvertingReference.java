@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,70 +32,85 @@ import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.el.util.Converter;
 import org.codehaus.preon.el.util.Converters;
 
-public class ConvertingReference<T, E> implements Reference<E> {
+public class ConvertingReference<T, E> implements Reference<E>
+{
 
     private Reference<E> reference;
-    
+
     private Class<T> type;
-    
+
     private Converter<Object, Class<T>> converter;
-    
-    public ConvertingReference(Class<T> type, Reference<E> reference) {
+
+    public ConvertingReference(Class<T> type, Reference<E> reference)
+    {
         this.type = type;
         this.reference = reference;
         this.converter = (Converter<Object, Class<T>>) Converters.get(reference.getType(), type);
     }
-    
-    public ReferenceContext<E> getReferenceContext() {
+
+    public ReferenceContext<E> getReferenceContext()
+    {
         return reference.getReferenceContext();
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return type;
     }
 
-    public boolean isAssignableTo(Class<?> type) {
+    public boolean isAssignableTo(Class<?> type)
+    {
         return type.isAssignableFrom(this.type);
     }
 
-    public Object resolve(E context) {
+    public Object resolve(E context)
+    {
         return converter.convert(reference.resolve(context));
     }
 
-    public Reference<E> selectAttribute(String name) throws BindingException {
+    public Reference<E> selectAttribute(String name) throws BindingException
+    {
         return reference.selectAttribute(name);
     }
 
-    public Reference<E> selectItem(String index) throws BindingException {
+    public Reference<E> selectItem(String index) throws BindingException
+    {
         return reference.selectItem(index);
     }
 
-    public Reference<E> selectItem(Expression<Integer, E> index) throws BindingException {
+    public Reference<E> selectItem(Expression<Integer, E> index) throws BindingException
+    {
         return reference.selectItem(index);
     }
 
-    public void document(Document target) {
+    public void document(Document target)
+    {
         reference.document(target);
     }
-    
-    public static <T,E> ConvertingReference<T, E> create(Class<T> type, Reference<E> reference) {
+
+    public static <T, E> ConvertingReference<T, E> create(Class<T> type, Reference<E> reference)
+    {
         return new ConvertingReference<T, E>(type, reference);
     }
 
-    public Reference<E> narrow(Class<?> type) throws BindingException {
-        if (this.type.isAssignableFrom(type)) {
+    public Reference<E> narrow(Class<?> type) throws BindingException
+    {
+        if (this.type.isAssignableFrom(type))
+        {
             return this;
-        } else {
+        } else
+        {
             return null;
         }
     }
 
-    public boolean isBasedOn(ReferenceContext<E> context) {
+    public boolean isBasedOn(ReferenceContext<E> context)
+    {
         return reference.isBasedOn(context);
     }
 
-    public Reference<E> rescope(ReferenceContext<E> context) {
-        return new ConvertingReference<T,E>(type, reference.rescope(context));
+    public Reference<E> rescope(ReferenceContext<E> context)
+    {
+        return new ConvertingReference<T, E>(type, reference.rescope(context));
     }
-
 }

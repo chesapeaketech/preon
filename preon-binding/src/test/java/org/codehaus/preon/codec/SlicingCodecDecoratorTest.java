@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,15 +24,7 @@
  */
 package org.codehaus.preon.codec;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
-import java.lang.reflect.AnnotatedElement;
-
 import junit.framework.TestCase;
-
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
@@ -41,8 +33,12 @@ import org.codehaus.preon.annotation.LengthPrefix;
 import org.codehaus.preon.annotation.Slice;
 import org.codehaus.preon.buffer.BitBuffer;
 
+import java.lang.reflect.AnnotatedElement;
 
-public class SlicingCodecDecoratorTest extends TestCase {
+import static org.easymock.EasyMock.*;
+
+public class SlicingCodecDecoratorTest extends TestCase
+{
 
     private BitBuffer buffer;
     private BitBuffer slice;
@@ -52,7 +48,8 @@ public class SlicingCodecDecoratorTest extends TestCase {
     private ResolverContext context;
     private Resolver resolver;
 
-    public void setUp() {
+    public void setUp()
+    {
         buffer = createMock(BitBuffer.class);
         slice = createMock(BitBuffer.class);
         metadata = createMock(AnnotatedElement.class);
@@ -62,7 +59,8 @@ public class SlicingCodecDecoratorTest extends TestCase {
         context = createMock(ResolverContext.class);
     }
 
-    public void testSlicingWithSliceAnnotation() throws DecodingException {
+    public void testSlicingWithSliceAnnotation() throws DecodingException
+    {
         Test2 value = new Test2();
 
         // Stuff happening when we are decoding
@@ -78,7 +76,8 @@ public class SlicingCodecDecoratorTest extends TestCase {
         verify(metadata, prefix, decorated, resolver, buffer, slice, context);
     }
 
-    public void testNoAnnotationsNoNothing() throws DecodingException {
+    public void testNoAnnotationsNoNothing() throws DecodingException
+    {
         expect(metadata.isAnnotationPresent(Slice.class)).andReturn(false);
 
         replay(metadata, prefix, decorated, resolver, buffer, slice, context);
@@ -91,12 +90,13 @@ public class SlicingCodecDecoratorTest extends TestCase {
     }
 
     @Slice(size = "8")
-    public static class Test2 {
+    public static class Test2
+    {
 
     }
 
-    public static class Test3 {
+    public static class Test3
+    {
 
     }
-
 }

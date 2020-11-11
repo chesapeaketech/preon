@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,7 +28,14 @@ import junit.framework.TestCase;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.Codecs.DocumentType;
-import org.codehaus.preon.annotation.*;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.BoundString;
+import org.codehaus.preon.annotation.If;
+import org.codehaus.preon.annotation.Init;
+import org.codehaus.preon.annotation.Purpose;
+import org.codehaus.preon.annotation.TypePrefix;
 import org.codehaus.preon.binding.StandardBindingFactory;
 import org.codehaus.preon.buffer.ByteOrder;
 
@@ -39,8 +46,8 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.List;
 
-
-public class DescriptionTest extends TestCase {
+public class DescriptionTest extends TestCase
+{
 
     /**
      * Tests if a description is generated correctly.
@@ -48,7 +55,8 @@ public class DescriptionTest extends TestCase {
      * @throws XMLStreamException
      * @throws FileNotFoundException
      */
-    public void testDescription() throws FileNotFoundException {
+    public void testDescription() throws FileNotFoundException
+    {
         Codec<PoiData> codec = Codecs.create(PoiData.class);
         File file = new File(System.getProperty("java.io.tmpdir"));
         file = new File(file, "test.html");
@@ -56,7 +64,8 @@ public class DescriptionTest extends TestCase {
         Codecs.document(codec, DocumentType.Html, file);
     }
 
-    public void testDescriptionWithInitCodec() throws Exception {
+    public void testDescriptionWithInitCodec() throws Exception
+    {
         resetBindingId();
         Codec<SimpleData> codec1 = Codecs.create(SimpleData.class);
         resetBindingId();
@@ -68,17 +77,18 @@ public class DescriptionTest extends TestCase {
         Codecs.document(codec2, DocumentType.Html, out2);
 
         assertEquals(out1.toString(), out2.toString());
-
     }
 
-    public void resetBindingId() throws Exception {
+    public void resetBindingId() throws Exception
+    {
         Field field = StandardBindingFactory.class.getDeclaredField("id");
         field.setAccessible(true);
         field.set(null, 0);
     }
 
     @Purpose("Captures point of interest data.")
-    public static class PoiData {
+    public static class PoiData
+    {
 
         @BoundString(size = "3", match = "POI")
         private String magicNumber;
@@ -99,11 +109,11 @@ public class DescriptionTest extends TestCase {
 
         @BoundList(size = "numberOfPois", types = {ScenicViewPoi.class, HotelPoi.class})
         private List<Poi> pois;
-
     }
 
     @Purpose("Captures a single point of interest.")
-    public static class Poi {
+    public static class Poi
+    {
 
         @Bound
         @Purpose("The longitude of the location of the point of interest.")
@@ -112,38 +122,41 @@ public class DescriptionTest extends TestCase {
         @Bound
         @Purpose("The latitude of the location of the point of interest.")
         private long latitude;
-
     }
 
     @TypePrefix(size = 2, value = "0b01")
-    public static class ScenicViewPoi extends Poi {
+    public static class ScenicViewPoi extends Poi
+    {
 
     }
 
     @TypePrefix(size = 2, value = "0b02")
-    public static class HotelPoi extends Poi {
+    public static class HotelPoi extends Poi
+    {
 
     }
 
-
-    public static class SimpleData {
+    public static class SimpleData
+    {
 
         @Bound
         byte b;
     }
 
-    public static class Wrapper {
-        public static class SimpleData {
+    public static class Wrapper
+    {
+        public static class SimpleData
+        {
 
             @Bound
             byte b;
 
             @Init
-            public void init() {
+            public void init()
+            {
             }
 
             ;
         }
     }
-
 }

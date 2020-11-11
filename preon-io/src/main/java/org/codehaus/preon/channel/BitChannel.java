@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -34,7 +34,8 @@ import java.nio.channels.Channel;
  * A {@link Channel} type of abstraction for writing bits. Note that in Preon, a {@link BitChannel} is currently for
  * output only.
  */
-public interface BitChannel {
+public interface BitChannel
+{
 
     /**
      * Writes the boolean value as a bit to the channel. (Writes an 1 in case of <code>true</code> value, and 0
@@ -47,7 +48,7 @@ public interface BitChannel {
 
     /** Writes <code>nrbits</code> bits of the byte to the channel in Little Endian. */
     void writeLE(int nrbits, byte value) throws IOException;
-    
+
     /**
      * Writes <code>nrbits</code> bits of the float value to the channel, based on the {@link ByteOrder} passed in, in
      * case the number of bits exceeds 8.

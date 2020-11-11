@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,15 +24,15 @@
  */
 package org.codehaus.preon.util;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A {@link List} implementation that will lazy load its elements. Big difference with {@link EvenlyDistributedLazyList}
@@ -40,7 +40,8 @@ import org.codehaus.preon.buffer.BitBuffer;
  *
  * @author Wilfred Springer
  */
-public class UnevenlyDistributedLazyList<E> implements List<E> {
+public class UnevenlyDistributedLazyList<E> implements List<E>
+{
 
     /** The {@link Codec} decoding elements of the list. */
     private Codec<E> codec;
@@ -55,125 +56,147 @@ public class UnevenlyDistributedLazyList<E> implements List<E> {
 
     private Builder builder;
 
-    public boolean add(E element) {
+    public boolean add(E element)
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public void add(int position, E element) {
+    public void add(int position, E element)
+    {
         // TODO Auto-generated method stub
 
     }
 
-    public boolean addAll(Collection<? extends E> elements) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean addAll(int position, Collection<? extends E> elements) {
+    public boolean addAll(Collection<? extends E> elements)
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public void clear() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public boolean contains(Object object) {
+    public boolean addAll(int position, Collection<? extends E> elements)
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public boolean containsAll(Collection<?> elements) {
+    public void clear()
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public boolean contains(Object object)
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public E get(int position) {
+    public boolean containsAll(Collection<?> elements)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public E get(int position)
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public int indexOf(Object object) {
+    public int indexOf(Object object)
+    {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public Iterator<E> iterator() {
+    public Iterator<E> iterator()
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public int lastIndexOf(Object object) {
+    public int lastIndexOf(Object object)
+    {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public ListIterator<E> listIterator() {
+    public ListIterator<E> listIterator()
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public ListIterator<E> listIterator(int position) {
+    public ListIterator<E> listIterator(int position)
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public boolean remove(Object object) {
+    public boolean remove(Object object)
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public E remove(int position) {
+    public E remove(int position)
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public boolean removeAll(Collection<?> elements) {
+    public boolean removeAll(Collection<?> elements)
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public boolean retainAll(Collection<?> elements) {
+    public boolean retainAll(Collection<?> elements)
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public E set(int position, E element) {
+    public E set(int position, E element)
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public int size() {
+    public int size()
+    {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public List<E> subList(int start, int end) {
+    public List<E> subList(int start, int end)
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Object[] toArray() {
+    public Object[] toArray()
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public <T> T[] toArray(T[] elements) {
+    public <T> T[] toArray(T[] elements)
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
-    private interface Holder<T> {
+    private interface Holder<T>
+    {
 
         T get() throws InterruptedException;
-
     }
-
 }

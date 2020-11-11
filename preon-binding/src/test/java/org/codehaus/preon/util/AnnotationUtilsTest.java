@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -33,9 +33,11 @@ import org.codehaus.preon.annotation.TypePrefix;
  *
  * @author Wilfred Springer (wis)
  */
-public class AnnotationUtilsTest extends TestCase {
+public class AnnotationUtilsTest extends TestCase
+{
 
-    public void testEquals() {
+    public void testEquals()
+    {
         assertTrue(AnnotationUtils.equivalent(Test1.class, Test2.class));
         assertFalse(AnnotationUtils.equivalent(Test2.class, Test3.class));
         assertFalse(AnnotationUtils.equivalent(Test3.class, Test4.class));
@@ -45,25 +47,29 @@ public class AnnotationUtilsTest extends TestCase {
 
     @TypePrefix(size = 2, value = "blaat")
     @Purpose("whatever")
-    public static class Test1 {
+    public static class Test1
+    {
     }
 
     @TypePrefix(size = 2, value = "blaat")
     @Purpose("whatever")
-    public static class Test2 {
+    public static class Test2
+    {
     }
 
     @TypePrefix(size = 2, value = "blaat")
     @Purpose("foobar")
-    public static class Test3 {
+    public static class Test3
+    {
     }
 
     @Purpose("foobar")
-    public static class Test4 {
+    public static class Test4
+    {
     }
 
     @TypePrefix(size = 2, value = "blaat")
-    public static class Test5 {
+    public static class Test5
+    {
     }
-
 }

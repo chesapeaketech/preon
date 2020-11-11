@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,19 +24,21 @@
  */
 package org.codehaus.preon.el.ctx;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.InvalidExpressionException;
 import org.codehaus.preon.el.Reference;
 import org.codehaus.preon.el.util.StringBuilderDocument;
+import org.junit.Test;
 
+import static org.junit.Assert.*;
 
-public class VariableContextTest {
+public class VariableContextTest
+{
 
     @Test
-    public void testPropertySelectors() {
+    public void testPropertySelectors()
+    {
         final Data data = new Data();
         data.data = new Data();
         data.data.str = "foobar";
@@ -49,7 +51,8 @@ public class VariableContextTest {
     }
 
     @Test
-    public void testIndexSelectors() throws InvalidExpressionException {
+    public void testIndexSelectors() throws InvalidExpressionException
+    {
         final Data data = new Data();
         data.datas = new Data[2];
         data.datas[0] = new Data();
@@ -66,7 +69,8 @@ public class VariableContextTest {
     }
 
     @Test
-    public void testReferenceEquality() throws InvalidExpressionException {
+    public void testReferenceEquality() throws InvalidExpressionException
+    {
         VariableDefinitions defs = new DataVariableDefinitions();
         VariableContext context = new VariableContext(defs);
         Reference<VariableResolver> reference = context.selectAttribute("data");
@@ -84,7 +88,8 @@ public class VariableContextTest {
     }
 
     @Test
-    public void testDocumentation() throws InvalidExpressionException {
+    public void testDocumentation() throws InvalidExpressionException
+    {
         VariableDefinitions defs = new DataVariableDefinitions();
         VariableContext context = new VariableContext(defs);
         Reference<VariableResolver> reference = context.selectAttribute("data");
@@ -99,10 +104,10 @@ public class VariableContextTest {
         documentPropertyOfArrayElement(context, reference);
     }
 
-
     private void documentArrayElement(VariableContext context,
-            Reference<VariableResolver> reference)
-            throws InvalidExpressionException {
+                                      Reference<VariableResolver> reference)
+            throws InvalidExpressionException
+    {
         Document document;
         reference = reference.selectAttribute("datas");
         reference = reference.selectItem("1");
@@ -113,8 +118,9 @@ public class VariableContextTest {
     }
 
     private void documentPropertyOfArrayElement(VariableContext context,
-            Reference<VariableResolver> reference)
-            throws InvalidExpressionException {
+                                                Reference<VariableResolver> reference)
+            throws InvalidExpressionException
+    {
         Document document;
         reference = reference.selectAttribute("datas");
         reference = reference.selectItem("1");
@@ -126,7 +132,8 @@ public class VariableContextTest {
                 document.toString());
     }
 
-    private void documentProperty(Reference<VariableResolver> reference) {
+    private void documentProperty(Reference<VariableResolver> reference)
+    {
         Document document;
         reference = reference.selectAttribute("number");
         document = new StringBuilderDocument();
@@ -134,7 +141,8 @@ public class VariableContextTest {
         assertEquals("the number (a int) of the data", document.toString());
     }
 
-    public static class Data {
+    public static class Data
+    {
 
         public int number;
 
@@ -145,41 +153,46 @@ public class VariableContextTest {
         public Data[] datas;
 
         public int[] ints;
-
     }
 
-    public static class DataResolver implements VariableResolver {
+    public static class DataResolver implements VariableResolver
+    {
 
         private Data data;
 
-        public DataResolver(Data data) {
+        public DataResolver(Data data)
+        {
             this.data = data;
         }
 
-        public Object get(String name) {
-            if ("data".equals(name)) {
+        public Object get(String name)
+        {
+            if ("data".equals(name))
+            {
                 return data;
-            } else {
+            } else
+            {
                 throw new BindingException("No such variable: " + name); // TODO
             }
         }
-
     }
 
-    private static class DataVariableDefinitions implements VariableDefinitions {
+    private static class DataVariableDefinitions implements VariableDefinitions
+    {
 
-        public String[] getNames() {
-            return new String[] { "data" };
+        public String[] getNames()
+        {
+            return new String[]{"data"};
         }
 
-        public Class getType(String name) {
+        public Class getType(String name)
+        {
             return Data.class;
         }
 
-        public void document(Document target) {
+        public void document(Document target)
+        {
             target.text("an object with variable data");
         }
-
     }
-
 }

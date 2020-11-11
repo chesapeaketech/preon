@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,13 +24,13 @@
  */
 package org.codehaus.preon.annotation;
 
+import org.codehaus.preon.buffer.BitBuffer;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
-
-import org.codehaus.preon.buffer.BitBuffer;
 
 /**
  * The annotation used to mark {@link List} fields as potential candidates to be bound to a {@link BitBuffer}.
@@ -39,7 +39,8 @@ import org.codehaus.preon.buffer.BitBuffer;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface BoundList {
+public @interface BoundList
+{
 
     /**
      * The type of object to be inserted into the {@link List}. Note that this allows you to have a field of a super
@@ -96,5 +97,4 @@ public @interface BoundList {
      * @return The choices to select from, based on a prefix of a certain size.
      */
     Choices selectFrom() default @Choices(alternatives = {});
-
 }

@@ -29,7 +29,7 @@ div.source {
     border: 1px solid #aaa;
     background-color: #f3f3f3;
     border-style: dashed;
-    overflow-x:scroll;
+    overflow-x: scroll;
 }
 
 pre {
@@ -368,7 +368,7 @@ img.alignleft {
     Special stylized non-IE bullets
     Do not work in Internet Explorer, which merely default to normal bullets. */
 
-html>body .entry ul {
+html > body .entry ul {
     margin-left: 0px;
     padding: 0 0 0 30px;
     list-style: none;
@@ -376,7 +376,7 @@ html>body .entry ul {
     text-indent: -10px;
 }
 
-html>body .entry li {
+html > body .entry li {
     margin: 7px 0 8px 10px;
 }
 
@@ -451,7 +451,7 @@ ol li, #sidebar ul ol li {
 }
 
 .entry form {
-/* This is mainly for password protected posts, makes them look better. */
+    /* This is mainly for password protected posts, makes them look better. */
     text-align: center;
 }
 
@@ -560,7 +560,7 @@ select {
 }
 
 #wp-calendar td.pad:hover {
-/* Doesn't work in IE */
+    /* Doesn't work in IE */
     background-color: #fff;
 }
 

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,22 +24,26 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.*;
-import org.codehaus.preon.descriptor.Documenters;
-import org.codehaus.preon.channel.BitChannel;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
+import nl.flotsam.pecia.Table3Cols;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
 import org.codehaus.preon.binding.Binding;
 import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.el.ObjectResolverContext;
-import org.codehaus.preon.rendering.IdentifierRewriter;
+import org.codehaus.preon.channel.BitChannel;
+import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.el.Expressions;
-import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.Table3Cols;
-import nl.flotsam.pecia.ParaContents;
+import org.codehaus.preon.el.ObjectResolverContext;
+import org.codehaus.preon.rendering.IdentifierRewriter;
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * <p>The {@link Codec} capable of decoding instances of arbitrary classes. Typicaly, this {@link Codec} will be
@@ -47,7 +51,8 @@ import java.io.IOException;
  * you do so, then the bindings will be based on the presence of annotations on the fields of the class for which you
  * need a {@link Codec}.</p>
  */
-public class ObjectCodec<T> implements Codec<T> {
+public class ObjectCodec<T> implements Codec<T>
+{
 
     private final Class<T> type;
 
@@ -56,7 +61,8 @@ public class ObjectCodec<T> implements Codec<T> {
     private final ObjectResolverContext context;
 
     public ObjectCodec(Class<T> type, IdentifierRewriter rewriter,
-                       ObjectResolverContext context) {
+                       ObjectResolverContext context)
+    {
         assert type != null;
         assert rewriter != null;
         assert context != null;
@@ -66,35 +72,41 @@ public class ObjectCodec<T> implements Codec<T> {
     }
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-            throws DecodingException {
+            throws DecodingException
+    {
         assert buffer != null;
         assert builder != null;
-        try {
+        try
+        {
             final T result = builder.create(type);
             resolver = context.getResolver(result, resolver);
             // TODO: I think I need a replacement resolver here.
-            for (Binding binding : context.getBindings()) {
+            for (Binding binding : context.getBindings())
+            {
                 binding.load(result, buffer, resolver, builder);
             }
             return result;
-        }
-        catch (InstantiationException ie) {
+        } catch (InstantiationException ie)
+        {
             ie.printStackTrace();
             throw new DecodingException(type, ie);
-        }
-        catch (IllegalAccessException iae) {
+        } catch (IllegalAccessException iae)
+        {
             throw new DecodingException(iae);
         }
     }
 
-    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException
+    {
         resolver = context.getResolver(value, resolver);
-        for (Binding binding : context.getBindings()) {
+        for (Binding binding : context.getBindings())
+        {
             binding.save(value, channel, resolver);
         }
     }
 
-    public Class<?>[] getTypes() {
+    public Class<?>[] getTypes()
+    {
         return new Class[]{type};
         // Set<Class<?>> types = new HashSet<Class<?>>();
         // for (Binding binding : context.getBindings()) {
@@ -105,49 +117,62 @@ public class ObjectCodec<T> implements Codec<T> {
     }
 
     /*
-       * (non-Javadoc)
-       *
-       * @see org.codehaus.preon.Codec#getSize()
-       */
+     * (non-Javadoc)
+     *
+     * @see org.codehaus.preon.Codec#getSize()
+     */
 
-    public Expression<Integer, Resolver> getSize() {
+    public Expression<Integer, Resolver> getSize()
+    {
         List<Binding> bindings = context.getBindings();
-        if (bindings.size() > 0) {
+        if (bindings.size() > 0)
+        {
             Expression<Integer, Resolver> result = null;
-            for (Binding binding : bindings) {
-                if (result == null) {
+            for (Binding binding : bindings)
+            {
+                if (result == null)
+                {
                     result = binding.getSize();
-                } else {
+                } else
+                {
                     result = Expressions.add(result, binding.getSize());
                 }
             }
             return result;
-        } else {
+        } else
+        {
             return Expressions.createInteger(0, Resolver.class);
         }
     }
 
     /*
-       * (non-Javadoc)
-       *
-       * @see java.lang.Object#toString()
-       */
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
 
-    public String toString() {
+    public String toString()
+    {
         return "Codec of " + type.getSimpleName();
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return type;
     }
 
-    public CodecDescriptor getCodecDescriptor() {
-        return new CodecDescriptor() {
+    public CodecDescriptor getCodecDescriptor()
+    {
+        return new CodecDescriptor()
+        {
 
             public <C extends SimpleContents<?>> Documenter<C> details(
-                    String bufferReference) {
-                return new Documenter<C>() {
-                    public void document(C target) {
+                    String bufferReference)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target
                                 .para()
                                 .document(reference(Adjective.THE, false))
@@ -162,7 +187,8 @@ public class ObjectCodec<T> implements Codec<T> {
                                         "Description").end().entry().para()
                                 .text("Size (in bits)").end().end();
                         for (Binding binding : ObjectCodec.this.context
-                                .getBindings()) {
+                                .getBindings())
+                        {
                             table3Cols
                                     .row()
                                     .entry()
@@ -185,32 +211,38 @@ public class ObjectCodec<T> implements Codec<T> {
                 };
             }
 
-            public String getTitle() {
+            public String getTitle()
+            {
                 return rewriter.rewrite(type.getName());
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(
-                    Adjective adjective, boolean startWithCapital) {
-                return new Documenter<C>() {
-                    public void document(C target) {
+                    Adjective adjective, boolean startWithCapital)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target.link(getTitle(), getTitle());
                     }
                 };
             }
 
-            public boolean requiresDedicatedSection() {
+            public boolean requiresDedicatedSection()
+            {
                 return true;
             }
 
-            public <C extends ParaContents<?>> Documenter<C> summary() {
-                return new Documenter<C>() {
-                    public void document(C target) {
+            public <C extends ParaContents<?>> Documenter<C> summary()
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target.text("A ").link(getTitle(), getTitle());
                     }
                 };
             }
-
         };
     }
-
 }

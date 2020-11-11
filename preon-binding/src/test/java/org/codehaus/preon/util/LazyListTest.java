@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,24 +24,21 @@
  */
 package org.codehaus.preon.util;
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.codehaus.preon.el.Expression;
+import junit.framework.TestCase;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.el.Expression;
 
-import junit.framework.TestCase;
+import java.util.Iterator;
+import java.util.List;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 
-public class LazyListTest extends TestCase {
+public class LazyListTest extends TestCase
+{
 
     private BitBuffer buffer;
 
@@ -54,7 +51,8 @@ public class LazyListTest extends TestCase {
     private Expression<Integer, Resolver> sizeExpr;
 
     @SuppressWarnings("unchecked")
-    public void setUp() {
+    public void setUp()
+    {
         buffer = createMock(BitBuffer.class);
         codec = createMock(Codec.class);
         builder = createMock(Builder.class);
@@ -62,7 +60,8 @@ public class LazyListTest extends TestCase {
         sizeExpr = createMock(Expression.class);
     }
 
-    public void testTakingElement() throws DecodingException {
+    public void testTakingElement() throws DecodingException
+    {
         Object value = new Object();
         buffer.setBitPos(20);
         expect(codec.decode(buffer, resolver, builder)).andReturn(value);
@@ -73,33 +72,40 @@ public class LazyListTest extends TestCase {
         verify(buffer, codec, resolver, builder, sizeExpr);
     }
 
-    public void testIndexToLow() {
+    public void testIndexToLow()
+    {
         replay(buffer, codec, resolver, builder, sizeExpr);
-        try {
+        try
+        {
             EvenlyDistributedLazyList<Object> list = new EvenlyDistributedLazyList<Object>(
                     codec, 0, buffer, 10, builder, resolver, 20);
             list.get(-1);
             fail(); // Expecting exception
-        } catch (IndexOutOfBoundsException iobe) {
+        } catch (IndexOutOfBoundsException iobe)
+        {
             // That's ok.
         }
         verify(buffer, codec, resolver, builder, sizeExpr);
     }
 
-    public void testIndexToHigh() {
+    public void testIndexToHigh()
+    {
         replay(buffer, codec, resolver, builder, sizeExpr);
-        try {
+        try
+        {
             EvenlyDistributedLazyList<Object> list = new EvenlyDistributedLazyList<Object>(
                     codec, 0, buffer, 10, builder, resolver, 20);
             list.get(10);
             fail(); // Expecting exception
-        } catch (IndexOutOfBoundsException iobe) {
+        } catch (IndexOutOfBoundsException iobe)
+        {
             // That's ok.
         }
         verify(buffer, codec, resolver, builder, sizeExpr);
     }
 
-    public void testSubList() throws DecodingException {
+    public void testSubList() throws DecodingException
+    {
         Object value = new Object();
         buffer.setBitPos(20);
         expect(codec.decode(buffer, resolver, builder)).andReturn(value);
@@ -111,7 +117,8 @@ public class LazyListTest extends TestCase {
         verify(buffer, codec, resolver, builder, sizeExpr);
     }
 
-    public void testIterator() throws DecodingException {
+    public void testIterator() throws DecodingException
+    {
         Object value = new Object();
         buffer.setBitPos(0);
         expect(codec.decode(buffer, resolver, builder)).andReturn(value);
@@ -123,10 +130,10 @@ public class LazyListTest extends TestCase {
         EvenlyDistributedLazyList<Object> list = new EvenlyDistributedLazyList<Object>(
                 codec, 0, buffer, 3, builder, resolver, 20);
         Iterator<Object> iterator = list.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext())
+        {
             iterator.next();
         }
         verify(buffer, codec, resolver, builder, sizeExpr);
     }
-
 }

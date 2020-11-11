@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,30 +32,31 @@ import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.buffer.DefaultBitBuffer;
 import org.easymock.EasyMock;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.AnnotatedElement;
 import java.nio.ByteBuffer;
 
-public class EnumCodecFactoryTest {
+import static org.junit.Assert.*;
+
+public class EnumCodecFactoryTest
+{
 
     private AnnotatedElement metadata;
 
     private BoundNumber boundNumber;
 
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         metadata = EasyMock.createMock(AnnotatedElement.class);
         boundNumber = EasyMock.createMock(BoundNumber.class);
     }
 
     @Test
-    public void testHappyPath() throws DecodingException {
+    public void testHappyPath() throws DecodingException
+    {
         // Pre-play behaviour
         EasyMock.expect(metadata.isAnnotationPresent(BoundNumber.class))
                 .andReturn(true);
@@ -79,12 +80,12 @@ public class EnumCodecFactoryTest {
         EasyMock.verify(metadata, boundNumber);
     }
 
-    enum Direction {
+    enum Direction
+    {
         @BoundEnumOption(0)
         Left,
 
         @BoundEnumOption(1)
         Right
     }
-
 }

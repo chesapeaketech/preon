@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,13 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecConstructionException;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundObject;
 import org.codehaus.preon.annotation.Choices;
@@ -42,7 +48,8 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class ObjectCodecFactoryTest {
+public class ObjectCodecFactoryTest
+{
 
     private AnnotatedElement metadata;
 
@@ -59,7 +66,8 @@ public class ObjectCodecFactoryTest {
     private Choices choices;
 
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         metadata = createMock(AnnotatedElement.class);
         delegate = createMock(CodecFactory.class);
         buffer = createMock(BitBuffer.class);
@@ -71,7 +79,8 @@ public class ObjectCodecFactoryTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testBoundObjectNoMembersTwoTypesNoPrefix() throws DecodingException {
+    public void testBoundObjectNoMembersTwoTypesNoPrefix() throws DecodingException
+    {
         Codec codec1 = createMock(Codec.class);
         Codec codec2 = createMock(Codec.class);
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false).anyTimes();
@@ -93,17 +102,20 @@ public class ObjectCodecFactoryTest {
                         (ResolverContext) EasyMock.isNull())).andReturn(codec2);
         replay(metadata, delegate, buffer, resolver, settings, codec1, codec2, choices);
         ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
-        try {
+        try
+        {
             Codec<TestObject1> created = factory.create(metadata, TestObject1.class, null);
             fail("Expecting failure due to missing prefixes.");
-        } catch (CodecConstructionException cce) {
+        } catch (CodecConstructionException cce)
+        {
             // What we expect.
         }
         verify(metadata, delegate, buffer, resolver, settings, choices);
     }
 
     @Test
-    public void testBoundObjectNoMembersTwoTypesWithPrefix() throws DecodingException {
+    public void testBoundObjectNoMembersTwoTypesWithPrefix() throws DecodingException
+    {
         Codec codecTest3 = createMock(Codec.class);
         Codec codecTest4 = createMock(Codec.class);
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false).anyTimes();
@@ -136,22 +148,25 @@ public class ObjectCodecFactoryTest {
                 choices);
     }
 
-    public static class TestObject1 {
+    public static class TestObject1
+    {
 
     }
 
-    public static class TestObject2 {
+    public static class TestObject2
+    {
 
     }
 
     @TypePrefix(size = 8, value = "0")
-    public static class TestObject3 extends TestObject1 {
+    public static class TestObject3 extends TestObject1
+    {
 
     }
 
     @TypePrefix(size = 8, value = "1")
-    public static class TestObject4 extends TestObject1 {
+    public static class TestObject4 extends TestObject1
+    {
 
     }
-
 }

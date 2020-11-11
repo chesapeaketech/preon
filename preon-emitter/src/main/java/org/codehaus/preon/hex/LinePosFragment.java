@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,7 +28,8 @@ package org.codehaus.preon.hex;
  * A {@link org.codehaus.preon.hex.DumpFragment} that will generate the line position, with the given number of
  * characters, with trailing zeroes if required.
  */
-public class LinePosFragment implements DumpFragment {
+public class LinePosFragment implements DumpFragment
+{
 
     private final int size;
 
@@ -37,20 +38,26 @@ public class LinePosFragment implements DumpFragment {
      *
      * @param size
      */
-    public LinePosFragment(int size) {
+    public LinePosFragment(int size)
+    {
         this.size = size;
     }
 
-    public int getSize(int numberOfBytes) {
+    public int getSize(int numberOfBytes)
+    {
         return size;
     }
 
-    public void dump(long lineNumber, byte[] buffer, int length, HexDumpTarget out) throws HexDumperException {
+    public void dump(long lineNumber, byte[] buffer, int length, HexDumpTarget out) throws HexDumperException
+    {
         String position = Long.toHexString(lineNumber);
-        if (position.length() > size) {
+        if (position.length() > size)
+        {
             position = position.substring(position.length() - size);
-        } else {
-            for (int i = position.length(); i < size; i++) {
+        } else
+        {
+            for (int i = position.length(); i < size; i++)
+            {
                 out.writeText('0');
             }
         }

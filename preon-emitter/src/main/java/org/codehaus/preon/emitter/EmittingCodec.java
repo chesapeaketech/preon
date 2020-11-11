@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,11 @@
  */
 package org.codehaus.preon.emitter;
 
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.PassThroughCodecDescriptor2;
@@ -36,7 +40,8 @@ import org.codehaus.preon.el.Expression;
  * @author Wilfred Springer (wis)
  * @param <T>
  */
-public class EmittingCodec<T> implements Codec<T> {
+public class EmittingCodec<T> implements Codec<T>
+{
 
     /** The {@link org.codehaus.preon.Codec} wrapped. */
     private final Codec<T> codec;
@@ -50,7 +55,8 @@ public class EmittingCodec<T> implements Codec<T> {
      * @param codec  The {@link org.codehaus.preon.Codec} to wrap.
      * @param emitter The {@link Emitter} to use.
      */
-    public EmittingCodec(Codec<T> codec, Emitter emitter) {
+    public EmittingCodec(Codec<T> codec, Emitter emitter)
+    {
         assert codec != null;
         assert emitter != null;
         this.codec = codec;
@@ -65,16 +71,20 @@ public class EmittingCodec<T> implements Codec<T> {
      */
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-            throws DecodingException {
+            throws DecodingException
+    {
         T result = null;
         long pos = buffer.getActualBitPos();
         emitter.markStart(codec, pos, buffer);
-        try {
+        try
+        {
             result = codec.decode(buffer, resolver, builder);
-        } catch (DecodingException de) {
+        } catch (DecodingException de)
+        {
             emitter.markFailure();
             throw de;
-        } finally {
+        } finally
+        {
             emitter.markEnd(codec, buffer.getActualBitPos(), buffer
                     .getActualBitPos()
                     - pos, result);
@@ -82,7 +92,8 @@ public class EmittingCodec<T> implements Codec<T> {
         return result;
     }
 
-    public void encode(T object, BitChannel channel, Resolver resolver) {
+    public void encode(T object, BitChannel channel, Resolver resolver)
+    {
         throw new UnsupportedOperationException();
     }
 
@@ -92,7 +103,8 @@ public class EmittingCodec<T> implements Codec<T> {
      * @see org.codehaus.preon.Codec#getTypes()
      */
 
-    public Class<?>[] getTypes() {
+    public Class<?>[] getTypes()
+    {
         return codec.getTypes();
     }
 
@@ -102,7 +114,8 @@ public class EmittingCodec<T> implements Codec<T> {
      * @see org.codehaus.preon.Codec#getSize()
      */
 
-    public Expression<Integer, Resolver> getSize() {
+    public Expression<Integer, Resolver> getSize()
+    {
         return codec.getSize();
     }
 
@@ -112,13 +125,14 @@ public class EmittingCodec<T> implements Codec<T> {
      * @see org.codehaus.preon.Codec#getType()
      */
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return codec.getType();
     }
 
-    public CodecDescriptor getCodecDescriptor() {
+    public CodecDescriptor getCodecDescriptor()
+    {
         return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(),
                 false);
     }
-
 }

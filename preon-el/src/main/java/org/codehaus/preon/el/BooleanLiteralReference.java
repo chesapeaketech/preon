@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -29,57 +29,70 @@ package org.codehaus.preon.el;
  *
  * @param <E>
  */
-public class BooleanLiteralReference<E> implements Reference<E> {
+public class BooleanLiteralReference<E> implements Reference<E>
+{
 
     private boolean value;
     private ReferenceContext<E> context;
 
-    public BooleanLiteralReference(boolean value, ReferenceContext<E> context) {
+    public BooleanLiteralReference(boolean value, ReferenceContext<E> context)
+    {
         this.value = value;
         this.context = context;
     }
-    
-    public Object resolve(E context) {
+
+    public Object resolve(E context)
+    {
         return value;
     }
 
-    public ReferenceContext<E> getReferenceContext() {
+    public ReferenceContext<E> getReferenceContext()
+    {
         return context;
     }
 
-    public boolean isAssignableTo(Class<?> type) {
+    public boolean isAssignableTo(Class<?> type)
+    {
         return type.isAssignableFrom(Boolean.class);
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return Boolean.class;
     }
 
-    public Reference<E> narrow(Class<?> type) {
+    public Reference<E> narrow(Class<?> type)
+    {
         return this;
     }
 
-    public boolean isBasedOn(ReferenceContext<E> eReferenceContext) {
+    public boolean isBasedOn(ReferenceContext<E> eReferenceContext)
+    {
         return false;
     }
 
-    public Reference<E> rescope(ReferenceContext<E> eReferenceContext) {
+    public Reference<E> rescope(ReferenceContext<E> eReferenceContext)
+    {
         return this;
     }
 
-    public Reference<E> selectAttribute(String name) throws BindingException {
+    public Reference<E> selectAttribute(String name) throws BindingException
+    {
         throw new BindingException("No such attribute");
     }
 
-    public Reference<E> selectItem(String index) throws BindingException {
+    public Reference<E> selectItem(String index) throws BindingException
+    {
         throw new BindingException("No such indexed value");
     }
 
-    public Reference<E> selectItem(Expression<Integer, E> index) throws BindingException {
+    public Reference<E> selectItem(Expression<Integer, E> index) throws BindingException
+    {
         throw new BindingException("No such indexed value");
     }
 
-    public void document(Document target) {
+    public void document(Document target)
+    {
         target.text(Boolean.toString(value));
     }
 }

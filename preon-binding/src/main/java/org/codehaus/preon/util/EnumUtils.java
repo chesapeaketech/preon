@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,36 +24,44 @@
  */
 package org.codehaus.preon.util;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+import org.codehaus.preon.annotation.BoundEnumOption;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.preon.annotation.BoundEnumOption;
-
-import edu.emory.mathcs.backport.java.util.Collections;
-
-public class EnumUtils {
+public class EnumUtils
+{
 
     @SuppressWarnings("unchecked")
-    public static <T> Map<Long, T> getBoundEnumOptionIndex(Class<T> enumType) {
-        if (!enumType.isEnum()) {
+    public static <T> Map<Long, T> getBoundEnumOptionIndex(Class<T> enumType)
+    {
+        if (!enumType.isEnum())
+        {
             return Collections.emptyMap();
-        } else {
+        } else
+        {
             Map<Long, T> result = new HashMap<Long, T>();
             Field[] fields = enumType.getFields();
-            for (Field field : fields) {
-                if (field.isEnumConstant()) {
-                    try {
+            for (Field field : fields)
+            {
+                if (field.isEnumConstant())
+                {
+                    try
+                    {
                         field.setAccessible(true);
                         BoundEnumOption annotation = field
                                 .getAnnotation(BoundEnumOption.class);
-                        if (annotation == null) {
+                        if (annotation == null)
+                        {
                             result.put(null, (T) field.get(null));
-                        } else {
+                        } else
+                        {
                             result.put(annotation.value(), (T) field.get(null));
                         }
-                    }
-                    catch (IllegalAccessException iae) {
+                    } catch (IllegalAccessException iae)
+                    {
                         iae.printStackTrace(); // Should never happen.
                     }
                 }
@@ -61,5 +69,4 @@ public class EnumUtils {
             return result;
         }
     }
-
 }

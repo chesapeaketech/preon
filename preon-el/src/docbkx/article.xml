@@ -25,8 +25,8 @@
 
 -->
 <article>
-  <title>Limbo</title>
-  <programlisting><![CDATA[
+    <title>Limbo</title>
+    <programlisting><![CDATA[
 class Person {
   private boolean qualified;
   private int age;
@@ -54,5 +54,5 @@ expr.toReadableString(); // age times the sum of 2 and 2
 expr.simplify().toString(); // age * 4
 expr.simplify(); // age times 4
 ]]>
-  </programlisting>
+    </programlisting>
 </article>

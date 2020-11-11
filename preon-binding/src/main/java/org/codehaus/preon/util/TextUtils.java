@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,7 +32,8 @@ import org.codehaus.preon.el.util.StringBuilderDocument;
  *
  * @author Wilfred Springer (wis)
  */
-public class TextUtils {
+public class TextUtils
+{
 
     private static String[] NUMBER_TRANSLATIONS = new String[]{"zero", "one",
             "two", "three", "four", "five", "six", "seven", "eight", "nine",
@@ -46,7 +47,8 @@ public class TextUtils {
      * @param descriptive The object to be described.
      * @return A String.
      */
-    public static String toString(Descriptive descriptive) {
+    public static String toString(Descriptive descriptive)
+    {
         StringBuilder builder = new StringBuilder();
         descriptive.document(new StringBuilderDocument(builder));
         return builder.toString();
@@ -58,8 +60,10 @@ public class TextUtils {
      * @param position The position.
      * @return A text representation of that position.
      */
-    public static String getPositionAsText(int value) {
-        switch (value) {
+    public static String getPositionAsText(int value)
+    {
+        switch (value)
+        {
             case 0:
                 return "first";
             case 1:
@@ -91,10 +95,13 @@ public class TextUtils {
      * @param value The number to be represented as text.
      * @return A text representation of the number passed in.
      */
-    public static String getNumberAsText(int value) {
-        if (value >= 0 && value < NUMBER_TRANSLATIONS.length) {
+    public static String getNumberAsText(int value)
+    {
+        if (value >= 0 && value < NUMBER_TRANSLATIONS.length)
+        {
             return NUMBER_TRANSLATIONS[value];
-        } else {
+        } else
+        {
             return Integer.toString(value);
         }
     }
@@ -106,35 +113,45 @@ public class TextUtils {
      * @param value The value to be turned into a text representation.
      * @return The text representation of the value.
      */
-    public static boolean hasNumberAsText(int value) {
+    public static boolean hasNumberAsText(int value)
+    {
         return (value >= 0 || value < NUMBER_TRANSLATIONS.length);
     }
 
-    public static String startWithUppercase(String text) {
-        if (text.length() > 2) {
+    public static String startWithUppercase(String text)
+    {
+        if (text.length() > 2)
+        {
             return Character.toUpperCase(text.charAt(0)) + text.substring(1);
-        } else {
+        } else
+        {
             return text;
         }
     }
 
-    public static String bitsToText(int nrbits) {
+    public static String bitsToText(int nrbits)
+    {
         StringBuilder builder = new StringBuilder();
-        if (nrbits >= 8) {
+        if (nrbits >= 8)
+        {
             builder.append(nrbits);
             builder.append(" (");
             int nrbytes = nrbits / 8;
-            if (nrbytes == 1) {
+            if (nrbytes == 1)
+            {
                 builder.append("1 byte");
-            } else {
+            } else
+            {
                 builder.append(nrbytes).append(" bytes");
             }
-            if (nrbits % 8 > 0) {
+            if (nrbits % 8 > 0)
+            {
                 builder.append(" and ").append(nrbits % 8).append(" bits");
             }
             builder.append(")");
             return builder.toString();
-        } else {
+        } else
+        {
             return Integer.toString(nrbits);
         }
     }

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -39,7 +39,8 @@ import java.nio.channels.FileChannel;
  * @author Bartosz Wieczorek
  * @since Feb 18, 2007
  */
-public class DefaultBitBuffer implements BitBuffer {
+public class DefaultBitBuffer implements BitBuffer
+{
 
     static Log log = LogFactory.getLog(DefaultBitBuffer.class);
 
@@ -54,7 +55,8 @@ public class DefaultBitBuffer implements BitBuffer {
      *
      * @param inputByteBuffer input buffered byte stream
      */
-    public DefaultBitBuffer(ByteBuffer inputByteBuffer) {
+    public DefaultBitBuffer(ByteBuffer inputByteBuffer)
+    {
         // TODO: I think we should use #limit() instead of #capacity()
         this(inputByteBuffer, ((long) (inputByteBuffer.capacity())) << 3, 0L);
     }
@@ -67,21 +69,24 @@ public class DefaultBitBuffer implements BitBuffer {
      * @param bitPos
      */
     private DefaultBitBuffer(ByteBuffer inputByteBuffer, long bitBufBitSize,
-                             long bitPos) {
+                             long bitPos)
+    {
         this.byteBuffer = inputByteBuffer;
         this.bitBufBitSize = bitBufBitSize;
         this.bitPos = bitPos;
     }
 
     /** Read byte buffer containing binary stream and set the bit pointer position to 0. */
-    public DefaultBitBuffer(String fileName) {
+    public DefaultBitBuffer(String fileName)
+    {
 
         File file = new File(fileName);
 
         // Open the file and then get a org.codehaus.preon.channel.channel from the stream
         FileInputStream fis;
 
-        try {
+        try
+        {
             fis = new FileInputStream(file);
 
             FileChannel fc = fis.getChannel();
@@ -97,8 +102,8 @@ public class DefaultBitBuffer implements BitBuffer {
             this.byteBuffer = inputByteBuffer;
             bitBufBitSize = ((long) (inputByteBuffer.capacity())) << 3;
             bitPos = 0;
-
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -106,19 +111,22 @@ public class DefaultBitBuffer implements BitBuffer {
 
     // JavaDoc inherited
 
-    public void setBitPos(long bitPos) {
+    public void setBitPos(long bitPos)
+    {
         this.bitPos = bitPos;
     }
 
     // JavaDoc inherited
 
-    public long getBitPos() {
+    public long getBitPos()
+    {
         return this.bitPos;
     }
 
     // JavaDoc inherited
 
-    public long getBitBufBitSize() {
+    public long getBitBufBitSize()
+    {
         return bitBufBitSize;
     }
 
@@ -126,62 +134,76 @@ public class DefaultBitBuffer implements BitBuffer {
 
     // JavaDoc inherited
 
-    public long readBits(int nrBits) {
+    public long readBits(int nrBits)
+    {
         return readAsLong(nrBits);
     }
 
     // JavaDoc inherited
 
-    public long readBits(long bitPos, int nrBits) {
+    public long readBits(long bitPos, int nrBits)
+    {
         return readAsLong(bitPos, nrBits);
     }
 
     // JavaDoc inherited
 
-    public long readBits(int nrBits, ByteOrder byteOrder) {
+    public long readBits(int nrBits, ByteOrder byteOrder)
+    {
         return readAsLong(nrBits, byteOrder);
     }
 
     // JavaDoc inherited
 
-    public long readBits(long bitPos, int nrBits, ByteOrder byteOrder) {
+    public long readBits(long bitPos, int nrBits, ByteOrder byteOrder)
+    {
 
         if (nrBits <= 8)
+        {
             return readAsByte(bitPos, nrBits, byteOrder);
-        else if (nrBits <= 16)
+        } else if (nrBits <= 16)
+        {
             return readAsShort(bitPos, nrBits, byteOrder);
-        else if (nrBits <= 32)
+        } else if (nrBits <= 32)
+        {
             return readAsInt(bitPos, nrBits, byteOrder);
-        else if (nrBits <= 64)
+        } else if (nrBits <= 64)
+        {
             return readAsLong(bitPos, nrBits, byteOrder);
-        else
+        } else
+        {
             throw new BitBufferException("Wrong number of bits to read ("
                     + nrBits + ").");
+        }
     }
 
     // boolean
 
     // JavaDoc inherited
 
-    public boolean readAsBoolean() {
+    public boolean readAsBoolean()
+    {
         return readAsBoolean(bitPos, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public boolean readAsBoolean(long bitPos) {
+    public boolean readAsBoolean(long bitPos)
+    {
         return readAsBoolean(bitPos, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public boolean readAsBoolean(ByteOrder byteOrder) {
+    public boolean readAsBoolean(ByteOrder byteOrder)
+    {
         return readAsBoolean(bitPos, byteOrder);
     }
 
     // JavaDoc inherited
 
-    public boolean readAsBoolean(long bitPos, ByteOrder byteOrder) {
+    public boolean readAsBoolean(long bitPos, ByteOrder byteOrder)
+    {
         return getResultAsInt(bitPos, 1, byteOrder, 1) == 1;
     }
 
@@ -189,50 +211,58 @@ public class DefaultBitBuffer implements BitBuffer {
 
     // JavaDoc inherited
 
-    public byte readAsByte(int nrBits) {
+    public byte readAsByte(int nrBits)
+    {
         return readAsByte(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public byte readAsByte(int nrBits, ByteOrder byteOrder) {
+    public byte readAsByte(int nrBits, ByteOrder byteOrder)
+    {
         return readAsByte(bitPos, nrBits, byteOrder);
     }
 
     // JavaDoc inherited
 
-    public byte readAsByte(int nrBits, long bitPos) {
+    public byte readAsByte(int nrBits, long bitPos)
+    {
         return readAsByte(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public byte readAsByte(long bitPos, int nrBits, ByteOrder byteOrder) {
+    public byte readAsByte(long bitPos, int nrBits, ByteOrder byteOrder)
+    {
         return (byte) getResultAsInt(bitPos, nrBits, byteOrder, 8);
     }
 
     // signed short
     // JavaDoc inherited
 
-    public short readAsShort(int nrBits) {
+    public short readAsShort(int nrBits)
+    {
         return readAsShort(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public short readAsShort(long bitPos, int nrBits) {
+    public short readAsShort(long bitPos, int nrBits)
+    {
         return readAsShort(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public short readAsShort(int nrBits, ByteOrder byteOrder) {
+    public short readAsShort(int nrBits, ByteOrder byteOrder)
+    {
         return readAsShort(bitPos, nrBits, byteOrder);
     }
 
     // JavaDoc inherited
 
-    public short readAsShort(long bitPos, int nrBits, ByteOrder byteOrder) {
+    public short readAsShort(long bitPos, int nrBits, ByteOrder byteOrder)
+    {
         return (short) getResultAsInt(bitPos, nrBits, byteOrder, 16);
     }
 
@@ -240,54 +270,65 @@ public class DefaultBitBuffer implements BitBuffer {
 
     // JavaDoc inherited
 
-    public int readAsInt(int nrBits) {
+    public int readAsInt(int nrBits)
+    {
         return readAsInt(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public int readAsInt(long bitPos, int nrBits) {
+    public int readAsInt(long bitPos, int nrBits)
+    {
         return readAsInt(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public int readAsInt(int nrBits, ByteOrder byteOrder) {
+    public int readAsInt(int nrBits, ByteOrder byteOrder)
+    {
         return readAsInt(bitPos, nrBits, byteOrder);
     }
 
     // JavaDoc inherited
 
-    public int readAsInt(long bitPos, int nrBits, ByteOrder byteOrder) {
+    public int readAsInt(long bitPos, int nrBits, ByteOrder byteOrder)
+    {
         if (getNrNecessaryBytes(bitPos, nrBits) > 4)
+        {
             return (int) getResultAsLong(bitPos, nrBits, byteOrder, 32);
-        else
+        } else
+        {
             return getResultAsInt(bitPos, nrBits, byteOrder, 32);
+        }
     }
 
     // signed long
 
     // JavaDoc inherited
 
-    public long readAsLong(int nrBits) {
+    public long readAsLong(int nrBits)
+    {
         return readAsLong(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public long readAsLong(long bitPos, int nrBits) {
+    public long readAsLong(long bitPos, int nrBits)
+    {
         return readAsLong(bitPos, nrBits, ByteOrder.BigEndian);
     }
 
     // JavaDoc inherited
 
-    public long readAsLong(int nrBits, ByteOrder byteOrder) {
+    public long readAsLong(int nrBits, ByteOrder byteOrder)
+    {
         return readAsLong(bitPos, nrBits, byteOrder);
     }
 
     // JavaDoc inherited
 
-    public long readAsLong(long bitPos, int nrBits, ByteOrder byteOrder) {
+    public long readAsLong(long bitPos, int nrBits, ByteOrder byteOrder)
+    {
         return getResultAsLong(bitPos, nrBits, byteOrder, 64);
     }
 
@@ -300,7 +341,8 @@ public class DefaultBitBuffer implements BitBuffer {
      * @param nrBits number of bits to read
      * @return number of bytes to read
      */
-    private static int getNrNecessaryBytes(long bitPos, int nrBits) {
+    private static int getNrNecessaryBytes(long bitPos, int nrBits)
+    {
         return (int) (((bitPos % 8) + nrBits + 7) / 8);
     }
 
@@ -314,15 +356,19 @@ public class DefaultBitBuffer implements BitBuffer {
      * @return shifted integer buffer
      */
     private static int getRightShiftedNumberBufAsInt(int numberBuf,
-                                                     long bitPos, int nrBits, ByteOrder byteOrder) throws BitBufferException {
+                                                     long bitPos, int nrBits, ByteOrder byteOrder) throws BitBufferException
+    {
 
         // number of bits integer buffer needs to be shifted to the right in
         // order to reach the last bit in last byte
         long shiftBits;
         if (byteOrder == ByteOrder.BigEndian)
+        {
             shiftBits = 7 - ((nrBits + bitPos + 7) % 8);
-        else
+        } else
+        {
             shiftBits = bitPos % 8;
+        }
 
         return numberBuf >> shiftBits;
     }
@@ -337,16 +383,19 @@ public class DefaultBitBuffer implements BitBuffer {
      * @return shifted integer buffer
      */
     private static long getRightShiftedNumberBufAsLong(BigInteger numberBuf,
-                                                       long bitPos, int nrBits, ByteOrder byteOrder) throws BitBufferException {
+                                                       long bitPos, int nrBits, ByteOrder byteOrder) throws BitBufferException
+    {
 
         // number of bits integer buffer needs to be shifted to the right in
         // order to reach the last bit in last byte
         int shiftBits;
         if (byteOrder == ByteOrder.BigEndian)
-            shiftBits = (int)(7 - ((nrBits + bitPos + 7) % 8));
-        else
-            shiftBits = (int)(bitPos % 8);
-
+        {
+            shiftBits = (int) (7 - ((nrBits + bitPos + 7) % 8));
+        } else
+        {
+            shiftBits = (int) (bitPos % 8);
+        }
 
         numberBuf = numberBuf.shiftRight(shiftBits);
 
@@ -362,18 +411,23 @@ public class DefaultBitBuffer implements BitBuffer {
      * @return value of all read bytes, containing specified bits
      */
     private int getNumberBufAsInt(ByteOrder byteOrder, int nrReadBytes,
-                                  int firstBytePos) {
+                                  int firstBytePos)
+    {
 
         int result = 0;
         int bytePortion = 0;
-        for (int i = 0; i < nrReadBytes; i++) {
+        for (int i = 0; i < nrReadBytes; i++)
+        {
             bytePortion = 0xFF & (byteBuffer.get(firstBytePos++));
 
             if (byteOrder == ByteOrder.LittleEndian)
-                // reshift bytes
+            // reshift bytes
+            {
                 result = result | bytePortion << (i << 3);
-            else
+            } else
+            {
                 result = bytePortion << ((nrReadBytes - i - 1) << 3) | result;
+            }
         }
 
         return result;
@@ -388,22 +442,25 @@ public class DefaultBitBuffer implements BitBuffer {
      * @return value of all read bytes, containing specified bits
      */
     private BigInteger getNumberBufAsLong(ByteOrder byteOrder, int nrReadBytes,
-                                    int firstBytePos) {
+                                          int firstBytePos)
+    {
         BigInteger result = BigInteger.valueOf(0);
         long bytePortion = 0;
-        for (int i = 0; i < nrReadBytes; i++) {
+        for (int i = 0; i < nrReadBytes; i++)
+        {
             bytePortion = 0xFF & (byteBuffer.get(firstBytePos++));
 
             //Need to use BigInteger because it is possible that a 64-bit field spans 9 bytes
-            if (byteOrder == ByteOrder.LittleEndian) {
+            if (byteOrder == ByteOrder.LittleEndian)
+            {
                 BigInteger shifter = BigInteger.valueOf(2);
-                shifter = shifter.pow(i*8);
+                shifter = shifter.pow(i * 8);
 
                 BigInteger bytePortionBigInt = BigInteger.valueOf(bytePortion);
                 bytePortionBigInt = bytePortionBigInt.multiply(shifter);
                 result = result.add(bytePortionBigInt);
-            }
-            else {
+            } else
+            {
                 BigInteger shifter = BigInteger.valueOf(2);
                 shifter = shifter.pow(8);
                 BigInteger bytePortionBigInt = BigInteger.valueOf(bytePortion);
@@ -423,29 +480,39 @@ public class DefaultBitBuffer implements BitBuffer {
      * @param nrBits        number of bits to read
      * @param maxNrBitsRead maximum number of bits allowed to read, based on the method return type
      */
-    private void validateInputParams(long bitPos, int nrBits, int maxNrBitsRead) {
+    private void validateInputParams(long bitPos, int nrBits, int maxNrBitsRead)
+    {
 
-        if (nrBits < 1) {
+        if (nrBits < 1)
+        {
             throw new BitBufferException("Number of bits to read (" + nrBits
                     + ") should greater than zero.");
         }
 
         if (bitPos < 0)
+        {
             throw new BitBufferException("Bit position (" + bitPos
                     + ") should be positive.");
+        }
 
         if (maxNrBitsRead != 1 && maxNrBitsRead != 8 && maxNrBitsRead != 16
                 && maxNrBitsRead != 32 && maxNrBitsRead != 64)
+        {
             throw new BitBufferException("Max number of bits to read ("
                     + maxNrBitsRead + ") should be either 1, 8, 16, 32 or 64.");
+        }
 
         if (nrBits > maxNrBitsRead)
+        {
             throw new BitBufferException("Cannot read " + nrBits
                     + " bits using " + maxNrBitsRead
                     + " bit long numberBuf (bitPos=" + bitPos + ").");
+        }
 
         if (bitPos + nrBits > bitBufBitSize)
+        {
             throw new BitBufferUnderflowException(bitPos, nrBits);
+        }
 
         // if (nrBits <= maxNrBitsRead / 2 && log.isWarnEnabled())
         // log.warn("It is not recommended to read " + nrBits + " using "
@@ -460,7 +527,8 @@ public class DefaultBitBuffer implements BitBuffer {
      * @param nrBits number of bits to read
      * @return integer value of the mask
      */
-    private static int getMaskAsInt(int nrBits) {
+    private static int getMaskAsInt(int nrBits)
+    {
         return 0xFFFFFFFF >>> (32 - nrBits);
     }
 
@@ -470,7 +538,8 @@ public class DefaultBitBuffer implements BitBuffer {
      * @param nrBits number of bits to read
      * @return long value of the mask
      */
-    private static long getMaskAsLong(int nrBits) {
+    private static long getMaskAsLong(int nrBits)
+    {
         return 0xFFFFFFFFFFFFFFFFL >>> (64 - nrBits);
     }
 
@@ -484,7 +553,8 @@ public class DefaultBitBuffer implements BitBuffer {
      * @return the integer value represented by the given bits
      */
     private int getResultAsInt(long bitPos, int nrBits, ByteOrder byteOrder,
-                               int maxNrBitsRead) {
+                               int maxNrBitsRead)
+    {
 
         // check if input params are correct otherwise throw BitBufferException
         validateInputParams(bitPos, nrBits, maxNrBitsRead);
@@ -521,7 +591,8 @@ public class DefaultBitBuffer implements BitBuffer {
      * @return the long value represented by the given bits
      */
     private long getResultAsLong(long bitPos, int nrBits, ByteOrder byteOrder,
-                                 int maxNrBitsRead) {
+                                 int maxNrBitsRead)
+    {
 
         // check if input params are correct otherwise throw BitBufferException
         validateInputParams(bitPos, nrBits, maxNrBitsRead);
@@ -553,13 +624,15 @@ public class DefaultBitBuffer implements BitBuffer {
      *
      * @return Returns the inputByteBuf.
      */
-    protected ByteBuffer getInputByteBuf() {
+    protected ByteBuffer getInputByteBuf()
+    {
         return byteBuffer;
     }
 
     // JavaDoc inherited
 
-    public BitBuffer slice(long length) {
+    public BitBuffer slice(long length)
+    {
         BitBuffer result = new SlicedBitBuffer(duplicate(), length);
         setBitPos(getBitPos() + length);
         return result;
@@ -567,15 +640,18 @@ public class DefaultBitBuffer implements BitBuffer {
 
     // JavaDoc inherited
 
-    public BitBuffer duplicate() {
+    public BitBuffer duplicate()
+    {
         return new DefaultBitBuffer(byteBuffer.duplicate(), bitBufBitSize,
                 bitPos);
     }
 
     public ByteBuffer readAsByteBuffer(int length)
-            throws BitBufferUnderflowException {
+            throws BitBufferUnderflowException
+    {
 
-        if ((this.bitPos % 8) != 0) {
+        if ((this.bitPos % 8) != 0)
+        {
             throw new BitBufferException(
                     "8-bit alignment exception. Bit position (" + bitPos
                             + ") should be 8-bit aligned");
@@ -583,7 +659,8 @@ public class DefaultBitBuffer implements BitBuffer {
 
         int bitsToRead = length << 3; // == (length * 8)
 
-        if (getBitPos() + bitsToRead > getBitBufBitSize()) {
+        if (getBitPos() + bitsToRead > getBitBufBitSize())
+        {
             throw new BitBufferUnderflowException(getBitPos(), bitsToRead);
         }
 
@@ -600,8 +677,9 @@ public class DefaultBitBuffer implements BitBuffer {
         return slicedByteBuffer;
     }
 
-    public ByteBuffer readAsByteBuffer() {
-        ByteBuffer buffer =  byteBuffer.duplicate();
+    public ByteBuffer readAsByteBuffer()
+    {
+        ByteBuffer buffer = byteBuffer.duplicate();
         buffer.rewind();
         return buffer;
     }
@@ -617,7 +695,8 @@ public class DefaultBitBuffer implements BitBuffer {
      * @return Returns the sliced {@link ByteBuffer}. Original buffer is left in its original state;
      */
     private ByteBuffer slice(ByteBuffer byteBuffer, int slicePosition,
-                             int length) {
+                             int length)
+    {
 
         int currentBufferPosition = this.byteBuffer.position();
         int currentBufferLimit = this.byteBuffer.limit();
@@ -626,15 +705,15 @@ public class DefaultBitBuffer implements BitBuffer {
 
         ByteBuffer slicedByteBuffer = this.byteBuffer.slice();
 
-		// Revert the buffer in its original state
-		this.byteBuffer.position(currentBufferPosition).limit(
-				currentBufferLimit);
+        // Revert the buffer in its original state
+        this.byteBuffer.position(currentBufferPosition).limit(
+                currentBufferLimit);
 
-		return slicedByteBuffer;
-	}
-
-    public long getActualBitPos() {
-        return bitPos;
+        return slicedByteBuffer;
     }
 
+    public long getActualBitPos()
+    {
+        return bitPos;
+    }
 }

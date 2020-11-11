@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -35,7 +35,8 @@ import org.codehaus.preon.ResolverContext;
  *
  * @author Wilfred Springer (wis)
  */
-public class OuterReference implements Reference<Resolver> {
+public class OuterReference implements Reference<Resolver>
+{
 
     /**
      * The default name of referring to the outer context.
@@ -62,7 +63,8 @@ public class OuterReference implements Reference<Resolver> {
      * @see OuterReference#originalContext
      */
     public OuterReference(ResolverContext outerContext,
-                          ResolverContext originalContext) {
+                          ResolverContext originalContext)
+    {
         this.outerContext = outerContext;
         this.originalContext = originalContext;
     }
@@ -72,7 +74,8 @@ public class OuterReference implements Reference<Resolver> {
      * @see org.codehaus.preon.el.Reference#getType()
      */
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return Resolver.class;
     }
 
@@ -81,7 +84,8 @@ public class OuterReference implements Reference<Resolver> {
      * @see org.codehaus.preon.el.Reference#isAssignableTo(java.lang.Class)
      */
 
-    public boolean isAssignableTo(Class<?> type) {
+    public boolean isAssignableTo(Class<?> type)
+    {
         return type.isAssignableFrom(getType());
     }
 
@@ -90,7 +94,8 @@ public class OuterReference implements Reference<Resolver> {
      * @see org.codehaus.preon.el.Reference#resolve(java.lang.Object)
      */
 
-    public Object resolve(Resolver resolver) {
+    public Object resolve(Resolver resolver)
+    {
         throw new IllegalStateException("Never expected to be called.");
     }
 
@@ -100,7 +105,8 @@ public class OuterReference implements Reference<Resolver> {
      */
 
     public Reference<Resolver> selectAttribute(String name)
-            throws BindingException {
+            throws BindingException
+    {
         Reference<Resolver> actual = outerContext.selectAttribute(name);
         return new OuterResolvingReference(DEFAULT_OUTER_NAME, originalContext,
                 actual, outerContext);
@@ -111,7 +117,8 @@ public class OuterReference implements Reference<Resolver> {
      * @see org.codehaus.preon.el.ReferenceContext#selectItem(java.lang.String)
      */
 
-    public Reference<Resolver> selectItem(String index) throws BindingException {
+    public Reference<Resolver> selectItem(String index) throws BindingException
+    {
         Reference<Resolver> actual = outerContext.selectItem(index);
         return new OuterResolvingReference(DEFAULT_OUTER_NAME, originalContext,
                 actual, null);
@@ -123,7 +130,8 @@ public class OuterReference implements Reference<Resolver> {
      */
 
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
-            throws BindingException {
+            throws BindingException
+    {
         Reference<Resolver> actual = outerContext.selectItem(index);
         return new OuterResolvingReference(DEFAULT_OUTER_NAME, originalContext,
                 actual, null);
@@ -134,7 +142,8 @@ public class OuterReference implements Reference<Resolver> {
      * @see org.codehaus.preon.el.Descriptive#document(org.codehaus.preon.el.Document)
      */
 
-    public void document(Document target) {
+    public void document(Document target)
+    {
         target.text("the ");
         outerContext.document(target);
         target.text(" containing the ");
@@ -146,22 +155,25 @@ public class OuterReference implements Reference<Resolver> {
      * @see org.codehaus.preon.el.Reference#getReferenceContext()
      */
 
-    public ReferenceContext<Resolver> getReferenceContext() {
+    public ReferenceContext<Resolver> getReferenceContext()
+    {
         return outerContext;
     }
 
-    public Reference<Resolver> narrow(Class<?> type) {
+    public Reference<Resolver> narrow(Class<?> type)
+    {
         return null;
     }
 
-    public boolean isBasedOn(ReferenceContext<Resolver> context) {
+    public boolean isBasedOn(ReferenceContext<Resolver> context)
+    {
         return outerContext.equals(context);
     }
 
-    public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext)
+    {
         // Since instance of this class are taken out of the reference path, this operation is never expected to be
         // invoked on an instance of this class.
         throw new UnsupportedOperationException();
     }
-
 }

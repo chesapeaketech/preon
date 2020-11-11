@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,6 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.el.Expression;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
@@ -37,6 +36,7 @@ import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.channel.BoundedBitChannel;
 import org.codehaus.preon.descriptor.Documenters;
+import org.codehaus.preon.el.Expression;
 
 import java.io.IOException;
 
@@ -46,7 +46,8 @@ import java.io.IOException;
  *
  * @param <T> The type of object expected to be returned by this {@link Codec}.
  */
-class SlicingCodec<T> implements Codec<T> {
+class SlicingCodec<T> implements Codec<T>
+{
 
     private final Expression<Integer, Resolver> sizeExpr;
 
@@ -58,41 +59,52 @@ class SlicingCodec<T> implements Codec<T> {
      * @param wrapped  The {@link Codec} to be wrapped.
      * @param sizeExpr The size of the slice, expressed in bits, as a Limbo expression.
      */
-    public SlicingCodec(Codec<T> wrapped, Expression<Integer, Resolver> sizeExpr) {
+    public SlicingCodec(Codec<T> wrapped, Expression<Integer, Resolver> sizeExpr)
+    {
         this.sizeExpr = sizeExpr;
         this.wrapped = wrapped;
     }
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-            throws DecodingException {
+            throws DecodingException
+    {
         BitBuffer slice = buffer
                 .slice(sizeExpr.eval(resolver));
         return wrapped.decode(slice, resolver, builder);
     }
 
-    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException
+    {
         wrapped.encode(value, new BoundedBitChannel(channel, sizeExpr.eval(resolver)), resolver);
     }
 
-    public Class<?>[] getTypes() {
+    public Class<?>[] getTypes()
+    {
         return wrapped.getTypes();
     }
 
-    public Expression<Integer, Resolver> getSize() {
+    public Expression<Integer, Resolver> getSize()
+    {
         return sizeExpr;
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return wrapped.getType();
     }
 
-    public CodecDescriptor getCodecDescriptor() {
-        return new CodecDescriptor() {
+    public CodecDescriptor getCodecDescriptor()
+    {
+        return new CodecDescriptor()
+        {
 
             public <C extends SimpleContents<?>> Documenter<C> details(
-                    final String bufferReference) {
-                return new Documenter<C>() {
-                    public void document(C target) {
+                    final String bufferReference)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target.para().text("The format reserves only ")
                                 .document(
                                         Documenters
@@ -108,23 +120,26 @@ class SlicingCodec<T> implements Codec<T> {
                 };
             }
 
-            public String getTitle() {
+            public String getTitle()
+            {
                 return null;
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(
-                    Adjective adjective, boolean startWithCapital) {
+                    Adjective adjective, boolean startWithCapital)
+            {
                 return wrapped.getCodecDescriptor().reference(adjective, false);
             }
 
-            public boolean requiresDedicatedSection() {
+            public boolean requiresDedicatedSection()
+            {
                 return false;
             }
 
-            public <C extends ParaContents<?>> Documenter<C> summary() {
+            public <C extends ParaContents<?>> Documenter<C> summary()
+            {
                 return wrapped.getCodecDescriptor().summary();
             }
-
         };
     }
 }

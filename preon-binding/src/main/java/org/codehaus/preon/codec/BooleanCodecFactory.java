@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,27 +24,33 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Expressions;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
-
 
 /**
  * A {@link CodecFactory} capable of creating {@link Codec Codecs} that deal with booleans.
  *
  * @author Wilfred Springer
  */
-public class BooleanCodecFactory implements CodecFactory {
+public class BooleanCodecFactory implements CodecFactory
+{
 
     /*
      * (non-Javadoc)
@@ -53,100 +59,124 @@ public class BooleanCodecFactory implements CodecFactory {
 
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-                               ResolverContext context) {
-        if (metadata == null || metadata.isAnnotationPresent(Bound.class)) {
-            if (boolean.class.equals(type)) {
-            	  ByteOrder endian = ByteOrder.BigEndian;
+                               ResolverContext context)
+    {
+        if (metadata == null || metadata.isAnnotationPresent(Bound.class))
+        {
+            if (boolean.class.equals(type))
+            {
+                ByteOrder endian = ByteOrder.BigEndian;
                 return (Codec<T>) new BooleanCodec(true, endian);
-            } else if (Boolean.class.equals(type)) {
-            	  ByteOrder endian = ByteOrder.BigEndian;
+            } else if (Boolean.class.equals(type))
+            {
+                ByteOrder endian = ByteOrder.BigEndian;
                 return (Codec<T>) new BooleanCodec(false, endian);
-            } else {
+            } else
+            {
                 return null;
             }
-        } else {
+        } else
+        {
             return null;
         }
     }
 
-    private static class BooleanCodec implements Codec<Boolean> {
+    private static class BooleanCodec implements Codec<Boolean>
+    {
 
         private boolean primitive;
 
-    	  protected ByteOrder byteOrder;
+        protected ByteOrder byteOrder;
 
-        public BooleanCodec(boolean primitive, ByteOrder byteOrder) {
+        public BooleanCodec(boolean primitive, ByteOrder byteOrder)
+        {
             this.primitive = primitive;
             this.byteOrder = byteOrder;
         }
 
         public Boolean decode(BitBuffer buffer, Resolver resolver,
-                              Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException
+        {
             return buffer.readAsBoolean();
         }
 
-
-        public void encode(Boolean value, BitChannel channel, Resolver resolver) throws IOException {
+        public void encode(Boolean value, BitChannel channel, Resolver resolver) throws IOException
+        {
             channel.write(value, byteOrder);
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
+            return new CodecDescriptor()
+            {
 
                 public <T extends SimpleContents<?>> Documenter<T> details(
-                        String bufferReference) {
-                    return new Documenter<T>() {
-                        public void document(T target) {
+                        String bufferReference)
+                {
+                    return new Documenter<T>()
+                    {
+                        public void document(T target)
+                        {
                         }
                     };
                 }
 
-                public String getTitle() {
+                public String getTitle()
+                {
                     return null;
                 }
 
                 public <T extends ParaContents<?>> Documenter<T> reference(
-                        final Adjective adjective, boolean startWithCapital) {
-                    return new Documenter<T>() {
-                        public void document(T target) {
+                        final Adjective adjective, boolean startWithCapital)
+                {
+                    return new Documenter<T>()
+                    {
+                        public void document(T target)
+                        {
                             target.text(adjective == Adjective.A ? "a " : "the ");
                             target.text("boolean value");
                         }
                     };
                 }
 
-                public boolean requiresDedicatedSection() {
+                public boolean requiresDedicatedSection()
+                {
                     return false;
                 }
 
-                public <T extends ParaContents<?>> Documenter<T> summary() {
-                    return new Documenter<T>() {
-                        public void document(T target) {
+                public <T extends ParaContents<?>> Documenter<T> summary()
+                {
+                    return new Documenter<T>()
+                    {
+                        public void document(T target)
+                        {
                             target.text("A one-bit representation of a boolean value: ");
                             target.text("1 = true; 0 = false.");
                         }
                     };
                 }
-
             };
         }
 
-        public Class<?>[] getTypes() {
-            if (primitive) {
+        public Class<?>[] getTypes()
+        {
+            if (primitive)
+            {
                 return new Class[]{boolean.class};
-            } else {
+            } else
+            {
                 return new Class[]{Boolean.class};
             }
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return Expressions.createInteger(1, Resolver.class);
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return Boolean.class;
         }
-
     }
-
 }

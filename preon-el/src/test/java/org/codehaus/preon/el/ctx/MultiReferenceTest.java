@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,26 +24,27 @@
  */
 package org.codehaus.preon.el.ctx;
 
-import static org.junit.Assert.*;
 import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Reference;
 import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.el.util.StringBuilderDocument;
-
-import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 /**
  * A collection of tests for the {@link MultiReference}.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
+ *
  */
-public class MultiReferenceTest {
+public class MultiReferenceTest
+{
 
     private Reference reference1;
 
@@ -54,7 +55,8 @@ public class MultiReferenceTest {
     private ReferenceContext context;
 
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         this.reference1 = createMock(Reference.class);
         this.reference2 = createMock(Reference.class);
         this.reference3 = createMock(Reference.class);
@@ -62,7 +64,8 @@ public class MultiReferenceTest {
     }
 
     @Test
-    public void testResolution() {
+    public void testResolution()
+    {
         Object runtimeContext = new Object();
         Object result = new Object();
         expect(reference1.getReferenceContext()).andReturn(context);
@@ -77,7 +80,8 @@ public class MultiReferenceTest {
     }
 
     @Test
-    public void testResolution2ndAttempt() {
+    public void testResolution2ndAttempt()
+    {
         Object runtimeContext = new Object();
         Object result = new Object();
         expect(reference1.getReferenceContext()).andReturn(context);
@@ -92,8 +96,9 @@ public class MultiReferenceTest {
         verify(reference1, reference2);
     }
 
-    @Test(expected=BindingException.class)
-    public void testFailedResolution() {
+    @Test(expected = BindingException.class)
+    public void testFailedResolution()
+    {
         Object runtimeContext = new Object();
         Object result = new Object();
         expect(reference1.getReferenceContext()).andReturn(context);
@@ -104,15 +109,18 @@ public class MultiReferenceTest {
         expect(reference2.resolve(runtimeContext)).andThrow(new BindingException("Not found."));
         replay(reference1, reference2);
         MultiReference multi = new MultiReference(reference1, reference2);
-        try {
+        try
+        {
             multi.resolve(runtimeContext);
-        } finally {
+        } finally
+        {
             verify(reference1, reference2);
         }
     }
 
     @Test
-    public void testSelectIndex() {
+    public void testSelectIndex()
+    {
         String index = "pi";
         Reference selected1 = createMock(Reference.class);
         Reference selected2 = createMock(Reference.class);
@@ -133,7 +141,8 @@ public class MultiReferenceTest {
     }
 
     @Test
-    public void testSelectProperty() {
+    public void testSelectProperty()
+    {
         String propertyName = "pi";
         Reference selected1 = createMock(Reference.class);
         Reference selected2 = createMock(Reference.class);
@@ -154,7 +163,8 @@ public class MultiReferenceTest {
     }
 
     @Test
-    public void testSelectNonExistingProperty() {
+    public void testSelectNonExistingProperty()
+    {
         StringBuilder builder = new StringBuilder();
         Document document = new StringBuilderDocument(builder);
         String propertyName = "pi";
@@ -178,7 +188,8 @@ public class MultiReferenceTest {
     }
 
     @Test
-    public void testNarrow() {
+    public void testNarrow()
+    {
         StringBuilder builder = new StringBuilder();
         Document document = new StringBuilderDocument(builder);
         String propertyName = "pi";
@@ -195,7 +206,8 @@ public class MultiReferenceTest {
     }
 
     @Test
-    public void testNarrowPartly() {
+    public void testNarrowPartly()
+    {
         StringBuilder builder = new StringBuilder();
         Document document = new StringBuilderDocument(builder);
         String propertyName = "pi";
@@ -212,7 +224,8 @@ public class MultiReferenceTest {
     }
 
     @Test
-    public void testDocumentation() {
+    public void testDocumentation()
+    {
         StringBuilderDocument document = new StringBuilderDocument();
         expect(reference1.getReferenceContext()).andReturn(context);
         expect(reference2.getReferenceContext()).andReturn(context);
@@ -229,5 +242,4 @@ public class MultiReferenceTest {
         System.out.println(document.toString());
         verify(reference1, reference2, reference3);
     }
-
 }

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -38,14 +38,14 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MapCodecFactoryTest {
+public class MapCodecFactoryTest
+{
 
     @Mock
     private AnnotatedElement annotations;
@@ -70,9 +70,10 @@ public class MapCodecFactoryTest {
 
     @Mock
     private Choices.Choice secondChoice;
-    
+
     @Test
-    public void shouldReturnCodecForObjectAnnotatedWithSingleType() {
+    public void shouldReturnCodecForObjectAnnotatedWithSingleType()
+    {
         when(annotations.getAnnotation(BoundList.class)).thenReturn(boundList);
         when(delegate.create(annotations, List.class, context)).thenReturn(codec);
         when(boundList.type()).thenReturn((Class) Map.Entry.class);
@@ -87,10 +88,11 @@ public class MapCodecFactoryTest {
     }
 
     @Test
-    public void shouldReturnCodecForObjectAnnotatedWithMultipleTypes() {
+    public void shouldReturnCodecForObjectAnnotatedWithMultipleTypes()
+    {
         when(annotations.getAnnotation(BoundList.class)).thenReturn(boundList);
         when(delegate.create(annotations, List.class, context)).thenReturn(codec);
-        when(boundList.types()).thenReturn(new Class<?>[] {
+        when(boundList.types()).thenReturn(new Class<?>[]{
                 Map.Entry.class
         });
 
@@ -104,11 +106,12 @@ public class MapCodecFactoryTest {
     }
 
     @Test
-    public void shouldReturnCodecForObjectAnnotatedWithChoices() {
+    public void shouldReturnCodecForObjectAnnotatedWithChoices()
+    {
         when(annotations.getAnnotation(BoundList.class)).thenReturn(boundList);
         when(delegate.create(annotations, List.class, context)).thenReturn(codec);
         when(boundList.selectFrom()).thenReturn(choices);
-        when(choices.alternatives()).thenReturn(new Choices.Choice[] { firstChoice, secondChoice });
+        when(choices.alternatives()).thenReturn(new Choices.Choice[]{firstChoice, secondChoice});
         when(firstChoice.type()).thenReturn((Class) Map.Entry.class);
         when(secondChoice.type()).thenReturn((Class) Map.Entry.class);
 
@@ -122,10 +125,11 @@ public class MapCodecFactoryTest {
     }
 
     @Test
-    public void shouldNotReturnCodecForObjectAnnotatedWithChoicesOneOfWhichNotEntry() {
+    public void shouldNotReturnCodecForObjectAnnotatedWithChoicesOneOfWhichNotEntry()
+    {
         when(annotations.getAnnotation(BoundList.class)).thenReturn(boundList);
         when(boundList.selectFrom()).thenReturn(choices);
-        when(choices.alternatives()).thenReturn(new Choices.Choice[] { firstChoice, secondChoice });
+        when(choices.alternatives()).thenReturn(new Choices.Choice[]{firstChoice, secondChoice});
         when(firstChoice.type()).thenReturn((Class) Map.Entry.class);
         when(secondChoice.type()).thenReturn((Class) String.class);
 
@@ -136,5 +140,4 @@ public class MapCodecFactoryTest {
         verify(annotations).getAnnotation(BoundList.class);
         verifyNoMoreInteractions(annotations, delegate, codec);
     }
-
 }

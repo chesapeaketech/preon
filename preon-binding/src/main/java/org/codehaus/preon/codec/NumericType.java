@@ -1,184 +1,224 @@
 package org.codehaus.preon.codec;
 
-import java.io.IOException;
-
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
 
-public enum NumericType implements INumericType {
+import java.io.IOException;
 
-    Float {
-        public int getDefaultSize() {
-            return 32;
-        }
+public enum NumericType implements INumericType
+{
 
-        public Float decode(BitBuffer buffer, int size, ByteOrder endian) {
-            int value = buffer.readAsInt(size, endian);
-            return java.lang.Float.intBitsToFloat(value);
-        }
+    Float
+            {
+                public int getDefaultSize()
+                {
+                    return 32;
+                }
 
-        //TODO handle io exceptions on encode
-        public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-            channel.write(size, (Float) value, endian);
-        }
+                public Float decode(BitBuffer buffer, int size, ByteOrder endian)
+                {
+                    int value = buffer.readAsInt(size, endian);
+                    return java.lang.Float.intBitsToFloat(value);
+                }
 
-        public Class<?> getType() {
-            return Float.class;
-        }
+                //TODO handle io exceptions on encode
+                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+                {
+                    channel.write(size, (Float) value, endian);
+                }
 
-		@Override
-		public Class<?> getPrimitiveType() {
-			return java.lang.Float.TYPE;
-		}
+                public Class<?> getType()
+                {
+                    return Float.class;
+                }
 
-        @Override
-        public Class<?>[] getNumericTypes() {
-            return new Class<?>[]{getType()};
-        }
-    },
+                @Override
+                public Class<?> getPrimitiveType()
+                {
+                    return java.lang.Float.TYPE;
+                }
 
-    Double {
+                @Override
+                public Class<?>[] getNumericTypes()
+                {
+                    return new Class<?>[]{getType()};
+                }
+            },
 
-        public int getDefaultSize() {
-            return 64;
-        }
+    Double
+            {
+                public int getDefaultSize()
+                {
+                    return 64;
+                }
 
-        public Double decode(BitBuffer buffer, int size, ByteOrder endian) {
-            return java.lang.Double.longBitsToDouble(buffer.readAsLong(
-                    size, endian));
-        }
+                public Double decode(BitBuffer buffer, int size, ByteOrder endian)
+                {
+                    return java.lang.Double.longBitsToDouble(buffer.readAsLong(
+                            size, endian));
+                }
 
-        public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-            channel.write(size, (Double) value, endian);
-        }
+                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+                {
+                    channel.write(size, (Double) value, endian);
+                }
 
-        public Class<?> getType() {
-            return Double.class;
-        }
+                public Class<?> getType()
+                {
+                    return Double.class;
+                }
 
-		@Override
-		public Class<?> getPrimitiveType() {
-			return java.lang.Double.TYPE;
-		}
+                @Override
+                public Class<?> getPrimitiveType()
+                {
+                    return java.lang.Double.TYPE;
+                }
 
-        @Override
-        public Class<?>[] getNumericTypes() {
-            return new Class<?>[]{getType()};
-        }
-    },
+                @Override
+                public Class<?>[] getNumericTypes()
+                {
+                    return new Class<?>[]{getType()};
+                }
+            },
 
-    Integer {
-        public int getDefaultSize() {
-            return 32;
-        }
+    Integer
+            {
+                public int getDefaultSize()
+                {
+                    return 32;
+                }
 
-        public Integer decode(BitBuffer buffer, int size, ByteOrder endian) {
-            return buffer.readAsInt(size, endian);
-        }
+                public Integer decode(BitBuffer buffer, int size, ByteOrder endian)
+                {
+                    return buffer.readAsInt(size, endian);
+                }
 
-        public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-            channel.write(size, (Integer) value, endian);
-        }
+                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+                {
+                    channel.write(size, (Integer) value, endian);
+                }
 
-        public Class<?> getType() {
-            return Integer.class;
-        }
+                public Class<?> getType()
+                {
+                    return Integer.class;
+                }
 
-		@Override
-		public Class<?> getPrimitiveType() {
-			return java.lang.Integer.TYPE;
-		}
+                @Override
+                public Class<?> getPrimitiveType()
+                {
+                    return java.lang.Integer.TYPE;
+                }
 
-        @Override
-        public Class<?>[] getNumericTypes() {
-            return new Class<?>[]{getType()};
-        }
-    },
+                @Override
+                public Class<?>[] getNumericTypes()
+                {
+                    return new Class<?>[]{getType()};
+                }
+            },
 
-    Long {
-        public int getDefaultSize() {
-            return 64;
-        }
+    Long
+            {
+                public int getDefaultSize()
+                {
+                    return 64;
+                }
 
-        public Long decode(BitBuffer buffer, int size, ByteOrder endian) {
-            return buffer.readAsLong(size, endian);
-        }
+                public Long decode(BitBuffer buffer, int size, ByteOrder endian)
+                {
+                    return buffer.readAsLong(size, endian);
+                }
 
-        public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-            channel.write(size, (Long) value, endian);
-        }
+                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+                {
+                    channel.write(size, (Long) value, endian);
+                }
 
-        public Class<?> getType() {
-            return Long.class;
-        }
+                public Class<?> getType()
+                {
+                    return Long.class;
+                }
 
-		@Override
-		public Class<?> getPrimitiveType() {
-			return java.lang.Long.TYPE;
-		}
+                @Override
+                public Class<?> getPrimitiveType()
+                {
+                    return java.lang.Long.TYPE;
+                }
 
-        @Override
-        public Class<?>[] getNumericTypes() {
-            return new Class<?>[]{getType()};
-        }
-    },
+                @Override
+                public Class<?>[] getNumericTypes()
+                {
+                    return new Class<?>[]{getType()};
+                }
+            },
 
-    Short {
-        public int getDefaultSize() {
-            return 16;
-        }
+    Short
+            {
+                public int getDefaultSize()
+                {
+                    return 16;
+                }
 
-        public Short decode(BitBuffer buffer, int size, ByteOrder endian) {
-            return buffer.readAsShort(size, endian);
-        }
+                public Short decode(BitBuffer buffer, int size, ByteOrder endian)
+                {
+                    return buffer.readAsShort(size, endian);
+                }
 
-        public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-            channel.write(size, (Short) value, endian);
-        }
+                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+                {
+                    channel.write(size, (Short) value, endian);
+                }
 
-        public Class<?> getType() {
-            return Short.class;
-        }
+                public Class<?> getType()
+                {
+                    return Short.class;
+                }
 
-		@Override
-		public Class<?> getPrimitiveType() {
-			return java.lang.Short.TYPE;
-		}
+                @Override
+                public Class<?> getPrimitiveType()
+                {
+                    return java.lang.Short.TYPE;
+                }
 
-        @Override
-        public Class<?>[] getNumericTypes() {
-            return new Class<?>[]{getType()};
-        }
-    },
+                @Override
+                public Class<?>[] getNumericTypes()
+                {
+                    return new Class<?>[]{getType()};
+                }
+            },
 
-    Byte {
-        public int getDefaultSize() {
-            return 8;
-        }
+    Byte
+            {
+                public int getDefaultSize()
+                {
+                    return 8;
+                }
 
-        public Byte decode(BitBuffer buffer, int size, ByteOrder endian) {
-            return buffer.readAsByte(size, endian);
-        }
+                public Byte decode(BitBuffer buffer, int size, ByteOrder endian)
+                {
+                    return buffer.readAsByte(size, endian);
+                }
 
-        public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-            channel.write(size, (Byte) value);
-        }
+                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+                {
+                    channel.write(size, (Byte) value);
+                }
 
-        public Class<?> getType() {
-            return Byte.class;
-        }
+                public Class<?> getType()
+                {
+                    return Byte.class;
+                }
 
-		@Override
-		public Class<?> getPrimitiveType() {
-			return java.lang.Byte.TYPE;
-		}
+                @Override
+                public Class<?> getPrimitiveType()
+                {
+                    return java.lang.Byte.TYPE;
+                }
 
-        @Override
-        public Class<?>[] getNumericTypes() {
-            return new Class<?>[]{getType()};
-        }
-
-    };
-
+                @Override
+                public Class<?>[] getNumericTypes()
+                {
+                    return new Class<?>[]{getType()};
+                }
+            };
 }

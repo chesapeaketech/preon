@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -38,7 +38,8 @@ import org.codehaus.preon.ResolverContext;
  *
  * @author Wilfred Springer (wis)
  */
-public class OuterResolvingReference implements Reference<Resolver> {
+public class OuterResolvingReference implements Reference<Resolver>
+{
 
     /**
      * The name to use when resolving the <em>actual</em> {@link Resolver} we need to use, from the {@link Resolver}
@@ -69,7 +70,8 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * @param outerContext
      */
     public OuterResolvingReference(String outerName,
-                                   ResolverContext originalContext, Reference<Resolver> wrapped, ResolverContext outerContext) {
+                                   ResolverContext originalContext, Reference<Resolver> wrapped, ResolverContext outerContext)
+    {
         this.outerName = outerName;
         this.originalContext = originalContext;
         this.wrapped = wrapped;
@@ -78,47 +80,53 @@ public class OuterResolvingReference implements Reference<Resolver> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.el.Reference#getReferenceContext()
      */
 
-    public ReferenceContext<Resolver> getReferenceContext() {
+    public ReferenceContext<Resolver> getReferenceContext()
+    {
         return originalContext;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.el.Reference#getType()
      */
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return wrapped.getType();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.el.Reference#isAssignableTo(java.lang.Class)
      */
 
-    public boolean isAssignableTo(Class<?> type) {
+    public boolean isAssignableTo(Class<?> type)
+    {
         return wrapped.isAssignableTo(type);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.el.Reference#resolve(java.lang.Object)
      */
 
-    public Object resolve(Resolver resolver) {
+    public Object resolve(Resolver resolver)
+    {
         Object outerResolver = resolver.get(outerName);
-        if (outerResolver != null && outerResolver instanceof Resolver) {
+        if (outerResolver != null && outerResolver instanceof Resolver)
+        {
             Resolver originalResolver = resolver.getOriginalResolver();
             return wrapped.resolve(new OriginalReplacingResolver(
                     originalResolver, (Resolver) outerResolver));
-        } else {
+        } else
+        {
             throw new BindingException("Failed to resolve " + outerName
                     + " to a value of the proper type; got "
                     + (outerResolver == null ? outerResolver : outerResolver.getClass().getSimpleName()));
@@ -127,91 +135,104 @@ public class OuterResolvingReference implements Reference<Resolver> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.el.ReferenceContext#selectAttribute(java.lang.String)
      */
 
     public Reference<Resolver> selectAttribute(String name)
-            throws BindingException {
+            throws BindingException
+    {
         Reference<Resolver> actual = wrapped.selectAttribute(name);
         return new OuterResolvingReference(outerName, originalContext, actual, null);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.el.ReferenceContext#selectItem(java.lang.String)
      */
 
-    public Reference<Resolver> selectItem(String index) throws BindingException {
+    public Reference<Resolver> selectItem(String index) throws BindingException
+    {
         Reference<Resolver> actual = wrapped.selectItem(index);
         return new OuterResolvingReference(outerName, originalContext, actual, null);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.codehaus.preon.el.ReferenceContext#selectItem(org.codehaus.preon.el.Expression)
      */
 
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
-            throws BindingException {
+            throws BindingException
+    {
         Reference<Resolver> actual = wrapped.selectItem(index);
         return new OuterResolvingReference(outerName, originalContext, actual, null);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.el.Descriptive#document(org.codehaus.preon.el.Document)
      */
 
-    public void document(Document target) {
+    public void document(Document target)
+    {
         wrapped.document(target);
     }
 
-    private static class OriginalReplacingResolver implements Resolver {
+    private static class OriginalReplacingResolver implements Resolver
+    {
 
         private Resolver originalResolver;
         private Resolver currentResolver;
 
         public OriginalReplacingResolver(Resolver originalResolver,
-                                         Resolver currentResolver) {
+                                         Resolver currentResolver)
+        {
             this.currentResolver = currentResolver;
             this.originalResolver = originalResolver;
         }
 
-        public Object get(String name) throws BindingException {
+        public Object get(String name) throws BindingException
+        {
             return currentResolver.get(name);
         }
 
-        public Resolver getOriginalResolver() {
+        public Resolver getOriginalResolver()
+        {
             return originalResolver;
         }
-
     }
 
-    public Reference<Resolver> narrow(Class<?> type) {
+    public Reference<Resolver> narrow(Class<?> type)
+    {
         Reference<Resolver> narrowed = wrapped.narrow(type);
-        if (narrowed == null) {
+        if (narrowed == null)
+        {
             return this;
-        } else {
+        } else
+        {
             return new OuterResolvingReference(outerName, originalContext,
                     narrowed, null);
         }
     }
 
-    public boolean isBasedOn(ReferenceContext<Resolver> context) {
+    public boolean isBasedOn(ReferenceContext<Resolver> context)
+    {
         return this.wrapped.isBasedOn(context);
     }
 
-    public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
-        if (outerContext.equals(context)) {
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> context)
+    {
+        if (outerContext.equals(context))
+        {
             return wrapped;
-        } else {
+        } else
+        {
             return wrapped.rescope(context);
         }
     }
-
 }

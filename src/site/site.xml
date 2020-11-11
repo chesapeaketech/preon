@@ -1,30 +1,30 @@
 <?xml version="1.0"?>
 <project name="Preon">
-  <skin>
-    <groupId>org.codehaus.preon</groupId>
-    <artifactId>preon-skin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </skin>
+    <skin>
+        <groupId>org.codehaus.preon</groupId>
+        <artifactId>preon-skin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </skin>
 
-  <body>
+    <body>
 
-    <menu ref="parent" inherit="top" />
+        <menu ref="parent" inherit="top"/>
 
-    <menu name="Documentation" inherit="top">
-      <item name="Introduction"
-            href="http://www.scribd.com/doc/8128172/Preon-Introduction"/>
-      <item name="Under the Hood"
-            href="http://www.scribd.com/doc/7988375/Preon-Under-the-Hood"/>
-      <item name="J-Fall Slides"
-            href="http://www.slideshare.net/springerw/preon-jfall-2008-presentation-746831?type=powerpoint"/>
-      <item name="Getting Started"
-            href="getting-started.html"/>
-    </menu>
+        <menu name="Documentation" inherit="top">
+            <item name="Introduction"
+                  href="http://www.scribd.com/doc/8128172/Preon-Introduction"/>
+            <item name="Under the Hood"
+                  href="http://www.scribd.com/doc/7988375/Preon-Under-the-Hood"/>
+            <item name="J-Fall Slides"
+                  href="http://www.slideshare.net/springerw/preon-jfall-2008-presentation-746831?type=powerpoint"/>
+            <item name="Getting Started"
+                  href="getting-started.html"/>
+        </menu>
 
-    <menu name="Sub modules" ref="modules" inherit="bottom"/>
+        <menu name="Sub modules" ref="modules" inherit="bottom"/>
 
-    <menu name="Reports" ref="reports" inherit="bottom"/>
+        <menu name="Reports" ref="reports" inherit="bottom"/>
 
-  </body>
+    </body>
 
 </project>

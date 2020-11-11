@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,35 +24,38 @@
  */
 package org.codehaus.preon.util;
 
-import java.util.concurrent.ExecutionException;
-
-import org.codehaus.preon.util.LazyLoadingReference.Loader;
-
-
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import edu.umd.cs.mtc.MultithreadedTest;
 import edu.umd.cs.mtc.TestFramework;
 import junit.framework.TestCase;
+import org.codehaus.preon.util.LazyLoadingReference.Loader;
 
-public class LazyLoadingReferenceTest extends TestCase {
+import java.util.concurrent.ExecutionException;
 
-    public void testLoading() throws InterruptedException, ExecutionException {
+public class LazyLoadingReferenceTest extends TestCase
+{
+
+    public void testLoading() throws InterruptedException, ExecutionException
+    {
         LazyLoadingReference<String> reference = new LazyLoadingReference<String>(
-                new LazyLoadingReference.Loader<String>() {
+                new LazyLoadingReference.Loader<String>()
+                {
 
-                    public String load() {
+                    public String load()
+                    {
                         return "abc";
                     }
-
                 });
         assertEquals("abc", reference.get());
     }
 
-    public void testConcurrentAccess() throws Throwable {
+    public void testConcurrentAccess() throws Throwable
+    {
         TestFramework.runManyTimes(new ConcurrentTest(), 100);
     }
 
-    public static class ConcurrentTest extends MultithreadedTest {
+    public static class ConcurrentTest extends MultithreadedTest
+    {
 
         private LazyLoadingReference<Integer> reference;
 
@@ -60,32 +63,34 @@ public class LazyLoadingReferenceTest extends TestCase {
 
         private int i = 0;
 
-        public void initialize() {
+        public void initialize()
+        {
             reference = new LazyLoadingReference<Integer>(new IntegerLoader());
             counter.set(0);
         }
 
-        public void thread1() throws InterruptedException, ExecutionException {
+        public void thread1() throws InterruptedException, ExecutionException
+        {
             assertEquals(1, reference.get().intValue());
         }
 
-        public void thread2() throws InterruptedException, ExecutionException {
+        public void thread2() throws InterruptedException, ExecutionException
+        {
             assertEquals(1, reference.get().intValue());
         }
 
-        public void thread3() throws InterruptedException, ExecutionException {
+        public void thread3() throws InterruptedException, ExecutionException
+        {
             assertEquals(1, reference.get().intValue());
         }
 
-        private class IntegerLoader implements Loader<Integer> {
+        private class IntegerLoader implements Loader<Integer>
+        {
 
-            public Integer load() {
+            public Integer load()
+            {
                 return counter.addAndGet(1);
             }
-
         }
-
-
     }
-
 }

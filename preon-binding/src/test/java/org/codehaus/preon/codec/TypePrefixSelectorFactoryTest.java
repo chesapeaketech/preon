@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,13 +24,7 @@
  */
 package org.codehaus.preon.codec;
 
-import static org.easymock.EasyMock.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.codehaus.preon.buffer.ByteOrder;
-import org.codehaus.preon.el.Reference;
+import junit.framework.TestCase;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecSelector;
 import org.codehaus.preon.CodecSelectorFactory;
@@ -39,11 +33,16 @@ import org.codehaus.preon.Resolver;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.TypePrefix;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.ByteOrder;
+import org.codehaus.preon.el.Reference;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import junit.framework.TestCase;
+import static org.easymock.EasyMock.*;
 
-public class TypePrefixSelectorFactoryTest extends TestCase {
+public class TypePrefixSelectorFactoryTest extends TestCase
+{
 
     private ResolverContext context;
 
@@ -58,7 +57,8 @@ public class TypePrefixSelectorFactoryTest extends TestCase {
     private Reference<Resolver> reference;
 
     @SuppressWarnings("unchecked")
-    public void setUp() {
+    public void setUp()
+    {
         context = createMock(ResolverContext.class);
         codec1 = createMock(Codec.class);
         codec2 = createMock(Codec.class);
@@ -67,7 +67,8 @@ public class TypePrefixSelectorFactoryTest extends TestCase {
         reference = createMock(Reference.class);
     }
 
-    public void testSimplePrefixes() throws DecodingException {
+    public void testSimplePrefixes() throws DecodingException
+    {
         expect(codec1.getTypes()).andReturn(new Class<?>[]{Test1.class});
         expect(codec2.getTypes()).andReturn(new Class<?>[]{Test2.class});
         expect(bitBuffer.readAsLong(8, ByteOrder.LittleEndian)).andReturn(1L);
@@ -81,7 +82,8 @@ public class TypePrefixSelectorFactoryTest extends TestCase {
         verify(context, codec1, codec2, resolver, bitBuffer);
     }
 
-    public void testPrefixesWithReferences() throws DecodingException {
+    public void testPrefixesWithReferences() throws DecodingException
+    {
         expect(codec1.getTypes()).andReturn(new Class<?>[]{Test3.class});
         expect(codec2.getTypes()).andReturn(new Class<?>[]{Test4.class});
         expect(context.selectAttribute("p")).andReturn(reference);
@@ -99,23 +101,26 @@ public class TypePrefixSelectorFactoryTest extends TestCase {
     }
 
     @TypePrefix(value = "1", size = 8)
-    private static class Test1 {
+    private static class Test1
+    {
 
     }
 
     @TypePrefix(value = "2", size = 8)
-    private static class Test2 {
+    private static class Test2
+    {
 
     }
 
     @TypePrefix(value = "p + 3", size = 8)
-    private static class Test3 {
+    private static class Test3
+    {
 
     }
 
     @TypePrefix(value = "2", size = 8)
-    private static class Test4 {
+    private static class Test4
+    {
 
     }
-
 }

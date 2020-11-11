@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -34,24 +34,28 @@ import org.codehaus.preon.DecodingException;
 import java.io.File;
 import java.io.IOException;
 
+public class BitmapFileTest extends TestCase
+{
 
-public class BitmapFileTest extends TestCase {
-
-    public void setUp() {
+    public void setUp()
+    {
     }
 
     public void testHeightWidth() throws
-            DecodingException, IOException {
+            DecodingException, IOException
+    {
         Codec<BitmapFile> codec = Codecs.create(BitmapFile.class);
         File file = File.createTempFile("test", ".bmp");
         file.deleteOnExit();
         FileUtils.copyURLToFile(BitmapFileTest.class.getClassLoader().getResource("test.bmp"), file);
-        try {
+        try
+        {
             System.out.println(file.getAbsolutePath());
             BitmapFile bitmap = Codecs.decode(codec, file);
             assertEquals(48, bitmap.getHeight());
             assertEquals(48, bitmap.getWidth());
-            for (RgbQuad quad : bitmap.getColors()) {
+            for (RgbQuad quad : bitmap.getColors())
+            {
                 System.out.print("Color ");
                 System.out.print(quad.getRed());
                 System.out.print(", ");
@@ -65,9 +69,9 @@ public class BitmapFileTest extends TestCase {
             File document = new File(directory, "bitmap.html");
             System.out.println("Location of HTML document: " + document);
             Codecs.document(codec, DocumentType.Html, document);
-        } finally {
+        } finally
+        {
             file.delete();
         }
     }
-
 }

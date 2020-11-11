@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,73 +24,86 @@
  */
 package org.codehaus.preon.util;
 
-import org.codehaus.preon.el.Document;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.Footnote;
 import nl.flotsam.pecia.Para;
+import org.codehaus.preon.el.Document;
 
 @SuppressWarnings("unchecked")
-public class ParaContentsDocument implements Para {
+public class ParaContentsDocument implements Para
+{
 
     private Document document;
 
-    public ParaContentsDocument(Document document) {
+    public ParaContentsDocument(Document document)
+    {
         this.document = document;
     }
 
-    public Object end() {
+    public Object end()
+    {
         return null; // No relevant implementation
     }
 
-    public Object getParent() {
+    public Object getParent()
+    {
         return null; // No relevant implementation
     }
 
-    public Para code(String text) {
+    public Para code(String text)
+    {
         document.text(text);
         return this;
     }
 
-    public Para email(String email) {
+    public Para email(String email)
+    {
         document.text(email);
         return this;
     }
 
-    public Para emphasis(String text) {
+    public Para emphasis(String text)
+    {
         document.text(text);
         return this;
     }
 
-    public Footnote footnote() {
+    public Footnote footnote()
+    {
         return null;
     }
 
-    public Para link(Object id, String text) {
+    public Para link(Object id, String text)
+    {
         document.link(id, text);
         return this;
     }
 
-    public Para term(Object id, String text) {
+    public Para term(Object id, String text)
+    {
         document.text(text);
         return this;
     }
 
-    public Para text(String text) {
+    public Para text(String text)
+    {
         document.text(text);
         return this;
     }
 
-    public Para xref(String id) {
+    public Para xref(String id)
+    {
         return this;
     }
 
-    public Para footnote(String footnote) {
+    public Para footnote(String footnote)
+    {
         return this;
     }
 
-    public Para document(Documenter documenter) {
+    public Para document(Documenter documenter)
+    {
         documenter.document(this);
         return this;
     }
-
 }

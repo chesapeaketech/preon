@@ -1,22 +1,23 @@
 package org.codehaus.preon.codec;
 
-import java.io.IOException;
-
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
 
-public interface INumericType {
+import java.io.IOException;
 
-	int getDefaultSize();
+public interface INumericType
+{
 
-	Object decode(BitBuffer buffer, int size, ByteOrder endian);
+    int getDefaultSize();
 
-	void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException;
+    Object decode(BitBuffer buffer, int size, ByteOrder endian);
 
-	Class<?> getType();
-	
-	Class<?> getPrimitiveType();
+    void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException;
 
-	Class<?>[] getNumericTypes();
+    Class<?> getType();
+
+    Class<?> getPrimitiveType();
+
+    Class<?>[] getNumericTypes();
 }

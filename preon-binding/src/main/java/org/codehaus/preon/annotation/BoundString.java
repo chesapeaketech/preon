@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,8 +24,6 @@
  */
 package org.codehaus.preon.annotation;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -38,15 +36,16 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface BoundString {
+public @interface BoundString
+{
 
-    class Encoding {
-		/* This is a compatibility stub. Encodings are strings now, and this ensures
-		 * that anyone using the old syntax will get the same results.
-		 * */
+    class Encoding
+    {
+        /* This is a compatibility stub. Encodings are strings now, and this ensures
+         * that anyone using the old syntax will get the same results.
+         * */
         public static final String ASCII = "US-ASCII";
         public static final String ISO_8859_1 = "ISO-8859-1";
-
     }
 
     /**
@@ -68,44 +67,46 @@ public @interface BoundString {
      *
      * @return The String that needs to be matched. Or the empty String if matching is not important.
      */
-     
+
     String match() default "";
-    
+
     /* I've left this in, but I don't use this code anywhere in the actual
      * factory. It might be possible to alter the factories to use
-     * ByteConverters, by wrapping around ByteBuffer in some clever way, 
+     * ByteConverters, by wrapping around ByteBuffer in some clever way,
      * but my feeling is that the aims of this code would be better
      * achieved by Charsets.
      * */
-    
+
     boolean trim() default true;
 
     Class<? extends ByteConverter> converter() default NullConverter.class;
 
-    public interface ByteConverter {
+    public interface ByteConverter
+    {
 
         byte convert(byte in);
 
         byte revert(byte in);
 
         String getDescription();
-
     }
 
-    public class NullConverter implements ByteConverter {
+    public class NullConverter implements ByteConverter
+    {
 
-        public byte convert(byte in) {
+        public byte convert(byte in)
+        {
             return in;
         }
 
-        public byte revert(byte in) {
+        public byte revert(byte in)
+        {
             return in;
         }
 
-        public String getDescription() {
+        public String getDescription()
+        {
             return "";
         }
-
     }
-
 }

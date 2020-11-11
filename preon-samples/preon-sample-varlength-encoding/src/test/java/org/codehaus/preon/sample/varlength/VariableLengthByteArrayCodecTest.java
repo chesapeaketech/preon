@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -34,17 +34,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsNot.*;
+import static org.hamcrest.core.IsNull.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(org.mockito.runners.MockitoJUnitRunner.class)
-public class VariableLengthByteArrayCodecTest {
+public class VariableLengthByteArrayCodecTest
+{
 
     @Mock
     private BitBuffer buffer;
@@ -56,7 +54,8 @@ public class VariableLengthByteArrayCodecTest {
     private Builder builder;
 
     @Test
-    public void shouldDecodeOneByte() throws DecodingException {
+    public void shouldDecodeOneByte() throws DecodingException
+    {
         VariableLengthByteArrayCodec codec = new VariableLengthByteArrayCodec();
         when(buffer.readAsByte(8)).thenReturn((byte) 0x0f);
         byte[] decoded = codec.decode(buffer, resolver, builder);
@@ -67,7 +66,8 @@ public class VariableLengthByteArrayCodecTest {
     }
 
     @Test
-    public void shouldDecodeMultipleBytes() throws DecodingException {
+    public void shouldDecodeMultipleBytes() throws DecodingException
+    {
         VariableLengthByteArrayCodec codec = new VariableLengthByteArrayCodec();
         when(buffer.readAsByte(8)).thenReturn((byte) 0xff).thenReturn((byte) 0x0f);
         byte[] decoded = codec.decode(buffer, resolver, builder);
@@ -78,7 +78,8 @@ public class VariableLengthByteArrayCodecTest {
     }
 
     @Test
-    public void shouldDecodeSomeHolder() throws DecodingException {
+    public void shouldDecodeSomeHolder() throws DecodingException
+    {
         Codec<SomeHolder> codec = Codecs.create(SomeHolder.class, new VariableLengthByteArrayCodecFactory());
         SomeHolder holder = Codecs.decode(codec, (byte) 0xff, (byte) 0x0f);
         assertThat(holder.getValue(), is(not(nullValue())));
@@ -88,14 +89,15 @@ public class VariableLengthByteArrayCodecTest {
         Codecs.document(codec, Codecs.DocumentType.Html, System.err);
     }
 
-    public static class SomeHolder {
+    public static class SomeHolder
+    {
 
-        @VarLengthEncoded byte[] value;
+        @VarLengthEncoded
+        byte[] value;
 
-        public byte[] getValue() {
+        public byte[] getValue()
+        {
             return value;
         }
-
     }
-
 }

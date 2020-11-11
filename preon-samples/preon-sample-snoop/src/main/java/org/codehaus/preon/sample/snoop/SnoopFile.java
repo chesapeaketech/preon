@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,14 +24,22 @@
  */
 package org.codehaus.preon.sample.snoop;
 
-import org.codehaus.preon.annotation.*;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundBuffer;
+import org.codehaus.preon.annotation.BoundEnumOption;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.BoundObject;
+import org.codehaus.preon.annotation.Choices;
 import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.annotation.Slice;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.el.ImportStatic;
 
 import java.util.List;
 
-public class SnoopFile {
+public class SnoopFile
+{
 
     @Bound
     private FileHeader header;
@@ -39,15 +47,18 @@ public class SnoopFile {
     @BoundList(type = PacketRecord.class)
     private List<PacketRecord> records;
 
-    public FileHeader getHeader() {
+    public FileHeader getHeader()
+    {
         return header;
     }
 
-    public List<PacketRecord> getRecords() {
+    public List<PacketRecord> getRecords()
+    {
         return records;
     }
 
-    public static class FileHeader {
+    public static class FileHeader
+    {
 
         @BoundBuffer(match = {0x73, 0x6e, 0x6f, 0x6f, 0x70, 0x00, 0x00, 0x00})
         private byte[] identificationPattern;
@@ -58,18 +69,20 @@ public class SnoopFile {
         @BoundNumber(size = "32", byteOrder = ByteOrder.BigEndian)
         private DatalinkType datalinkType;
 
-        public int getVersionNumber() {
+        public int getVersionNumber()
+        {
             return versionNumber;
         }
 
-        public DatalinkType getDatalinkType() {
+        public DatalinkType getDatalinkType()
+        {
             return datalinkType;
         }
-
     }
 
     @ImportStatic(DatalinkType.class)
-    public static class PacketRecord {
+    public static class PacketRecord
+    {
 
         @BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
         private long originalLength;
@@ -97,35 +110,43 @@ public class SnoopFile {
         )
         private Object packetData;
 
-        public long getOriginalLength() {
+        public long getOriginalLength()
+        {
             return originalLength;
         }
 
-        public long getIncludedLength() {
+        public long getIncludedLength()
+        {
             return includedLength;
         }
 
-        public long getPacketRecordLength() {
+        public long getPacketRecordLength()
+        {
             return packetRecordLength;
         }
 
-        public long getCumulativeDrops() {
+        public long getCumulativeDrops()
+        {
             return cumulativeDrops;
         }
 
-        public long getTimestampSeconds() {
+        public long getTimestampSeconds()
+        {
             return timestampSeconds;
         }
 
-        public long getTimestampMicroseconds() {
+        public long getTimestampMicroseconds()
+        {
             return timestampMicroseconds;
         }
 
-        public Object getPacketData() {
+        public Object getPacketData()
+        {
             return packetData;
         }
 
-        public static class EthernetFrame {
+        public static class EthernetFrame
+        {
 
             @BoundList(size = "6")
             private byte[] destinationAddress;
@@ -139,30 +160,34 @@ public class SnoopFile {
             @BoundList(size = "outer.includedLength - (6 + 6 + 2)")
             private byte[] data;
 
-            public String getDestinationAddress() {
+            public String getDestinationAddress()
+            {
                 return render(destinationAddress);
             }
 
-            public String getSourceAddress() {
+            public String getSourceAddress()
+            {
                 return render(sourceAddress);
             }
 
-            private String render(byte[] address) {
+            private String render(byte[] address)
+            {
                 StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < address.length; i++) {
-                    if (i != 0) {
+                for (int i = 0; i < address.length; i++)
+                {
+                    if (i != 0)
+                    {
                         builder.append(':');
                     }
                     builder.append(Integer.toHexString(0xff & address[i]));
                 }
                 return builder.toString();
             }
-
         }
-
     }
 
-    public static enum DatalinkType {
+    public static enum DatalinkType
+    {
 
         @BoundEnumOption(0)
         IEEE_802_3,
@@ -196,5 +221,4 @@ public class SnoopFile {
 
         UNASSIGNED
     }
-
 }

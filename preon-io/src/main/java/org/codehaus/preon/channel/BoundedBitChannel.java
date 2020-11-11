@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,11 +9,11 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * Preon is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2, or (at your option) any later version.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -36,7 +36,8 @@ import java.nio.ByteBuffer;
  * A {@link BitChannel} wrapping around another {@link BitChannel}, preventing writing more than a certain maximum
  * number of bits. In case anything like that happens, it will throw a {@link java.io.IOException}.
  */
-public class BoundedBitChannel implements BitChannel {
+public class BoundedBitChannel implements BitChannel
+{
 
     private final BitChannel channel;
     private final long maxBits;
@@ -49,113 +50,147 @@ public class BoundedBitChannel implements BitChannel {
      * @param channel The {@link BitChannel} to wrap.
      * @param maxBits The maximum number of bits accepted.
      */
-    public BoundedBitChannel(@Nonnull BitChannel channel, @Nonnegative long maxBits) {
+    public BoundedBitChannel(@Nonnull BitChannel channel, @Nonnegative long maxBits)
+    {
         assert channel != null;
         assert maxBits >= 0;
         this.channel = channel;
         this.maxBits = maxBits;
     }
 
-    public void write(boolean value, ByteOrder byteOrder) throws IOException {
-        if (written + 1 <= maxBits) {
+    public void write(boolean value, ByteOrder byteOrder) throws IOException
+    {
+        if (written + 1 <= maxBits)
+        {
             channel.write(value, byteOrder);
             written += 1;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public void write(int nrbits, byte value) throws IOException {
-        if (written + nrbits <= maxBits) {
+    public void write(int nrbits, byte value) throws IOException
+    {
+        if (written + nrbits <= maxBits)
+        {
             channel.write(nrbits, value);
             written += nrbits;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public void writeLE(int nrbits, byte value) throws IOException {
-      if (written + nrbits <= maxBits) {
-          channel.writeLE(nrbits, value);
-          written += nrbits;
-      } else {
-          throw new IOException(OVERRUN_MESSAGE);
-      }
+    public void writeLE(int nrbits, byte value) throws IOException
+    {
+        if (written + nrbits <= maxBits)
+        {
+            channel.writeLE(nrbits, value);
+            written += nrbits;
+        } else
+        {
+            throw new IOException(OVERRUN_MESSAGE);
+        }
     }
-    
-    public void write(int nrbits, float value, ByteOrder byteOrder) throws IOException {
-        if (written + nrbits <= maxBits) {
+
+    public void write(int nrbits, float value, ByteOrder byteOrder) throws IOException
+    {
+        if (written + nrbits <= maxBits)
+        {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public void write(int nrbits, double value, ByteOrder byteOrder) throws IOException {
-        if (written + nrbits <= maxBits) {
+    public void write(int nrbits, double value, ByteOrder byteOrder) throws IOException
+    {
+        if (written + nrbits <= maxBits)
+        {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public void write(int nrbits, int value, ByteOrder byteOrder) throws IOException {
-        if (written + nrbits <= maxBits) {
+    public void write(int nrbits, int value, ByteOrder byteOrder) throws IOException
+    {
+        if (written + nrbits <= maxBits)
+        {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public void write(int nrbits, long value, ByteOrder byteOrder) throws IOException {
-        if (written + nrbits <= maxBits) {
+    public void write(int nrbits, long value, ByteOrder byteOrder) throws IOException
+    {
+        if (written + nrbits <= maxBits)
+        {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public void write(int nrbits, short value, ByteOrder byteOrder) throws IOException {
-        if (written + nrbits <= maxBits) {
+    public void write(int nrbits, short value, ByteOrder byteOrder) throws IOException
+    {
+        if (written + nrbits <= maxBits)
+        {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public void write(byte[] src, int offset, int length) throws IOException {
-        if (written + length <= maxBits) {
+    public void write(byte[] src, int offset, int length) throws IOException
+    {
+        if (written + length <= maxBits)
+        {
             channel.write(src, offset, length);
             written += length;
-        } else {
+        } else
+        {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
-    public long write(ByteBuffer buffer) throws IOException {
+    public long write(ByteBuffer buffer) throws IOException
+    {
         long written = channel.write(buffer);
-        if (written > maxBits - this.written) {
+        if (written > maxBits - this.written)
+        {
             throw new IOException(OVERRUN_MESSAGE);
-        } else {
+        } else
+        {
             this.written += written;
         }
         return written;
     }
 
-    public int getRelativeBitPos() {
+    public int getRelativeBitPos()
+    {
         return channel.getRelativeBitPos();
     }
 
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         channel.close();
     }
 
-    public void flush(ByteOrder byteOrder) throws IOException {
+    public void flush(ByteOrder byteOrder) throws IOException
+    {
         channel.flush(byteOrder);
     }
 }

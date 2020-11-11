@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,13 +28,25 @@ import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Table2Cols;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Choices;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
-import org.codehaus.preon.el.*;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.ContextReplacingReference;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
@@ -47,7 +59,8 @@ import java.util.List;
  * @author Wilfred Springer (wis)
  * @param <T> The type of object to be returned.
  */
-public class SelectFromCodec<T> implements Codec<T> {
+public class SelectFromCodec<T> implements Codec<T>
+{
 
     /**
      * The name of the variable that holds the prefix's value.
@@ -101,18 +114,21 @@ public class SelectFromCodec<T> implements Codec<T> {
      */
     public SelectFromCodec(Class<?> type, Choices choices,
                            ResolverContext context, CodecFactory factory,
-                           AnnotatedElement metadata) {
+                           AnnotatedElement metadata)
+    {
         this.prefixSize = choices.prefixSize();
         this.types = new Class<?>[choices.alternatives().length];
         this.byteOrder = choices.byteOrder();
         conditions = new ArrayList<Expression<Boolean, Resolver>>();
         codecs = new ArrayList<Codec<?>>();
-        if (choices.defaultType() != Void.class) {
+        if (choices.defaultType() != Void.class)
+        {
             defaultCodec = factory.create(null, choices.defaultType(), context);
         }
         ResolverContext passThroughContext = new PrefixResolverContext(context,
                 prefixSize);
-        for (int i = 0; i < choices.alternatives().length; i++) {
+        for (int i = 0; i < choices.alternatives().length; i++)
+        {
             types[i] = choices.alternatives()[i].type();
             conditions.add(Expressions.createBoolean(passThroughContext,
                     choices.alternatives()[i].condition()));
@@ -122,67 +138,90 @@ public class SelectFromCodec<T> implements Codec<T> {
     }
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-            throws DecodingException {
-        if (prefixSize <= 0) {
-            for (int i = 0; i < conditions.size(); i++) {
-                if (conditions.get(i).eval(resolver)) {
+            throws DecodingException
+    {
+        if (prefixSize <= 0)
+        {
+            for (int i = 0; i < conditions.size(); i++)
+            {
+                if (conditions.get(i).eval(resolver))
+                {
                     return (T) codecs.get(i).decode(buffer, resolver, builder);
                 }
             }
-        } else {
+        } else
+        {
             int prefix = buffer.readAsInt(this.prefixSize, byteOrder);
-            for (int i = 0; i < conditions.size(); i++) {
+            for (int i = 0; i < conditions.size(); i++)
+            {
                 if (conditions.get(i)
-                        .eval(new PrefixResolver(resolver, prefix))) {
+                        .eval(new PrefixResolver(resolver, prefix)))
+                {
                     return (T) codecs.get(i).decode(buffer, resolver, builder);
                 }
             }
         }
-        if (defaultCodec != null) {
+        if (defaultCodec != null)
+        {
             return (T) defaultCodec.decode(buffer, resolver, builder);
-        } else {
+        } else
+        {
             return null;
         }
     }
 
-    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
-        for (int i = 0; i < conditions.size(); i++) {
-            if (conditions.get(i).eval(resolver)) {
+    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException
+    {
+        for (int i = 0; i < conditions.size(); i++)
+        {
+            if (conditions.get(i).eval(resolver))
+            {
                 Codec<T> codec = (Codec<T>) codecs.get(i);
                 codec.encode(value, channel, resolver);
             }
         }
     }
 
-    public Expression<Integer, Resolver> getSize() {
+    public Expression<Integer, Resolver> getSize()
+    {
         Integer result = null;
-        for (Codec<?> codec : codecs) {
+        for (Codec<?> codec : codecs)
+        {
             Expression<Integer, Resolver> size = codec.getSize();
-            if (size == null || size.isParameterized()) {
+            if (size == null || size.isParameterized())
+            {
                 return null;
-            } else {
-                if (result == null) {
+            } else
+            {
+                if (result == null)
+                {
                     result = size.eval(null); // Not parameterized, so we can do
                     // this.
-                } else {
-                    if (!result.equals(size.eval(null))) {
+                } else
+                {
+                    if (!result.equals(size.eval(null)))
+                    {
                         return null;
                     }
                 }
             }
         }
-        if (result != null) {
+        if (result != null)
+        {
             return Expressions.createInteger(result, Resolver.class);
-        } else {
+        } else
+        {
             return null;
         }
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return type;
     }
 
-    public Class<?>[] getTypes() {
+    public Class<?>[] getTypes()
+    {
         return types;
     }
 
@@ -274,7 +313,8 @@ public class SelectFromCodec<T> implements Codec<T> {
     // }
     //
 
-    private static class PrefixResolverContext implements ResolverContext {
+    private static class PrefixResolverContext implements ResolverContext
+    {
 
         private ResolverContext context;
 
@@ -282,137 +322,167 @@ public class SelectFromCodec<T> implements Codec<T> {
 
         final public static String PREFIX = "prefix";
 
-        public PrefixResolverContext(ResolverContext context, int prefixSize) {
+        public PrefixResolverContext(ResolverContext context, int prefixSize)
+        {
             this.context = context;
             this.prefixSize = prefixSize;
         }
 
-        public Reference<Resolver> selectAttribute(String name) {
-            if (PREFIX.equals(name)) {
+        public Reference<Resolver> selectAttribute(String name)
+        {
+            if (PREFIX.equals(name))
+            {
                 Reference result = new PrefixReference(context, prefixSize);
                 return result;
-            } else {
+            } else
+            {
                 return new ContextReplacingReference(this, context
                         .selectAttribute(name));
             }
         }
 
-        public Reference<Resolver> selectItem(String index) {
+        public Reference<Resolver> selectItem(String index)
+        {
             return new ContextReplacingReference(this, context
                     .selectItem(index));
         }
 
         public Reference<Resolver> selectItem(
-                Expression<Integer, Resolver> index) {
+                Expression<Integer, Resolver> index)
+        {
             return new ContextReplacingReference(this, context
                     .selectItem(index));
         }
 
-        public void document(Document target) {
+        public void document(Document target)
+        {
             target.text("either the prefix variable or ");
             context.document(target);
             target.text(" (" + context.getClass() + ")");
         }
 
-        private static class PrefixReference implements Reference<Resolver> {
+        private static class PrefixReference implements Reference<Resolver>
+        {
 
             private ReferenceContext<Resolver> context;
 
             private int prefixSize;
 
             public PrefixReference(ReferenceContext<Resolver> context,
-                                   int prefixSize) {
+                                   int prefixSize)
+            {
                 this.context = context;
                 this.prefixSize = prefixSize;
             }
 
-            public ReferenceContext<Resolver> getReferenceContext() {
+            public ReferenceContext<Resolver> getReferenceContext()
+            {
                 return context;
             }
 
-            public boolean isAssignableTo(Class<?> type) {
+            public boolean isAssignableTo(Class<?> type)
+            {
                 return Integer.class.isAssignableFrom(type);
             }
 
-            public Object resolve(Resolver resolver) {
+            public Object resolve(Resolver resolver)
+            {
                 return resolver.get(PREFIX);
             }
 
-            public Reference<Resolver> selectAttribute(String name) {
+            public Reference<Resolver> selectAttribute(String name)
+            {
                 throw new BindingException("No attribute selection allowed.");
             }
 
-            public Reference<Resolver> selectItem(String index) {
+            public Reference<Resolver> selectItem(String index)
+            {
                 throw new BindingException("No item selection allowed.");
             }
 
             public Reference<Resolver> selectItem(
-                    Expression<Integer, Resolver> index) {
+                    Expression<Integer, Resolver> index)
+            {
                 throw new BindingException("No item selection allowed.");
             }
 
-            public void document(Document target) {
+            public void document(Document target)
+            {
                 target.text("the value of the first ");
                 target.text(Integer.toString(prefixSize));
                 target.text(" bits");
             }
 
-            public Class<?> getType() {
+            public Class<?> getType()
+            {
                 return Integer.class;
             }
 
-            public Reference<Resolver> narrow(Class<?> type) {
-                if (type == Integer.class) {
+            public Reference<Resolver> narrow(Class<?> type)
+            {
+                if (type == Integer.class)
+                {
                     return this;
-                } else {
+                } else
+                {
                     return null;
                 }
             }
 
-            public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+            public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext)
+            {
                 return context.equals(resolverReferenceContext);
             }
 
-            public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
+            public Reference<Resolver> rescope(ReferenceContext<Resolver> context)
+            {
                 return this;
             }
-
         }
-
     }
 
-    private static class PrefixResolver implements Resolver {
+    private static class PrefixResolver implements Resolver
+    {
 
         private Resolver resolver;
 
         private int prefix;
 
-        public PrefixResolver(Resolver resolver, int prefix) {
+        public PrefixResolver(Resolver resolver, int prefix)
+        {
             this.resolver = resolver;
             this.prefix = prefix;
         }
 
-        public Object get(String name) {
-            if (PrefixResolverContext.PREFIX.equals(name)) {
+        public Object get(String name)
+        {
+            if (PrefixResolverContext.PREFIX.equals(name))
+            {
                 return prefix;
-            } else {
+            } else
+            {
                 return resolver.get(name);
             }
         }
 
-        public Resolver getOriginalResolver() {
+        public Resolver getOriginalResolver()
+        {
             return this;
         }
-
     }
 
-    public CodecDescriptor getCodecDescriptor() {
-        return new CodecDescriptor() {
+    public CodecDescriptor getCodecDescriptor()
+    {
+        return new CodecDescriptor()
+        {
 
             public <C extends SimpleContents<?>> Documenter<C> details(
-                    String bufferReference) {
-                return new Documenter<C>() {
-                    public void document(C target) {
+                    String bufferReference)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target
                                 .para()
                                 .text(
@@ -435,7 +505,8 @@ public class SelectFromCodec<T> implements Codec<T> {
                                 .text("Data structure")
                                 .end()
                                 .end();
-                        for (int i = 0; i < conditions.size(); i++) {
+                        for (int i = 0; i < conditions.size(); i++)
+                        {
                             table2Cols
                                     .row()
                                     .entry()
@@ -456,16 +527,22 @@ public class SelectFromCodec<T> implements Codec<T> {
                 };
             }
 
-            public String getTitle() {
+            public String getTitle()
+            {
                 return null;
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(
-                    final Adjective adjective, boolean startWithCapital) {
-                return new Documenter<C>() {
-                    public void document(C target) {
-                        if (conditions.size() > 3) {
-                            switch (adjective) {
+                    final Adjective adjective, boolean startWithCapital)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
+                        if (conditions.size() > 3)
+                        {
+                            switch (adjective)
+                            {
                                 case A:
                                     target
                                             .text("a data structure selected from a list of "
@@ -481,15 +558,19 @@ public class SelectFromCodec<T> implements Codec<T> {
                                             + conditions.size());
                                     break;
                             }
-                        } else {
-                            for (int i = 0; i < conditions.size(); i++) {
+                        } else
+                        {
+                            for (int i = 0; i < conditions.size(); i++)
+                            {
                                 target.document(codecs.get(i)
                                         .getCodecDescriptor().reference(
-                                        adjective, false));
-                                if (i < conditions.size() - 2) {
+                                                adjective, false));
+                                if (i < conditions.size() - 2)
+                                {
                                     target.text(", ");
                                 }
-                                if (i == conditions.size() - 2) {
+                                if (i == conditions.size() - 2)
+                                {
                                     target.text(" or ");
                                 }
                             }
@@ -498,18 +579,21 @@ public class SelectFromCodec<T> implements Codec<T> {
                 };
             }
 
-            public boolean requiresDedicatedSection() {
+            public boolean requiresDedicatedSection()
+            {
                 return false;
             }
 
-            public <C extends ParaContents<?>> Documenter<C> summary() {
-                return new Documenter<C>() {
-                    public void document(C target) {
+            public <C extends ParaContents<?>> Documenter<C> summary()
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target.document(reference(Adjective.A, false)).text(".");
                     }
                 };
             }
-
         };
     }
 }

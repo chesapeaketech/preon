@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -34,17 +34,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.io.IOException;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(org.mockito.runners.MockitoJUnitRunner.class)
-public class ObjectCodecTest {
+public class ObjectCodecTest
+{
 
     @Mock
     private ObjectResolverContext context;
@@ -67,12 +65,14 @@ public class ObjectCodecTest {
     private List<Binding> listOfBindings;
 
     @Before
-    public void prepareListOfBindings() {
+    public void prepareListOfBindings()
+    {
         listOfBindings = Arrays.asList(binding1, binding2);
     }
 
     @org.junit.Test
-    public void shouldEncodeAllFields() throws IOException {
+    public void shouldEncodeAllFields() throws IOException
+    {
         ObjectCodec<Test> codec = new ObjectCodec<Test>(Test.class, rewriter, context);
         Test value = new Test();
         when(context.getBindings()).thenReturn(listOfBindings);
@@ -82,9 +82,8 @@ public class ObjectCodecTest {
         verifyNoMoreInteractions(binding1, binding2);
     }
 
-    private static class Test {
-
+    private static class Test
+    {
 
     }
-
 }

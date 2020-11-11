@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,11 +24,7 @@
  */
 package org.codehaus.preon.codec;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.nio.ByteBuffer;
-
-import org.codehaus.preon.el.Expressions;
+import junit.framework.TestCase;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecFactory;
@@ -39,7 +35,11 @@ import org.codehaus.preon.annotation.Choices;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.buffer.DefaultBitBuffer;
-import junit.framework.TestCase;
+import org.codehaus.preon.el.Expressions;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.nio.ByteBuffer;
 
 import static org.easymock.EasyMock.*;
 
@@ -48,7 +48,8 @@ import static org.easymock.EasyMock.*;
  *
  * @author Wilfred Springer (wis)
  */
-public class SelectFromCodecTest extends TestCase {
+public class SelectFromCodecTest extends TestCase
+{
 
     private Choices choices;
 
@@ -68,7 +69,8 @@ public class SelectFromCodecTest extends TestCase {
 
     private Builder builder;
 
-    public void setUp() {
+    public void setUp()
+    {
         context = createMock(ResolverContext.class);
         codecFactory = createMock(CodecFactory.class);
         metadata = createMock(AnnotatedElement.class);
@@ -77,60 +79,72 @@ public class SelectFromCodecTest extends TestCase {
         shortCodec = createMock(Codec.class);
         resolver = createMock(Resolver.class);
         builder = createMock(Builder.class);
-        choices = new Choices() {
+        choices = new Choices()
+        {
 
-            public Choice[] alternatives() {
-                return new Choice[]{new Choice() {
+            public Choice[] alternatives()
+            {
+                return new Choice[]{new Choice()
+                {
 
-                    public String condition() {
+                    public String condition()
+                    {
                         return "prefix==0";
                     }
 
-                    public Class<?> type() {
+                    public Class<?> type()
+                    {
                         return Integer.class;
                     }
 
-                    public Class<? extends Annotation> annotationType() {
+                    public Class<? extends Annotation> annotationType()
+                    {
                         return Choice.class;
                     }
+                }, new Choice()
+                {
 
-                }, new Choice() {
-
-                    public String condition() {
+                    public String condition()
+                    {
                         return "prefix==1";
                     }
 
-                    public Class<?> type() {
+                    public Class<?> type()
+                    {
                         return Short.class;
                     }
 
-                    public Class<? extends Annotation> annotationType() {
+                    public Class<? extends Annotation> annotationType()
+                    {
                         return Choice.class;
                     }
-
                 }};
             }
 
-            public ByteOrder byteOrder() {
+            public ByteOrder byteOrder()
+            {
                 return ByteOrder.BigEndian;
             }
 
-            public Class<?> defaultType() {
+            public Class<?> defaultType()
+            {
                 return Float.class;
             }
 
-            public int prefixSize() {
+            public int prefixSize()
+            {
                 return 8;
             }
 
-            public Class<? extends Annotation> annotationType() {
+            public Class<? extends Annotation> annotationType()
+            {
                 return Choices.class;
             }
-
         };
     }
 
-    public void testSelectFrom() throws DecodingException {
+    public void testSelectFrom() throws DecodingException
+    {
         BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{0, 1, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255}));
 

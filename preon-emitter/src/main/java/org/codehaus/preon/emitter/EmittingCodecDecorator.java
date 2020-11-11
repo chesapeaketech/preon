@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,10 +24,12 @@
  */
 package org.codehaus.preon.emitter;
 
-
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.*;
 
 import java.lang.reflect.AnnotatedElement;
 
@@ -36,7 +38,8 @@ import java.lang.reflect.AnnotatedElement;
  *
  * @author Wilfred Springer (wis)
  */
-public class EmittingCodecDecorator implements CodecDecorator {
+public class EmittingCodecDecorator implements CodecDecorator
+{
 
     /** The actual logging object. */
     private final Emitter emitter;
@@ -46,25 +49,28 @@ public class EmittingCodecDecorator implements CodecDecorator {
      *
      * @param emitter The {@link Emitter} to use.
      */
-    public EmittingCodecDecorator(Emitter emitter) {
+    public EmittingCodecDecorator(Emitter emitter)
+    {
         this.emitter = emitter;
     }
 
     /** Constructs a new instance that will log to System.out. */
-    public EmittingCodecDecorator() {
+    public EmittingCodecDecorator()
+    {
         this(new LoggingEmitter());
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.CodecDecorator#decorate(org.codehaus.preon.Codec,
      * java.lang.reflect.AnnotatedElement, java.lang.Class,
      * org.codehaus.preon.ResolverContext)
      */
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
-                                 Class<T> type, ResolverContext context) {
+                                 Class<T> type, ResolverContext context)
+    {
         return new EmittingCodec<T>(decorated, emitter);
     }
 
@@ -73,21 +79,23 @@ public class EmittingCodecDecorator implements CodecDecorator {
      *
      * @author Wilfred Springer (wis)
      */
-    private static class LoggingEmitter implements Emitter {
+    private static class LoggingEmitter implements Emitter
+    {
 
         /** "Call-stack depth" */
         private int level = 0;
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * org.codehaus.preon.emitter.EmittingCodecDecorator.Emitter#markEnd(nl
          * .flotsam.preon.Codec, long, long, java.lang.Object)
          */
 
         public void markEnd(Codec<?> codec, long position, long read,
-                                    Object result) {
+                            Object result)
+        {
             level--;
             // TODO: 
             printMessage("Done decoding at " + position
@@ -101,49 +109,58 @@ public class EmittingCodecDecorator implements CodecDecorator {
          * @param result The object.
          * @return The result formatted as a String.
          */
-        private String format(Object result) {
-            if (result instanceof Integer) {
+        private String format(Object result)
+        {
+            if (result instanceof Integer)
+            {
                 return result.toString() + " (0x"
                         + Integer.toHexString((Integer) result) + ")";
-            } else if (result instanceof Long) {
+            } else if (result instanceof Long)
+            {
                 return result.toString() + " (0x"
                         + Long.toHexString((Long) result) + ")";
-            } else if (result != null) {
+            } else if (result != null)
+            {
                 return result.toString();
-            } else {
+            } else
+            {
                 return "null";
             }
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * org.codehaus.preon.emitter.EmittingCodecDecorator.Emitter#markFailure()
          */
 
-        public void markFailure() {
+        public void markFailure()
+        {
             level--;
             printMessage("Failed decoding.");
         }
 
-        public void markStartLoad(String name, Object object) {
-            
+        public void markStartLoad(String name, Object object)
+        {
+
         }
 
-        public void markEndLoad() {
-            
+        public void markEndLoad()
+        {
+
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * org.codehaus.preon.emitter.EmittingCodecDecorator.Emitter#markStart(nl
          * .flotsam.preon.Codec, long, long)
          */
 
-        public void markStart(Codec<?> codec, long position, BitBuffer buffer) {
+        public void markStart(Codec<?> codec, long position, BitBuffer buffer)
+        {
             StringBuilder builder = new StringBuilder();
             builder.append("Start decoding at ")
                     .append(position)
@@ -159,26 +176,31 @@ public class EmittingCodecDecorator implements CodecDecorator {
          *
          * @param message The message to be printed.
          */
-        private void printMessage(String message) {
-            for (int i = 0; i < level; i++) {
+        private void printMessage(String message)
+        {
+            for (int i = 0; i < level; i++)
+            {
                 System.out.print(' ');
             }
             System.out.println(message);
         }
-
     }
 
-    private final static long getSize(Codec<?> codec, Resolver resolver) {
+    private final static long getSize(Codec<?> codec, Resolver resolver)
+    {
         Expression<Integer, Resolver> size = codec.getSize();
-        if (size == null) {
+        if (size == null)
+        {
             return -1;
-        } else {
-            if (size.isParameterized()) {
+        } else
+        {
+            if (size.isParameterized())
+            {
                 return -1;
-            } else {
+            } else
+            {
                 return size.eval(resolver);
             }
         }
     }
-
 }

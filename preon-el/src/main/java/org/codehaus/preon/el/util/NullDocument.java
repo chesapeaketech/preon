@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,18 +26,19 @@ package org.codehaus.preon.el.util;
 
 import org.codehaus.preon.el.Document;
 
-
 /**
  * A null implementation of {@link Document}.
- * 
+ *
  */
-public class NullDocument implements Document {
+public class NullDocument implements Document
+{
 
     /*
      * (non-Javadoc)
      * @see org.codehaus.preon.el.Document#detail(java.lang.String)
      */
-    public Document detail(String text) {
+    public Document detail(String text)
+    {
         return this;
     }
 
@@ -45,14 +46,15 @@ public class NullDocument implements Document {
      * (non-Javadoc)
      * @see org.codehaus.preon.el.Document#link(java.lang.Object, java.lang.String)
      */
-    public void link(Object object, String text) {
+    public void link(Object object, String text)
+    {
     }
 
     /*
      * (non-Javadoc)
      * @see org.codehaus.preon.el.Document#text(java.lang.String)
      */
-    public void text(String text) {
+    public void text(String text)
+    {
     }
-
 }

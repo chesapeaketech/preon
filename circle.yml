@@ -1,7 +1,7 @@
 dependencies:
- override: 
-  - mvn install -DskipTests     
+  override:
+    - mvn install -DskipTests
 test:
- post:
-  - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-  - find . -type f -regex ".*/target/.*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;  
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/target/.*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;

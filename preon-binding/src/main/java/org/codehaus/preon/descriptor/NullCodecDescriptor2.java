@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -29,36 +29,47 @@ import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import org.codehaus.preon.CodecDescriptor;
 
-public class NullCodecDescriptor2 implements CodecDescriptor {
+public class NullCodecDescriptor2 implements CodecDescriptor
+{
 
-    public <T extends SimpleContents<?>> Documenter<T> details(String bufferReference) {
-        return new Documenter<T>() {
-            public void document(T target) {
+    public <T extends SimpleContents<?>> Documenter<T> details(String bufferReference)
+    {
+        return new Documenter<T>()
+        {
+            public void document(T target)
+            {
             }
         };
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return "";
     }
 
     public <T extends ParaContents<?>> Documenter<T> reference(
-            Adjective adjective, boolean startWithCapital) {
-        return new Documenter<T>() {
-            public void document(T target) {
+            Adjective adjective, boolean startWithCapital)
+    {
+        return new Documenter<T>()
+        {
+            public void document(T target)
+            {
             }
         };
     }
 
-    public boolean requiresDedicatedSection() {
+    public boolean requiresDedicatedSection()
+    {
         return false;
     }
 
-    public <T extends ParaContents<?>> Documenter<T> summary() {
-        return new Documenter<T>() {
-            public void document(T target) {
+    public <T extends ParaContents<?>> Documenter<T> summary()
+    {
+        return new Documenter<T>()
+        {
+            public void document(T target)
+            {
             }
         };
     }
-
 }

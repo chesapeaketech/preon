@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,24 +24,20 @@
  */
 package org.codehaus.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-
-import org.codehaus.preon.el.Expression;
+import junit.framework.TestCase;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.annotation.LazyLoading;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.el.Expression;
 
-import junit.framework.TestCase;
+import java.lang.reflect.AnnotatedElement;
 
+import static org.easymock.EasyMock.*;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
-public class LazyLoadingCodecDecoratorTest extends TestCase {
+public class LazyLoadingCodecDecoratorTest extends TestCase
+{
 
     private Codec wrapped;
 
@@ -57,7 +53,8 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
 
     private Expression<Integer, Resolver> sizeExpr;
 
-    public void setUp() {
+    public void setUp()
+    {
         wrapped = createMock(Codec.class);
         buffer = createMock(BitBuffer.class);
         factory = new LazyLoadingCodecDecorator();
@@ -68,7 +65,8 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testHappyPath() throws DecodingException {
+    public void testHappyPath() throws DecodingException
+    {
 
         Test test = new Test();
 
@@ -98,12 +96,12 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
         verify(wrapped, buffer, metadata, annotation, resolver, sizeExpr);
     }
 
-    public static class Test {
+    public static class Test
+    {
 
-        public String getFoo() {
+        public String getFoo()
+        {
             return "bar";
         }
-
     }
-
 }

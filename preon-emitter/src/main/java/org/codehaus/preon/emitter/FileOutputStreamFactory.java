@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -29,35 +29,40 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class FileOutputStreamFactory implements OutputStreamFactory {
+public class FileOutputStreamFactory implements OutputStreamFactory
+{
 
     private final File file;
     private final Listener listener;
 
-    public FileOutputStreamFactory(File file, Listener listener) {
+    public FileOutputStreamFactory(File file, Listener listener)
+    {
         this.file = file;
         this.listener = listener;
     }
 
-    public FileOutputStreamFactory(File file) {
+    public FileOutputStreamFactory(File file)
+    {
         this(file, new NullListener());
     }
 
-    public OutputStream create() throws IOException {
+    public OutputStream create() throws IOException
+    {
         return new FileOutputStream(file);
     }
 
-    public interface Listener {
+    public interface Listener
+    {
 
-        void created(File file);    
-
+        void created(File file);
     }
 
-    private static class NullListener implements Listener {
+    private static class NullListener implements Listener
+    {
 
-        public void created(File file) {
+        public void created(File file)
+        {
             // NOOP
         }
     }
-
 }

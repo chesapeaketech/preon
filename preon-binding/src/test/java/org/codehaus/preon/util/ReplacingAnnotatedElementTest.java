@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,39 +24,44 @@
  */
 package org.codehaus.preon.util;
 
+import junit.framework.TestCase;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.AnnotatedElement;
 
-import junit.framework.TestCase;
+public class ReplacingAnnotatedElementTest extends TestCase
+{
 
-public class ReplacingAnnotatedElementTest extends TestCase {
-
-    public void testReplacement() {
+    public void testReplacement()
+    {
         AnnotatedElement element = Test.class;
         assertEquals("bar", element.getAnnotation(Foo.class).value());
-        element = new ReplacingAnnotatedElement(element, new Foo() {
+        element = new ReplacingAnnotatedElement(element, new Foo()
+        {
 
-            public String value() {
+            public String value()
+            {
                 return "foobar";
             }
 
-            public Class<? extends Annotation> annotationType() {
+            public Class<? extends Annotation> annotationType()
+            {
                 return Foo.class;
             }
-
         });
         assertEquals("foobar", element.getAnnotation(Foo.class).value());
     }
 
     @Foo("bar")
-    private static class Test {
+    private static class Test
+    {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    private static @interface Foo {
+    private static @interface Foo
+    {
         String value();
     }
-
 }

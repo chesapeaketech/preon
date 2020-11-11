@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -25,30 +25,28 @@
 package org.codehaus.preon.channel;
 
 import org.codehaus.preon.buffer.ByteOrder;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
-public class OutputStreamBitChannelTest {
+public class OutputStreamBitChannelTest
+{
 
     @Mock
     private OutputStream out;
 
     @Test
-    public void shouldAcceptBooleans() throws IOException {
+    public void shouldAcceptBooleans() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(true, ByteOrder.BigEndian);
         channel.write(true, ByteOrder.BigEndian);
@@ -64,7 +62,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldAcceptFullBytes() throws IOException {
+    public void shouldAcceptFullBytes() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(8, (byte) 32);
         verify(out).write((byte) 32);
@@ -72,7 +71,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldAcceptPartialBytes() throws IOException {
+    public void shouldAcceptPartialBytes() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(4, (byte) 0xff); // 1111
         channel.write(4, (byte) 0x00); // 0000
@@ -81,7 +81,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldDealWithNonAlignedBytes() throws IOException {
+    public void shouldDealWithNonAlignedBytes() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(3, (byte) 0xff); // 111
         channel.write(7, (byte) 0x00); // 0000000
@@ -90,7 +91,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldDealWithNonAlignedMultipleBytes() throws IOException {
+    public void shouldDealWithNonAlignedMultipleBytes() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(3, (byte) 0xff); // 111
         channel.write(7, (byte) 0x00); // 0000000
@@ -103,7 +105,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldAcceptInts() throws IOException {
+    public void shouldAcceptInts() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(12, (int) 0xfff, ByteOrder.BigEndian); // 1111 1111 1111
         channel.write(4, (int) 0x0, ByteOrder.BigEndian); // 0000
@@ -113,7 +116,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldAcceptIntsAndBytes() throws IOException {
+    public void shouldAcceptIntsAndBytes() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(12, (int) 0xfff, ByteOrder.BigEndian); // 1111 1111 1111
         channel.write(5, (byte) 0x0); // 0000 0
@@ -123,7 +127,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldAcceptLittleEndian() throws IOException {
+    public void shouldAcceptLittleEndian() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(12, (int) 0xf00, ByteOrder.LittleEndian); // 1111 0000 0000 
         channel.write(4, (int) 0x0, ByteOrder.LittleEndian); // 0000
@@ -135,7 +140,8 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldAcceptLongs() throws IOException {
+    public void shouldAcceptLongs() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(12, Long.MAX_VALUE / 2, ByteOrder.BigEndian); // 1111 1111 1111
         channel.write(5, (byte) 0x0); // 0000 0
@@ -145,12 +151,12 @@ public class OutputStreamBitChannelTest {
     }
 
     @Test
-    public void shouldTellPositionCorrectly() throws IOException {
+    public void shouldTellPositionCorrectly() throws IOException
+    {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
         channel.write(4, (byte) 12);
         assertThat(channel.getRelativeBitPos(), is(4));
         channel.write(4, (byte) 0);
         assertThat(channel.getRelativeBitPos(), is(0));
     }
-
 }

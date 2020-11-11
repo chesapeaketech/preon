@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -35,13 +35,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.AnnotatedElement;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArrayCodecFactoryTest {
+public class ArrayCodecFactoryTest
+{
 
     @Mock
     private AnnotatedElement metadata;
@@ -58,17 +58,18 @@ public class ArrayCodecFactoryTest {
     private ArrayCodecFactory factory;
 
     @Before
-    public void configureArrayCodedFactory() {
+    public void configureArrayCodedFactory()
+    {
         factory = new ArrayCodecFactory(delegate);
     }
 
     @Test
-    public void shouldNotTryToReturnCodecInCaseSizeUndefined() {
+    public void shouldNotTryToReturnCodecInCaseSizeUndefined()
+    {
         Object array = new byte[0];
         Class<?> type = array.getClass();
         when(metadata.getAnnotation(BoundList.class)).thenReturn(boundList);
         when(boundList.size()).thenReturn("");
         assertThat(factory.create(metadata, type, context), is(nullValue()));
     }
-
 }

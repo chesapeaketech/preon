@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,7 +32,8 @@ import java.lang.reflect.AnnotatedElement;
  *
  * @author Wilfred Springer
  */
-public class HidingAnnotatedElement implements AnnotatedElement {
+public class HidingAnnotatedElement implements AnnotatedElement
+{
 
     /** The type of annotation that needs to be hidden. */
     private Class<? extends Annotation> hidden;
@@ -47,7 +48,8 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * @param hidden   The type of annotation that need to be hidden.
      * @param delegate The {@link AnnotatedElement} from which a certain type of annotation needs to be hidden.
      */
-    public HidingAnnotatedElement(Class<? extends Annotation> hidden, AnnotatedElement delegate) {
+    public HidingAnnotatedElement(Class<? extends Annotation> hidden, AnnotatedElement delegate)
+    {
         this.hidden = hidden;
         this.delegate = delegate;
     }
@@ -57,10 +59,13 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
      */
 
-    public <T extends Annotation> T getAnnotation(Class<T> type) {
-        if (hidden.equals(type)) {
+    public <T extends Annotation> T getAnnotation(Class<T> type)
+    {
+        if (hidden.equals(type))
+        {
             return null;
-        } else {
+        } else
+        {
             return delegate.getAnnotation(type);
         }
     }
@@ -70,18 +75,23 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * @see java.lang.reflect.AnnotatedElement#getAnnotations()
      */
 
-    public Annotation[] getAnnotations() {
-        if (delegate.isAnnotationPresent(hidden)) {
+    public Annotation[] getAnnotations()
+    {
+        if (delegate.isAnnotationPresent(hidden))
+        {
             Annotation[] unhidden = delegate.getAnnotations();
             Annotation[] result = new Annotation[unhidden.length - 1];
             int j = 0;
-            for (int i = 0; i < unhidden.length; i++) {
-                if (!hidden.equals(unhidden[i].getClass())) {
+            for (int i = 0; i < unhidden.length; i++)
+            {
+                if (!hidden.equals(unhidden[i].getClass()))
+                {
                     result[j++] = unhidden[i];
                 }
             }
             return result;
-        } else {
+        } else
+        {
             return delegate.getAnnotations();
         }
     }
@@ -91,18 +101,23 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
      */
 
-    public Annotation[] getDeclaredAnnotations() {
-        if (delegate.isAnnotationPresent(hidden)) {
+    public Annotation[] getDeclaredAnnotations()
+    {
+        if (delegate.isAnnotationPresent(hidden))
+        {
             Annotation[] unhidden = delegate.getDeclaredAnnotations();
             Annotation[] result = new Annotation[unhidden.length - 1];
             int j = 0;
-            for (int i = 0; i < unhidden.length; i++) {
-                if (!hidden.equals(unhidden[i].getClass())) {
+            for (int i = 0; i < unhidden.length; i++)
+            {
+                if (!hidden.equals(unhidden[i].getClass()))
+                {
                     result[j++] = unhidden[i];
                 }
             }
             return result;
-        } else {
+        } else
+        {
             return delegate.getDeclaredAnnotations();
         }
     }
@@ -112,12 +127,14 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * @see java.lang.reflect.AnnotatedElement#isAnnotationPresent(java.lang.Class)
      */
 
-    public boolean isAnnotationPresent(Class<? extends Annotation> type) {
-        if (hidden.equals(type)) {
+    public boolean isAnnotationPresent(Class<? extends Annotation> type)
+    {
+        if (hidden.equals(type))
+        {
             return false;
-        } else {
+        } else
+        {
             return delegate.isAnnotationPresent(type);
         }
     }
-
 }

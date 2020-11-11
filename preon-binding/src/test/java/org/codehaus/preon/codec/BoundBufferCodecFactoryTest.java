@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,15 +24,6 @@
  */
 package org.codehaus.preon.codec;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.AnnotatedElement;
-
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.annotation.BoundBuffer;
 import org.codehaus.preon.channel.OutputStreamBitChannel;
@@ -42,8 +33,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
-public class BoundBufferCodecFactoryTest {
+public class BoundBufferCodecFactoryTest
+{
 
     @Mock
     private AnnotatedElement metadata;
@@ -54,13 +54,15 @@ public class BoundBufferCodecFactoryTest {
     private BoundBufferCodecFactory factory;
 
     @Before
-    public void createFactory() {
+    public void createFactory()
+    {
         factory = new BoundBufferCodecFactory();
     }
 
     @Test
-    public void encodedBufferShouldEqualMatchBuffer() throws IOException {
-        byte[] match = { 1, 2, 3, 4 };
+    public void encodedBufferShouldEqualMatchBuffer() throws IOException
+    {
+        byte[] match = {1, 2, 3, 4};
 
         when(metadata.isAnnotationPresent(BoundBuffer.class)).thenReturn(true);
         when(metadata.getAnnotation(BoundBuffer.class)).thenReturn(boundBuffer);

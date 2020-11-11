@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,17 +24,16 @@
  */
 package org.codehaus.preon.buffer;
 
+import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.IOUtils;
-
-
-public class DefaultBitBufferTest extends TestCase {
+public class DefaultBitBufferTest extends TestCase
+{
 
     private DefaultBitBuffer bitBuffer;
 
@@ -43,13 +42,15 @@ public class DefaultBitBufferTest extends TestCase {
     private int fileSize;
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         byteBuffer = getByteBuffer("testFile");
         bitBuffer = new DefaultBitBuffer(byteBuffer);
         fileSize = byteBuffer.capacity();
     }
 
-    public void testReadBits() {
+    public void testReadBits()
+    {
         // Ascii - dec - bin
         // File: 4 4 - 52 52 - 0100 0011 0100 0011
 
@@ -68,7 +69,9 @@ public class DefaultBitBufferTest extends TestCase {
         // read the whole file, byte by bytes
         byte[] bytesReadByApp = new byte[fileSize];
         for (int i = 0; i < fileSize; i++)
+        {
             bytesReadByApp[i] = (byte) bitBuffer.readBits(i * 8, 8);
+        }
 
         byte[] bytesReadDirectly = new byte[fileSize];
         byteBuffer.asReadOnlyBuffer().get(bytesReadDirectly);
@@ -79,7 +82,8 @@ public class DefaultBitBufferTest extends TestCase {
         assertEquals(byteBuffer.getLong(), bitBuffer.readBits(0, 64));
     }
 
-    public void testLittleEndianBitOffset() {
+    public void testLittleEndianBitOffset()
+    {
         bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{3, 0, 0,
                 0}));
 
@@ -90,10 +94,10 @@ public class DefaultBitBufferTest extends TestCase {
         assertEquals(1, bitBuffer.readAsInt(0, 1, ByteOrder.LittleEndian));
         assertEquals(3, bitBuffer.readAsInt(0, 2, ByteOrder.LittleEndian));
         assertEquals(3, bitBuffer.readAsInt(0, 10, ByteOrder.LittleEndian));
-
     }
 
-    public void testBigEndianBitOffset() {
+    public void testBigEndianBitOffset()
+    {
 
         // 11001010
         // 10010110
@@ -107,23 +111,25 @@ public class DefaultBitBufferTest extends TestCase {
         assertEquals(1, bitBuffer.readAsInt(0, 1, ByteOrder.BigEndian));
         assertEquals(3, bitBuffer.readAsInt(0, 2, ByteOrder.BigEndian));
         assertEquals(810, bitBuffer.readAsInt(0, 10, ByteOrder.BigEndian));
-
     }
 
-    public void testReadBitsSequentially() {
+    public void testReadBitsSequentially()
+    {
         byte[] bytesReadByApp = new byte[fileSize];
         for (int i = 0; i < fileSize; i++)
+        {
             bytesReadByApp[i] = (byte) bitBuffer.readBits(8);
+        }
 
         byte[] bytesReadDirectly = new byte[fileSize];
         byteBuffer.asReadOnlyBuffer().get(bytesReadDirectly);
 
         assertTrue(java.util.Arrays
                 .equals(bytesReadDirectly, bytesReadDirectly));
-
     }
 
-    public void testBitOneAfterAnother() {
+    public void testBitOneAfterAnother()
+    {
         assertEquals(0, bitBuffer.readBits(1));
         assertEquals(1, bitBuffer.readBits(1));
         assertEquals(0, bitBuffer.readBits(1));
@@ -134,7 +140,8 @@ public class DefaultBitBufferTest extends TestCase {
         assertEquals(true, bitBuffer.readAsBoolean());
     }
 
-    public void testCompleteBytes() {
+    public void testCompleteBytes()
+    {
         DefaultBitBuffer bitBuffer;
         bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{0x01,
                 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) 0xCD,
@@ -147,21 +154,25 @@ public class DefaultBitBufferTest extends TestCase {
         assertEquals(0x0123456789ABCDEFL, bitBuffer.readBits(64, ByteOrder.LittleEndian));
     }
 
-    public void testReadBeyondEnd() {
+    public void testReadBeyondEnd()
+    {
         DefaultBitBuffer buffer = new DefaultBitBuffer(ByteBuffer
                 .wrap(new byte[]{1, 2, 3}));
         buffer.readAsByte(8);
         buffer.readAsByte(8);
         buffer.readAsByte(8);
-        try {
+        try
+        {
             buffer.readAsByte(8);
             fail("Expecting exception while reading beyond end of buffer.");
-        } catch (BitBufferUnderflowException oore) {
+        } catch (BitBufferUnderflowException oore)
+        {
             // Yep, we got the exception we expected.
         }
     }
 
-    public void testReadAsByteBuffer() throws Exception {
+    public void testReadAsByteBuffer() throws Exception
+    {
 
         DefaultBitBuffer buffer = new DefaultBitBuffer(ByteBuffer
                 .wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
@@ -181,17 +192,20 @@ public class DefaultBitBufferTest extends TestCase {
         assertEquals(10, buffer.readAsByte(8));
     }
 
-    public void testReadAsByteBufferWithBitAlignments() throws Exception {
+    public void testReadAsByteBufferWithBitAlignments() throws Exception
+    {
 
         DefaultBitBuffer buffer = new DefaultBitBuffer(ByteBuffer
                 .wrap(new byte[]{1, 2, 3, 4}));
 
         buffer.readAsByte(7);
 
-        try {
+        try
+        {
             ByteBuffer byteBuffer = buffer.readAsByteBuffer(2);
             fail();
-        } catch (BitBufferException bbe) {
+        } catch (BitBufferException bbe)
+        {
             // Correct. The readAsByteBuffer method does not handle not 8-bit
             // alignment buffers
         }
@@ -207,7 +221,8 @@ public class DefaultBitBufferTest extends TestCase {
         buffer.readAsByteBuffer(2);
     }
 
-    private ByteBuffer getByteBuffer(String resource) throws IOException {
+    private ByteBuffer getByteBuffer(String resource) throws IOException
+    {
         ClassLoader classLoader = this.getClass().getClassLoader();
         InputStream in = classLoader.getResourceAsStream(resource);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -215,7 +230,8 @@ public class DefaultBitBufferTest extends TestCase {
         return ByteBuffer.wrap(out.toByteArray());
     }
 
-    public void testReadingIntegers() {
+    public void testReadingIntegers()
+    {
         ByteBuffer buffer = ByteBuffer.wrap(new byte[]{0x01 // 0000 0001
                 , 0x02 // 0000 00010
                 , 0x03 // 0000 00011
@@ -246,7 +262,8 @@ public class DefaultBitBufferTest extends TestCase {
                 .readAsInt(3, 7, ByteOrder.BigEndian));
     }
 
-    public void testReading1() {
+    public void testReading1()
+    {
         ByteBuffer buffer = ByteBuffer.wrap(new byte[]{0x00, 0x00, 0x00, 0x01});
         BitBuffer bitBuffer = new DefaultBitBuffer(buffer);
         assertEquals(1, bitBuffer.readAsInt(32));

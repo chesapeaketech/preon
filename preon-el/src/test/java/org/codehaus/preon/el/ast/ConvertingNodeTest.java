@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,17 +26,18 @@ package org.codehaus.preon.el.ast;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 /**
  * A number of tests for the {@link ConvertingNode}.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
+ *
  */
-public class ConvertingNodeTest {
+public class ConvertingNodeTest
+{
 
     /**
      * The source node.
@@ -48,7 +49,8 @@ public class ConvertingNodeTest {
      * @see junit.framework.TestCase#setUp()
      */
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         source = createMock(Node.class);
     }
 
@@ -56,7 +58,8 @@ public class ConvertingNodeTest {
      * Tests a conversion from String to Integer.
      */
     @Test
-    public void testNonConvertingInteger() {
+    public void testNonConvertingInteger()
+    {
         expect(source.getType()).andReturn(String.class);
         replay(source);
         Node result = ConvertingNode.tryConversionToIntegerNode(source);
@@ -68,7 +71,8 @@ public class ConvertingNodeTest {
      * Tests a conversion from Byte to Integer.
      */
     @Test
-    public void testConvertingInteger() {
+    public void testConvertingInteger()
+    {
         Object context = new Object();
         expect(source.getType()).andReturn(Byte.class).times(2);
         expect(source.eval(context)).andReturn(new Byte((byte) 3));
@@ -82,5 +86,4 @@ public class ConvertingNodeTest {
         assertNotNull(value);
         verify(source);
     }
-
 }

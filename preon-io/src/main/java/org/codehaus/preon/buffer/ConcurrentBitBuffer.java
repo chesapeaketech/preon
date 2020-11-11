@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -31,7 +31,8 @@ import java.nio.ByteBuffer;
  *
  * @author Wilfred Springer
  */
-public class ConcurrentBitBuffer extends AbstractBitBufferDecorator {
+public class ConcurrentBitBuffer extends AbstractBitBufferDecorator
+{
 
     /** The current {@link BitBuffer}, indexed by thread. */
     private ThreadLocal<BitBuffer> current = new ThreadLocal<BitBuffer>();
@@ -46,14 +47,17 @@ public class ConcurrentBitBuffer extends AbstractBitBufferDecorator {
      *
      * @param source The {@link BitBuffer} from which all thread-bound {@link BitBuffer BitBuffers} will be created.
      */
-    public ConcurrentBitBuffer(BitBuffer source) {
+    public ConcurrentBitBuffer(BitBuffer source)
+    {
         this.source = source;
     }
 
     @Override
-    public BitBuffer getDelegate() {
+    public BitBuffer getDelegate()
+    {
         BitBuffer result = current.get();
-        if (result == null) {
+        if (result == null)
+        {
             result = source.duplicate();
             current.set(result);
         }
@@ -63,29 +67,33 @@ public class ConcurrentBitBuffer extends AbstractBitBufferDecorator {
     // JavaDoc inherited
 
     @Override
-    public BitBuffer duplicate() {
+    public BitBuffer duplicate()
+    {
         return new ConcurrentBitBuffer(getDelegate().duplicate());
     }
 
     // JavaDoc inherited
 
     @Override
-    public BitBuffer slice(long length) {
+    public BitBuffer slice(long length)
+    {
         return new SlicedBitBuffer(duplicate(), length);
     }
 
     // JavaDoc inherited
 
-    public ByteBuffer readAsByteBuffer(int length) {
+    public ByteBuffer readAsByteBuffer(int length)
+    {
         return getDelegate().readAsByteBuffer(length);
     }
 
-    public ByteBuffer readAsByteBuffer() {
+    public ByteBuffer readAsByteBuffer()
+    {
         return getDelegate().readAsByteBuffer();
     }
 
-    public long getActualBitPos() {
+    public long getActualBitPos()
+    {
         return getDelegate().getActualBitPos();
     }
-
 }

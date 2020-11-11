@@ -26,6 +26,6 @@
 
 -->
 <locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
-  <uri resource="overview.xml" typeId="DocBook"/>
-  <uri resource="article.xml" typeId="DocBook"/>
+    <uri resource="overview.xml" typeId="DocBook"/>
+    <uri resource="article.xml" typeId="DocBook"/>
 </locatingRules>

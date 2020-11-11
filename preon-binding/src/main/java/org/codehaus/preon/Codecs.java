@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,6 +24,21 @@
  */
 package org.codehaus.preon;
 
+import com.ctc.wstx.stax.WstxOutputFactory;
+import nl.flotsam.pecia.builder.ArticleDocument;
+import nl.flotsam.pecia.builder.base.DefaultArticleDocument;
+import nl.flotsam.pecia.builder.base.DefaultDocumentBuilder;
+import nl.flotsam.pecia.builder.html.HtmlDocumentBuilder;
+import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
+import nl.flotsam.pecia.builder.xml.XmlWriter;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.preon.binding.BindingDecorator;
+import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.DefaultBitBuffer;
+import org.codehaus.preon.channel.BitChannel;
+import org.codehaus.preon.channel.OutputStreamBitChannel;
+
+import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,33 +49,15 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import javax.xml.stream.XMLStreamException;
-
-import nl.flotsam.pecia.builder.ArticleDocument;
-import nl.flotsam.pecia.builder.base.DefaultArticleDocument;
-import nl.flotsam.pecia.builder.base.DefaultDocumentBuilder;
-import nl.flotsam.pecia.builder.html.HtmlDocumentBuilder;
-import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
-import nl.flotsam.pecia.builder.xml.XmlWriter;
-import org.codehaus.preon.binding.BindingDecorator;
-import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.buffer.DefaultBitBuffer;
-import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.channel.OutputStreamBitChannel;
-
-import org.apache.commons.io.IOUtils;
-
-import com.ctc.wstx.stax.WstxOutputFactory;
-
 /**
  * A utility class, providing some convenience mechanisms for using and documenting {@link Codec Codecs}.
  *
  * @author Wilfred Springer
  */
-public class Codecs {
+public class Codecs
+{
 
     private static final Builder DEFAULT_BUILDER = new DefaultBuilder();
-
 
     /**
      * An enumeration of potential documentation types.
@@ -68,18 +65,21 @@ public class Codecs {
      * @see Codecs#document(Codec, org.codehaus.preon.Codecs.DocumentType, File)
      * @see Codecs#document(Codec, org.codehaus.preon.Codecs.DocumentType, OutputStream)
      */
-    public enum DocumentType {
+    public enum DocumentType
+    {
 
-        Html {
+        Html
+                {
+                    @Override
+                    public DefaultDocumentBuilder createDocumentBuilder(XmlWriter writer)
+                    {
+                        return new HtmlDocumentBuilder(writer, this.getClass()
+                                .getResource("/default.css"))
+                        {
 
-            @Override
-            public DefaultDocumentBuilder createDocumentBuilder(XmlWriter writer) {
-                return new HtmlDocumentBuilder(writer, this.getClass()
-                        .getResource("/default.css")) {
-
+                        };
+                    }
                 };
-            }
-        };
 
         /**
          * Returns a {@link DefaultDocumentBuilder} instance for the given type of document.
@@ -89,7 +89,6 @@ public class Codecs {
          */
         public abstract DefaultDocumentBuilder createDocumentBuilder(
                 XmlWriter writer);
-
     }
 
     /**
@@ -102,12 +101,15 @@ public class Codecs {
      * @throws FileNotFoundException If the file cannot be written.
      */
     public static <T> void document(Codec<T> codec, DocumentType type, File file)
-            throws FileNotFoundException {
+            throws FileNotFoundException
+    {
         OutputStream out = null;
-        try {
+        try
+        {
             out = new FileOutputStream(file);
             document(codec, type, out);
-        } finally {
+        } finally
+        {
             IOUtils.closeQuietly(out);
         }
     }
@@ -121,10 +123,12 @@ public class Codecs {
      * @param out   The {@link OutputStream} receiving the document.
      */
     public static <T> void document(Codec<T> codec, DocumentType type,
-                                    OutputStream out) {
+                                    OutputStream out)
+    {
         WstxOutputFactory documentFactory = new WstxOutputFactory();
         XmlWriter writer;
-        try {
+        try
+        {
             writer = new StreamingXmlWriter(documentFactory
                     .createXMLStreamWriter(out));
             DefaultDocumentBuilder builder = type.createDocumentBuilder(writer);
@@ -132,7 +136,8 @@ public class Codecs {
                     codec.getCodecDescriptor().getTitle());
             document(codec, document);
             document.end();
-        } catch (XMLStreamException e) {
+        } catch (XMLStreamException e)
+        {
             // In the unlikely event this happens:
             throw new RuntimeException("Failed to create stream writer.");
         }
@@ -145,11 +150,14 @@ public class Codecs {
      * @param codec    The actual codec.
      * @param document The document in which the documentation of the Codec needs to be generated.
      */
-    public static <T> void document(Codec<T> codec, ArticleDocument document) {
+    public static <T> void document(Codec<T> codec, ArticleDocument document)
+    {
         CodecDescriptor descriptor = codec.getCodecDescriptor();
-        if (descriptor.requiresDedicatedSection()) {
+        if (descriptor.requiresDedicatedSection())
+        {
             document.document(descriptor.details("buffer"));
-        } else {
+        } else
+        {
             document.para().text("Full description missing.").end();
         }
     }
@@ -164,12 +172,14 @@ public class Codecs {
      * @throws DecodingException If the {@link Codec} fails to decode a value from the buffer passed in.
      */
     public static <T> T decode(Codec<T> codec, byte... buffer)
-            throws DecodingException {
+            throws DecodingException
+    {
         return decode(codec, ByteBuffer.wrap(buffer));
     }
 
     public static <T> T decode(Codec<T> codec, Builder builder, byte... buffer)
-            throws DecodingException {
+            throws DecodingException
+    {
         return decode(codec, ByteBuffer.wrap(buffer), builder);
     }
 
@@ -183,18 +193,22 @@ public class Codecs {
      * @throws DecodingException If the {@link Codec} fails to decode a value from the buffer passed in.
      */
     public static <T> T decode(Codec<T> codec, ByteBuffer buffer)
-            throws DecodingException {
+            throws DecodingException
+    {
         return decode(codec, new DefaultBitBuffer(buffer), null, null);
     }
 
     public static <T> T decode(Codec<T> codec, ByteBuffer buffer, Builder builder)
-            throws DecodingException {
+            throws DecodingException
+    {
         return decode(codec, new DefaultBitBuffer(buffer), builder, null);
     }
 
     public static <T> T decode(Codec<T> codec, BitBuffer buffer, Builder builder, Resolver resolver)
-            throws DecodingException {
-        if (builder == null) {
+            throws DecodingException
+    {
+        if (builder == null)
+        {
             builder = DEFAULT_BUILDER;
         }
         return codec.decode(buffer, resolver, builder);
@@ -212,23 +226,28 @@ public class Codecs {
      * @throws DecodingException     If the {@link Codec} fails to decode a value from the buffer passed in.
      */
     public static <T> T decode(Codec<T> codec, File file)
-            throws FileNotFoundException, IOException, DecodingException {
+            throws FileNotFoundException, IOException, DecodingException
+    {
         return decode(codec, null, file);
     }
 
     public static <T> T decode(Codec<T> codec, Builder builder, File file)
-            throws FileNotFoundException, IOException, DecodingException {
+            throws FileNotFoundException, IOException, DecodingException
+    {
         FileInputStream in = null;
         FileChannel channel = null;
-        try {
+        try
+        {
             in = new FileInputStream(file);
             channel = in.getChannel();
             int fileSize = (int) channel.size();
             ByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0,
                     fileSize);
             return decode(codec, buffer, builder);
-        } finally {
-            if (channel != null) {
+        } finally
+        {
+            if (channel != null)
+            {
                 channel.close();
             }
         }
@@ -246,17 +265,20 @@ public class Codecs {
      * @param <T>     The type of object to be encoded.
      * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
      */
-    public static <T> void encode(T value, Codec<T> codec, BitChannel channel) throws IOException {
+    public static <T> void encode(T value, Codec<T> codec, BitChannel channel) throws IOException
+    {
         codec.encode(value, channel, new NullResolver());
     }
 
-    public static <T> byte[] encode(T value, Codec<T> codec) throws IOException {
+    public static <T> byte[] encode(T value, Codec<T> codec) throws IOException
+    {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         encode(value, codec, out);
         return out.toByteArray();
     }
 
-    public static <T> void encode(T value, Codec<T> codec, OutputStream out) throws IOException {
+    public static <T> void encode(T value, Codec<T> codec, OutputStream out) throws IOException
+    {
         encode(value, codec, new OutputStreamBitChannel(out));
     }
 
@@ -267,7 +289,8 @@ public class Codecs {
      * @param type The type of object constructed using the {@link Codec}.
      * @return A {@link Codec} capable of decoding/encoding instances of the type passed in.
      */
-    public static <T> Codec<T> create(Class<T> type) {
+    public static <T> Codec<T> create(Class<T> type)
+    {
         return new DefaultCodecFactory().create(type);
     }
 
@@ -280,7 +303,8 @@ public class Codecs {
      * @param factories Additional {@link CodecFactory CodecFactories} to be used while constructing the {@link Codec}.
      * @return A {@link Codec} capable of decoding instances of the type passed in.
      */
-    public static <T> Codec<T> create(Class<T> type, CodecFactory... factories) {
+    public static <T> Codec<T> create(Class<T> type, CodecFactory... factories)
+    {
         return create(type, factories, new CodecDecorator[0]);
     }
 
@@ -295,7 +319,8 @@ public class Codecs {
      *         CodecDecorators} into account.
      */
     public static <T> Codec<T> create(Class<T> type,
-                                      CodecDecorator... decorators) {
+                                      CodecDecorator... decorators)
+    {
         return create(type, new CodecFactory[0], decorators);
     }
 
@@ -310,15 +335,16 @@ public class Codecs {
      * @return A {@link Codec} capable of decoding instances of the type passed in, taking the {@link CodecDecorator
      *         CodecDecorators} into account.
      */
-	public static <T> Codec<T> create(Class<T> type, CodecFactory[] factories,
-			CodecDecorator[] decorators) {
+    public static <T> Codec<T> create(Class<T> type, CodecFactory[] factories,
+                                      CodecDecorator[] decorators)
+    {
         return create(type, factories, decorators, new BindingDecorator[0]);
-	}
+    }
 
     public static <T> Codec<T> create(Class<T> type, CodecFactory[] factories,
-            CodecDecorator[] decorators, BindingDecorator[] bindingDecorators) {
+                                      CodecDecorator[] decorators, BindingDecorator[] bindingDecorators)
+    {
         return new DefaultCodecFactory().create(null, type,
                 factories, decorators, bindingDecorators);
     }
-
 }

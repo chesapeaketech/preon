@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -33,7 +33,11 @@ import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
 import nl.flotsam.pecia.builder.xml.XmlWriter;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.hex.*;
+import org.codehaus.preon.hex.BytesAsHexFragment;
+import org.codehaus.preon.hex.HexDumper;
+import org.codehaus.preon.hex.LinePosFragment;
+import org.codehaus.preon.hex.LiteralFragment;
+import org.codehaus.preon.hex.XmlWriterHexDumpTarget;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -41,7 +45,8 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class XmlEmitter implements Emitter {
+public class XmlEmitter implements Emitter
+{
 
     private final OutputStreamFactory outputStreamFactory;
     private int depth = 0;
@@ -54,12 +59,15 @@ public class XmlEmitter implements Emitter {
                     new BytesAsHexFragment(8, true),
                     new LiteralFragment("\n"));
 
-    public XmlEmitter(OutputStreamFactory outputStreamFactory) {
+    public XmlEmitter(OutputStreamFactory outputStreamFactory)
+    {
         this.outputStreamFactory = outputStreamFactory;
     }
 
-    public void markStart(Codec<?> codec, long position, BitBuffer buffer) {
-        if (depth == 0) {
+    public void markStart(Codec<?> codec, long position, BitBuffer buffer)
+    {
+        if (depth == 0)
+        {
             current = createWriter();
             writeStart(buffer);
         }
@@ -77,24 +85,31 @@ public class XmlEmitter implements Emitter {
         depth += 1;
     }
 
-    private XmlWriter createWriter() {
-        try {
+    private XmlWriter createWriter()
+    {
+        try
+        {
             OutputStream out = outputStreamFactory.create();
-            if (out == null) {
+            if (out == null)
+            {
                 return new NullXmlWriter();
-            } else {
+            } else
+            {
                 XMLStreamWriter writer =
                         XMLOutputFactory.newInstance().createXMLStreamWriter(outputStreamFactory.create(), "UTF-8");
                 return new StreamingXmlWriter(writer);
             }
-        } catch (XMLStreamException e) {
+        } catch (XMLStreamException e)
+        {
             return new NullXmlWriter();
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             return new NullXmlWriter();
         }
     }
 
-    public void markEnd(Codec<?> codec, long position, long read, Object result) {
+    public void markEnd(Codec<?> codec, long position, long read, Object result)
+    {
         current.writeEndElement(); // end of contents element
         current.writeStartElement("end");
         current.writeAttribute("position", Long.toString(position));
@@ -103,12 +118,14 @@ public class XmlEmitter implements Emitter {
         current.writeEndElement();
         current.writeEndElement();
         depth -= 1;
-        if (depth == 0) {
+        if (depth == 0)
+        {
             writeEnd();
         }
     }
 
-    private void writeStart(BitBuffer buffer) {
+    private void writeStart(BitBuffer buffer)
+    {
         current.writeStartDocument();
         current.writeStartElement(ROOT_ELEMENT);
         current.writeStartElement("bytes");
@@ -117,28 +134,33 @@ public class XmlEmitter implements Emitter {
         current.writeEndElement();
     }
 
-    private void writeEnd() {
+    private void writeEnd()
+    {
         current.writeEndElement();
         current.writeEndDocument();
         current.close();
     }
 
-    public void markFailure() {
+    public void markFailure()
+    {
         current.writeEndElement();
         current.writeEmptyElement("failure");
         current.writeEndElement();
         depth -= 1;
-        if (depth == 0) {
+        if (depth == 0)
+        {
             writeEnd();
         }
     }
 
-    public void markStartLoad(String name, Object object) {
+    public void markStartLoad(String name, Object object)
+    {
         current.writeStartElement("slot");
         current.writeAttribute("name", name);
     }
 
-    public void markEndLoad() {
+    public void markEndLoad()
+    {
         current.writeEndElement();
     }
 }

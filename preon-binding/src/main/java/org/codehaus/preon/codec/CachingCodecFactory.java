@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,16 +24,28 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecConstructionListener;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.Codecs;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.PassThroughCodecDescriptor2;
+import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.util.AnnotationUtils;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An implementation of the {@link CodecFactory} interface that will prevent the same {@link Codec} from being
@@ -61,7 +73,8 @@ import java.util.*;
  *
  * @author Wilfred Springer
  */
-public class CachingCodecFactory implements CodecFactory {
+public class CachingCodecFactory implements CodecFactory
+{
 
     /**
      * A list of all {@link Codecs} already constructed, indexed by just the
@@ -78,11 +91,12 @@ public class CachingCodecFactory implements CodecFactory {
     /**
      * The object receiving notifications of new objects getting constructed.
      */
-    private CodecConstructionListener listener = new CodecConstructionListener() {
+    private CodecConstructionListener listener = new CodecConstructionListener()
+    {
 
-        public void constructed(Codec<?> codec) {
+        public void constructed(Codec<?> codec)
+        {
         }
-
     };
 
     /**
@@ -95,15 +109,18 @@ public class CachingCodecFactory implements CodecFactory {
      *            if it not already constructed the required {@link Codec}
      *            before.
      */
-    public CachingCodecFactory(CodecFactory delegate) {
+    public CachingCodecFactory(CodecFactory delegate)
+    {
         created = new HashMap<Key, CodecHolder<?>>();
         this.delegate = delegate;
     }
 
     public CachingCodecFactory(CodecFactory delegate,
-                               CodecConstructionListener listener) {
+                               CodecConstructionListener listener)
+    {
         this(delegate);
-        if (listener == null) {
+        if (listener == null)
+        {
             throw new IllegalArgumentException("Null not allowed for listener.");
         }
         this.listener = listener;
@@ -113,24 +130,31 @@ public class CachingCodecFactory implements CodecFactory {
 
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-                               ResolverContext context) {
+                               ResolverContext context)
+    {
         Key key = new Key(metadata, type, context);
         Codec<T> result = (Codec<T>) created.get(key);
-        if (result == null) {
+        if (result == null)
+        {
             CodecHolder<T> holder = new CodecHolder<T>(type);
             created.put(key, holder);
             result = delegate.create(metadata, type, context);
-            if (result == null) {
+            if (result == null)
+            {
                 return null;
-            } else {
+            } else
+            {
                 listener.constructed(result);
                 holder.set(result);
                 return result;
             }
-        } else {
-            if (result instanceof CodecHolder) {
+        } else
+        {
+            if (result instanceof CodecHolder)
+            {
                 CodecHolder<T> holder = (CodecHolder<T>) result;
-                if (holder.get() == null) {
+                if (holder.get() == null)
+                {
                     return null;
                 }
             }
@@ -143,58 +167,69 @@ public class CachingCodecFactory implements CodecFactory {
      *
      * @return A {@link List} of {@link Codec Codecs} created by this factory.
      */
-    public List<Codec<?>> getCodecs() {
+    public List<Codec<?>> getCodecs()
+    {
         return Collections.unmodifiableList(new ArrayList<Codec<?>>(created
                 .values()));
     }
 
-    private static class CodecHolder<T> implements Codec<T> {
+    private static class CodecHolder<T> implements Codec<T>
+    {
 
         private Codec<T> codec;
 
         private Class<T> type;
 
-        public CodecHolder(Class<T> type) {
+        public CodecHolder(Class<T> type)
+        {
             this.type = type;
         }
 
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
+                throws DecodingException
+        {
             return codec.decode(buffer, resolver, builder);
         }
 
-        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException
+        {
             codec.encode(value, channel, resolver);
         }
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return new Class<?>[]{type};
         }
 
-        public void set(Codec<T> codec) {
+        public void set(Codec<T> codec)
+        {
             this.codec = codec;
         }
 
-        public Codec<T> get() {
+        public Codec<T> get()
+        {
             return codec;
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return codec.getSize();
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return codec.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
             return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(),
                     codec.getCodecDescriptor().requiresDedicatedSection());
         }
-
     }
 
-    private static class Key {
+    private static class Key
+    {
 
         private AnnotatedElement metadata;
 
@@ -203,17 +238,21 @@ public class CachingCodecFactory implements CodecFactory {
         private ResolverContext context;
 
         public Key(AnnotatedElement metadata, Class<?> type,
-                   ResolverContext context) {
+                   ResolverContext context)
+        {
             this.metadata = metadata;
             this.type = type;
             this.context = context;
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof Key)) {
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof Key))
+            {
                 return false;
-            } else {
+            } else
+            {
                 Key key = (Key) obj;
                 // TODO: Add ResolverContext
                 return ((metadata == null && key.metadata == null) || AnnotationUtils
@@ -224,7 +263,8 @@ public class CachingCodecFactory implements CodecFactory {
         }
 
         @Override
-        public int hashCode() {
+        public int hashCode()
+        {
             // TODO: Add ResolverContext
             int result = 7;
             result = result
@@ -234,7 +274,5 @@ public class CachingCodecFactory implements CodecFactory {
             result = result * 31 + (type == null ? 0 : type.hashCode());
             return result;
         }
-
     }
-
 }

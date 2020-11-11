@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -33,12 +33,14 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 
-public class BinFileTest {
+public class BinFileTest
+{
 
     @Test
-    public void parseBinFile() throws DecodingException {
+    public void parseBinFile() throws DecodingException
+    {
         Codec<BinFile> codec = Codecs.create(BinFile.class);
         byte[] buffer = new byte[]{
                 2, 0,
@@ -64,36 +66,41 @@ public class BinFileTest {
         assertEquals(new String(r1.getData()), "1234");
     }
 
-    public static class BinFile {
+    public static class BinFile
+    {
 
         @BoundNumber(size = "16")
         int numberOfRecords;
-        
+
         @BoundList(type = Record.class, size = "numberOfRecords")
         List<Record> records;
 
-        public int getNumberOfRecords() {
+        public int getNumberOfRecords()
+        {
             return numberOfRecords;
         }
 
-        public List<Record> getRecords() {
+        public List<Record> getRecords()
+        {
             return records;
         }
 
-        public class Record {
+        public class Record
+        {
             @BoundNumber(size = "16")
             int recordLength;
             @BoundList(size = "recordLength")
             byte[] data;
 
-            public int getRecordLength() {
+            public int getRecordLength()
+            {
                 return recordLength;
             }
 
-            public byte[] getData() {
+            public byte[] getData()
+            {
                 return data;
             }
         }
     }
-
 }

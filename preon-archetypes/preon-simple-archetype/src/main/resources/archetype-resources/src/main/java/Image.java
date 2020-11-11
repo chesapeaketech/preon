@@ -23,14 +23,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.buffer.ByteOrder;
+
 #set($symbol_pound='#')
         #set($symbol_dollar='$')
         #set($symbol_escape='\' )
         package ${packageInPathFormat};
-
-import org.codehaus.preon.annotation.BoundList;
-import org.codehaus.preon.annotation.BoundNumber;
-import org.codehaus.preon.buffer.ByteOrder;
 
 public class Image
 {

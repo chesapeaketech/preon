@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,17 +24,23 @@
  */
 package org.codehaus.preon.el.ctx;
 
-import org.codehaus.preon.el.*;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.el.util.StringBuilderDocument;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
-import static org.codehaus.preon.el.Bindings.EarlyBinding;
+import static org.codehaus.preon.el.Bindings.*;
+import static org.junit.Assert.*;
 
-public class ClassReferenceContextTest {
+public class ClassReferenceContextTest
+{
 
     @Test
-    public void testFromBindings() {
+    public void testFromBindings()
+    {
         Expression<Integer, Person> expr = Expressions.from(Person.class)
                 .using(EarlyBinding).toInteger("age * 2");
         Person wilfred = new Person();
@@ -42,8 +48,10 @@ public class ClassReferenceContextTest {
         wilfred.age = 35;
         assertEquals(70, expr.eval(wilfred).intValue());
     }
+
     @Test
-    public void testValidReferences() {
+    public void testValidReferences()
+    {
         ReferenceContext<Person> context = new ClassReferenceContext<Person>(
                 Person.class);
         Reference<Person> personsName = context.selectAttribute("name");
@@ -64,18 +72,19 @@ public class ClassReferenceContextTest {
         System.out.println(builder.toString());
     }
 
-    @Test(expected=BindingException.class)
-    public void testInvalidReferences() {
+    @Test(expected = BindingException.class)
+    public void testInvalidReferences()
+    {
         ReferenceContext<Person> context = new ClassReferenceContext<Person>(
                 Person.class);
         context.selectAttribute("gender");
     }
 
-    private static class Person {
+    private static class Person
+    {
         String name;
         int age;
         Person father;
         Person mother;
     }
-
 }

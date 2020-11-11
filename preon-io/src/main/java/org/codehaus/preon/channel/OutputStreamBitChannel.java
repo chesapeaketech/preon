@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -38,7 +38,8 @@ import java.nio.channels.WritableByteChannel;
 
 /** A {@link BitChannel} that wraps an {@link java.io.OutputStream}. */
 @NotThreadSafe
-public class OutputStreamBitChannel implements BitChannel, Closeable {
+public class OutputStreamBitChannel implements BitChannel, Closeable
+{
 
     private static final byte[] MASK_UPPER = new byte[]{
             (byte) Integer.parseInt("00000000", 2),
@@ -61,31 +62,40 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
     private byte buffer;
 
     /** Constructs a new instance, accepting the {@link OutputStream} to wrap. */
-    public OutputStreamBitChannel(@Nonnull OutputStream out) {
+    public OutputStreamBitChannel(@Nonnull OutputStream out)
+    {
         this.out = out;
     }
 
-    public void write(boolean value, ByteOrder byteOrder) throws IOException {
-        if (byteOrder == ByteOrder.LittleEndian) {
-            if (value) {
-          	    buffer = (byte) (0xff & (buffer | (0x01 << bitPos)));
+    public void write(boolean value, ByteOrder byteOrder) throws IOException
+    {
+        if (byteOrder == ByteOrder.LittleEndian)
+        {
+            if (value)
+            {
+                buffer = (byte) (0xff & (buffer | (0x01 << bitPos)));
             }
-        } else {
-            if (value) {
+        } else
+        {
+            if (value)
+            {
                 buffer = (byte) (0xff & ((buffer << 1) | 0x01));
-            } else {
+            } else
+            {
                 buffer = (byte) (0xff & (buffer << 1));
             }
         }
 
-        if (++bitPos == 8) {
+        if (++bitPos == 8)
+        {
             bitPos = 0;
             out.write(buffer);
             buffer = 0;
         }
     }
 
-    public void writeLE(@Nonnegative int nrbits, byte value) throws IOException {
+    public void writeLE(@Nonnegative int nrbits, byte value) throws IOException
+    {
         assert nrbits > 0;
         assert nrbits <= 8;
 
@@ -101,25 +111,28 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         bitPos = bitPos + length;
 
         // Check if the buffer needs to be flushed
-        if (bitPos > 7) {
+        if (bitPos > 7)
+        {
             out.write(buffer);
             buffer = 0;
             bitPos = 0;
         }
 
         // Check if there is something else left to copy
-        if (length < nrbits) {
-        	bitPos = nrbits - length;
+        if (length < nrbits)
+        {
+            bitPos = nrbits - length;
 
-          // Chop off bits not required
-          value = (byte) (0xff & MASK_UPPER[bitPos] & (value >> length));
+            // Chop off bits not required
+            value = (byte) (0xff & MASK_UPPER[bitPos] & (value >> length));
 
-          // Fill the buffer
-          buffer = (byte) (buffer | (0xff & value));
+            // Fill the buffer
+            buffer = (byte) (buffer | (0xff & value));
         }
     }
 
-    public void write(@Nonnegative int nrbits, byte value) throws IOException {
+    public void write(@Nonnegative int nrbits, byte value) throws IOException
+    {
         assert nrbits > 0;
         assert nrbits <= 8;
 
@@ -137,131 +150,167 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         bitPos = bitPos + length;
 
         // Check if the buffer needs to be flushed
-        if (bitPos > 7) {
+        if (bitPos > 7)
+        {
             out.write(buffer);
             buffer = 0;
             bitPos = 0;
         }
 
         // Check if there is something else left to copy
-        if (length < nrbits) {
+        if (length < nrbits)
+        {
             buffer = (byte) (MASK_UPPER[nrbits - length] & value);
             bitPos = nrbits - length;
         }
     }
-    
+
     public void write(@Nonnegative int nrbits, float value, ByteOrder byteOrder)
-            throws IOException {
-    	write(nrbits, Float.floatToIntBits(value), byteOrder);
+            throws IOException
+    {
+        write(nrbits, Float.floatToIntBits(value), byteOrder);
     }
 
     public void write(@Nonnegative int nrbits, double value, ByteOrder byteOrder)
-            throws IOException {
-    	write(nrbits, Double.doubleToLongBits(value), byteOrder);
+            throws IOException
+    {
+        write(nrbits, Double.doubleToLongBits(value), byteOrder);
     }
 
     public void write(@Nonnegative int nrbits, int value, ByteOrder byteOrder)
-            throws IOException {
+            throws IOException
+    {
         int steps = nrbits / 8;
         int remainder = nrbits % 8;
-        if (byteOrder == ByteOrder.LittleEndian) {
-            for (int i = 0; i < steps; i++) {
+        if (byteOrder == ByteOrder.LittleEndian)
+        {
+            for (int i = 0; i < steps; i++)
+            {
                 writeLE(8, (byte) (0xff & value));
                 value = value >> 8;
             }
-            if (remainder != 0) {
-            	writeLE(remainder, (byte) (MASK_UPPER[remainder] & value));
+            if (remainder != 0)
+            {
+                writeLE(remainder, (byte) (MASK_UPPER[remainder] & value));
             }
-        } else {
-            if (remainder != 0) {
+        } else
+        {
+            if (remainder != 0)
+            {
                 write(remainder, (byte) (MASK_UPPER[remainder] & (value >> (steps * 8))));
             }
-            for (int i = steps - 1; i >= 0; i--) {
-            	write(8, (byte) (0xff & (value >> i * 8)));
+            for (int i = steps - 1; i >= 0; i--)
+            {
+                write(8, (byte) (0xff & (value >> i * 8)));
             }
         }
     }
 
     public void write(@Nonnegative int nrbits, long value, ByteOrder byteOrder)
-            throws IOException {
+            throws IOException
+    {
         int steps = nrbits / 8;
         int remainder = nrbits % 8;
-        if (byteOrder == ByteOrder.LittleEndian) {
-            for (int i = 0; i < steps; i++) {
+        if (byteOrder == ByteOrder.LittleEndian)
+        {
+            for (int i = 0; i < steps; i++)
+            {
                 writeLE(8, (byte) (0xff & value));
                 value = value >> 8;
             }
-            if (remainder != 0) {
+            if (remainder != 0)
+            {
                 writeLE(remainder, (byte) (MASK_UPPER[remainder] & value));
             }
-        } else {
-            if (remainder != 0) {
+        } else
+        {
+            if (remainder != 0)
+            {
                 write(remainder, (byte) (MASK_UPPER[remainder] & (value >> (steps * 8))));
             }
-            for (int i = steps - 1; i >= 0; i--) {
+            for (int i = steps - 1; i >= 0; i--)
+            {
                 write(8, (byte) (0xff & (value >> i * 8)));
             }
         }
     }
 
     public void write(@Nonnegative int nrbits, short value, ByteOrder byteOrder)
-            throws IOException {
+            throws IOException
+    {
         int steps = nrbits / 8;
         int remainder = nrbits % 8;
-        if (byteOrder == ByteOrder.LittleEndian) {
-            for (int i = 0; i < steps; i++) {
+        if (byteOrder == ByteOrder.LittleEndian)
+        {
+            for (int i = 0; i < steps; i++)
+            {
                 writeLE(8, (byte) (0xff & value));
                 value = (short) (value >> 8);
             }
-            if (remainder != 0) {
+            if (remainder != 0)
+            {
                 writeLE(remainder, (byte) (MASK_UPPER[remainder] & value));
             }
-        } else {
-            if (remainder != 0) {
+        } else
+        {
+            if (remainder != 0)
+            {
                 write(remainder, (byte) (MASK_UPPER[remainder] & (value >> (steps * 8))));
             }
-            for (int i = steps - 1; i >= 0; i--) {
+            for (int i = steps - 1; i >= 0; i--)
+            {
                 write(8, (byte) (0xff & (value >> i * 8)));
             }
         }
     }
 
-    public void write(@Nonnull byte[] src, int offset, int length) throws IOException {
-        for (int i = 0; i < length; i++) {
+    public void write(@Nonnull byte[] src, int offset, int length) throws IOException
+    {
+        for (int i = 0; i < length; i++)
+        {
             write(8, src[offset + i]);
         }
     }
 
-    public long write(@Nonnull ByteBuffer buffer) throws IOException {
+    public long write(@Nonnull ByteBuffer buffer) throws IOException
+    {
         WritableByteChannel channel = null;
-        try {
+        try
+        {
             channel = Channels.newChannel(out);
             return channel.write(buffer) * 8;
-        } finally {
+        } finally
+        {
             channel.close();
         }
     }
 
     public
     @Nonnegative
-    int getRelativeBitPos() {
+    int getRelativeBitPos()
+    {
         return bitPos;
     }
 
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         out.close();
     }
 
-    public void flush(ByteOrder byteOrder) throws IOException {
-    		assert bitPos < 8;
-    		if (bitPos > 0) {
-    	  				int remaining = 8 - bitPos;
-    	  				if (byteOrder == ByteOrder.LittleEndian) {
-    	  				    writeLE(remaining, (byte)0);
-    	  				} else {
-    	  					  write(remaining, (byte)0);
-    	  				}
-    	  }
-    	  out.flush();
+    public void flush(ByteOrder byteOrder) throws IOException
+    {
+        assert bitPos < 8;
+        if (bitPos > 0)
+        {
+            int remaining = 8 - bitPos;
+            if (byteOrder == ByteOrder.LittleEndian)
+            {
+                writeLE(remaining, (byte) 0);
+            } else
+            {
+                write(remaining, (byte) 0);
+            }
+        }
+        out.flush();
     }
 }

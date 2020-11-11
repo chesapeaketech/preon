@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,12 +27,22 @@ package org.codehaus.preon.binding;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.If;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
-import org.codehaus.preon.el.*;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.InvalidExpressionException;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
@@ -45,7 +55,8 @@ import java.util.Set;
  *
  * @author Wilfred Springer
  */
-public class ConditionalBindingFactory implements BindingFactory {
+public class ConditionalBindingFactory implements BindingFactory
+{
 
     /**
      * The {@link BindingFactory} creating the {@link Binding}s that will be wrapped with {@link ConditionalBinding}
@@ -58,169 +69,201 @@ public class ConditionalBindingFactory implements BindingFactory {
      *
      * @param decorated The {@link BindingFactory} of the {@link Binding Bindings} to decorate.
      */
-    public ConditionalBindingFactory(BindingFactory decorated) {
+    public ConditionalBindingFactory(BindingFactory decorated)
+    {
         this.decorated = decorated;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.codehaus.preon.binding.BindingFactory#create(java.lang.reflect.
      * AnnotatedElement, java.lang.reflect.Field, org.codehaus.preon.Codec,
      * org.codehaus.preon.ResolverContext)
      */
 
     public Binding create(AnnotatedElement metadata, Field field, Codec<?> codec,
-                          ResolverContext context, Documenter<ParaContents<?>> containerReference) {
+                          ResolverContext context, Documenter<ParaContents<?>> containerReference)
+    {
         If condition = metadata.getAnnotation(If.class);
-        if (condition != null) {
+        if (condition != null)
+        {
             Expression<Boolean, Resolver> expr = null;
             String value = condition.value();
-            try {
+            try
+            {
                 expr = Expressions.createBoolean(context, value);
                 return new ConditionalBinding(expr, decorated.create(metadata, field, codec, context, containerReference));
-            } catch (InvalidExpressionException e) {
+            } catch (InvalidExpressionException e)
+            {
                 System.err.println("All wrong");
                 throw e;
             }
-        } else {
+        } else
+        {
             return decorated.create(metadata, field, codec, context, containerReference);
         }
     }
 
-    private static class ConditionalBinding implements Binding {
+    private static class ConditionalBinding implements Binding
+    {
 
         private Expression<Boolean, Resolver> expr;
 
         private Binding binding;
 
-        public ConditionalBinding(Expression<Boolean, Resolver> expr, Binding binding) {
+        public ConditionalBinding(Expression<Boolean, Resolver> expr, Binding binding)
+        {
             this.expr = expr;
             this.binding = binding;
         }
 
         public void load(Object object, BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
-            if (expr.eval(resolver)) {
+                throws DecodingException
+        {
+            if (expr.eval(resolver))
+            {
                 binding.load(object, buffer, resolver, builder);
             }
         }
 
-        public <T, V extends ParaContents<T>> V describe(final V contents) {
+        public <T, V extends ParaContents<T>> V describe(final V contents)
+        {
             contents.text(" Only if ");
-            expr.document(new Document() {
+            expr.document(new Document()
+            {
 
-                public Document detail(String summary) {
+                public Document detail(String summary)
+                {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public void link(Object object, String text) {
+                public void link(Object object, String text)
+                {
                     contents.link(object, text);
                 }
 
-                public void text(String text) {
+                public void text(String text)
+                {
                     contents.text(text);
                 }
-
             });
             contents.text(".");
             return contents;
         }
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return binding.getTypes();
         }
 
-        public Object get(Object context) throws IllegalArgumentException, IllegalAccessException {
+        public Object get(Object context) throws IllegalArgumentException, IllegalAccessException
+        {
             return binding.get(context);
         }
 
-        public String getName() {
+        public String getName()
+        {
             return binding.getName();
         }
 
-        public <T, V extends ParaContents<T>> V writeReference(V contents) {
+        public <T, V extends ParaContents<T>> V writeReference(V contents)
+        {
             return binding.writeReference(contents);
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return new ConditionalValue(expr, binding.getSize());
         }
 
-        public String getId() {
+        public String getId()
+        {
             return binding.getId();
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return binding.getType();
         }
 
-        public void save(Object value, BitChannel channel, Resolver resolver) throws IOException {
-            if (expr.eval(resolver)) {
+        public void save(Object value, BitChannel channel, Resolver resolver) throws IOException
+        {
+            if (expr.eval(resolver))
+            {
                 binding.save(value, channel, resolver);
             }
         }
 
-        public <V extends SimpleContents<?>> V describe(V contents) {
+        public <V extends SimpleContents<?>> V describe(V contents)
+        {
             binding.describe(contents);
             contents.para().text("Only if ").document(Documenters.forExpression(expr)).text(".").end();
             return contents;
         }
-
     }
 
-    private static class ConditionalValue implements Expression<Integer, Resolver> {
+    private static class ConditionalValue implements Expression<Integer, Resolver>
+    {
 
         private Expression<Boolean, Resolver> condition;
 
         private Expression<Integer, Resolver> expr;
 
-        public ConditionalValue(Expression<Boolean, Resolver> condition, Expression<Integer, Resolver> expr) {
+        public ConditionalValue(Expression<Boolean, Resolver> condition, Expression<Integer, Resolver> expr)
+        {
             this.condition = condition;
             this.expr = expr;
         }
 
-        public Integer eval(Resolver resolver) throws BindingException {
-            if (condition.eval(resolver)) {
+        public Integer eval(Resolver resolver) throws BindingException
+        {
+            if (condition.eval(resolver))
+            {
                 return expr.eval(resolver);
-            } else {
+            } else
+            {
                 return 0;
             }
         }
 
-        public Set<Reference<Resolver>> getReferences() {
+        public Set<Reference<Resolver>> getReferences()
+        {
             return expr.getReferences();
         }
 
-        public Class<Integer> getType() {
+        public Class<Integer> getType()
+        {
             return Integer.class;
         }
 
-        public boolean isParameterized() {
+        public boolean isParameterized()
+        {
             return condition.isParameterized() || expr.isParameterized();
         }
 
-        public Expression<Integer, Resolver> simplify() {
+        public Expression<Integer, Resolver> simplify()
+        {
             return new ConditionalValue(condition.simplify(), expr.simplify());
         }
 
-        public boolean isConstantFor(ReferenceContext<Resolver> context) {
+        public boolean isConstantFor(ReferenceContext<Resolver> context)
+        {
             return condition.isConstantFor(context) && expr.isConstantFor(context);
         }
 
-        public Expression<Integer, Resolver> rescope(ReferenceContext<Resolver> context) {
+        public Expression<Integer, Resolver> rescope(ReferenceContext<Resolver> context)
+        {
             return new ConditionalValue(condition.rescope(context), expr.rescope(context));
         }
 
-        public void document(Document document) {
+        public void document(Document document)
+        {
             expr.document(document);
             document.text(" if ");
             condition.document(document);
             document.text(" or else 0");
         }
-
-
     }
-
 }

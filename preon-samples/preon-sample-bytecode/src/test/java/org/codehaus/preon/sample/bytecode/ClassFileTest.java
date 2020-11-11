@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -42,12 +42,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-public class ClassFileTest {
+public class ClassFileTest
+{
 
     private Codec<ClassFile> codec;
     private static byte[] bytecode;
@@ -56,43 +56,51 @@ public class ClassFileTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     @BeforeClass
-    public static void loadBytecode() throws IOException {
+    public static void loadBytecode() throws IOException
+    {
         InputStream in = null;
-        try {
+        try
+        {
             in = ClassFileTest.class.getResourceAsStream("/Foo.class");
             bytecode = IOUtils.toByteArray(in);
-        } finally {
+        } finally
+        {
             IOUtils.closeQuietly(in);
         }
     }
 
     @Before
-    public void constructCodec() {
+    public void constructCodec()
+    {
         codec = Codecs.create(ClassFile.class);
     }
 
     @Test
-    public void printDocumentation() throws FileNotFoundException {
+    public void printDocumentation() throws FileNotFoundException
+    {
         File directory = new File(System.getProperty("java.io.tmpdir"));
         File file = new File(directory, "documentation.html");
         Codecs.document(codec, DocumentType.Html, file);
     }
 
     @Test
-    public void shouldDecodeClassFile() throws IOException, DecodingException {
+    public void shouldDecodeClassFile() throws IOException, DecodingException
+    {
         ClassFile classFile = Codecs.decode(codec, bytecode);
         assertThat(classFile, is(not(nullValue())));
     }
 
     @Test
-    public void shouldCorrectlyDocument() throws IOException {
+    public void shouldCorrectlyDocument() throws IOException
+    {
         File file = File.createTempFile("preon", ".html");
         file.deleteOnExit();
         Codecs.document(codec, DocumentType.Html, file);
     }
 
     @Test
-    public void shouldExportCorrectly() throws DecodingException, IOException {
+    public void shouldExportCorrectly() throws DecodingException, IOException
+    {
         File root = new File(System.getProperty("java.io.tmpdir"));
         Exporter.decodeAndExport(ClassFile.class, ByteBuffer.wrap(bytecode), new File(root, "hello.html"));
 //        assertThat(Arrays.asList(root.list()),
@@ -103,7 +111,4 @@ public class ClassFileTest {
 //        assertThat(contentsFile.length(), is(greaterThan(0L)));
 //        System.out.println(readFileToString(new File(root, "hello-contents.txt"), "UTF-8"));
     }
-
-
-
 }

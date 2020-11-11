@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,12 +27,19 @@ package org.codehaus.preon.codec;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.LazyLoading;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.PassThroughCodecDescriptor2;
+import org.codehaus.preon.el.Expression;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
@@ -46,13 +53,17 @@ import java.lang.reflect.Method;
  *
  * @author Wilfred Springer
  */
-public class LazyLoadingCodecDecorator implements CodecDecorator {
+public class LazyLoadingCodecDecorator implements CodecDecorator
+{
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
-                                 Class<T> type, ResolverContext context) {
-        if (metadata != null && metadata.isAnnotationPresent(LazyLoading.class)) {
+                                 Class<T> type, ResolverContext context)
+    {
+        if (metadata != null && metadata.isAnnotationPresent(LazyLoading.class))
+        {
             return new LazyLoadingCodec<T>(decorated, type);
-        } else {
+        } else
+        {
             return decorated;
         }
     }
@@ -65,7 +76,8 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
      *
      * @param <T>
      */
-    public static class LazyLoadingCodec<T> implements Codec<T> {
+    public static class LazyLoadingCodec<T> implements Codec<T>
+    {
 
         /**
          * The {@link Codec} to use.
@@ -85,34 +97,39 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
          * @param type
          *            The type of object that will be returned.
          */
-        public LazyLoadingCodec(Codec<T> wrapped, Class<T> type) {
+        public LazyLoadingCodec(Codec<T> wrapped, Class<T> type)
+        {
             this.wrapped = wrapped;
             this.type = type;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.codehaus.preon.Codec#decode(org.codehaus.preon.buffer.BitBuffer,
          * org.codehaus.preon.Resolver, org.codehaus.preon.Builder)
          */
 
         @SuppressWarnings("unchecked")
         public T decode(final BitBuffer buffer, final Resolver resolver,
-                        final Builder builder) throws DecodingException {
+                        final Builder builder) throws DecodingException
+        {
             final int size = wrapped.getSize().eval(resolver);
             final long pos = buffer.getBitPos();
             ClassLoader loader = this.getClass().getClassLoader();
             Enhancer enhancer = new Enhancer();
             enhancer.setClassLoader(loader);
             enhancer.setSuperclass(type);
-            enhancer.setCallback(new MethodInterceptor() {
+            enhancer.setCallback(new MethodInterceptor()
+            {
 
                 private Object actual;
 
                 public Object intercept(Object target, Method method,
-                                        Object[] args, MethodProxy proxy) throws Throwable {
-                    if (actual == null) {
+                                        Object[] args, MethodProxy proxy) throws Throwable
+                {
+                    if (actual == null)
+                    {
                         buffer.setBitPos(pos);
                         actual = wrapped.decode(buffer, resolver, builder);
                     }
@@ -123,45 +140,48 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
             return (T) enhancer.create();
         }
 
-        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException
+        {
             wrapped.encode(value, channel, resolver);
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.codehaus.preon.Codec#getTypes()
          */
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return wrapped.getTypes();
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.codehaus.preon.Codec#getSize()
          */
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return wrapped.getSize();
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.codehaus.preon.Codec#getType()
          */
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return type;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
             return new PassThroughCodecDescriptor2(wrapped
                     .getCodecDescriptor(), false);
         }
-
     }
-
 }

@@ -27,7 +27,15 @@ package org.codehaus.preon.codec;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecConstructionException;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.Codecs;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.BoundObject;
 import org.codehaus.preon.annotation.Choices;
@@ -37,7 +45,13 @@ import org.codehaus.preon.buffer.SlicedBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.descriptor.NullCodecDescriptor2;
-import org.codehaus.preon.el.*;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.ContextReplacingReference;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.util.AnnotationWrapper;
 import org.codehaus.preon.util.CodecDescriptorHolder;
 import org.codehaus.preon.util.EvenlyDistributedLazyList;
@@ -62,7 +76,8 @@ import java.util.List;
  *
  * @author Wilfred Springer
  */
-public class ListCodecFactory implements CodecFactory {
+public class ListCodecFactory implements CodecFactory
+{
 
     /**
      * The {@link CodecFactory} that will be used for constructing the {@link Codecs} to construct elements in the
@@ -77,7 +92,8 @@ public class ListCodecFactory implements CodecFactory {
      * @param delegate The {@link CodecFactory} creating the {@link Codec Codecs} that will reconstruct elements in the
      *                 List.
      */
-    public ListCodecFactory(CodecFactory delegate) {
+    public ListCodecFactory(CodecFactory delegate)
+    {
         this.delegate = delegate;
     }
 
@@ -85,20 +101,24 @@ public class ListCodecFactory implements CodecFactory {
 
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-                               ResolverContext context) {
+                               ResolverContext context)
+    {
         BoundList settings = null;
         if (metadata != null
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
-                && java.util.List.class.equals(type)) {
+                && java.util.List.class.equals(type))
+        {
             Codec<?> codec = createElementCodec(context, settings);
-            if (settings.size().length() == 0) {
+            if (settings.size().length() == 0)
+            {
                 // So, we don't know the number of elements in this list.
                 // This means we need to keep on reading elements until we get
                 // an 'EOF' or a DecodingException. In case of a
                 // DecodingException, the pointer is expected to be moved back
                 // to the first position.
                 return (Codec<T>) new DynamicListCodec(codec);
-            } else if (settings.offset().length() != 0) {
+            } else if (settings.offset().length() != 0)
+            {
                 // So the size is known. If the offset attribute has been set,
                 // it means we can calculate the position of the individual
                 // elements based on the index of that element.
@@ -113,55 +133,67 @@ public class ListCodecFactory implements CodecFactory {
                 // TODO:
                 holder.setDescriptor(result.getCodecDescriptor());
                 return result;
-            } else {
+            } else
+            {
                 // In this case, there may be a size (number of elements) set,
                 // but the size of the individual may not be constant. The size
                 // of the individual elements may be determined by some
                 // variables read upstream, so we won't know if the size is a
                 // constant until we actually start decoding the List.
 
-
                 Expression<Integer, Resolver> expr = getSizeExpression(
                         settings, context);
                 Expression<Integer, Resolver> elementSize = codec.getSize();
-                if (elementSize != null && (!elementSize.isParameterized() || elementSize.isConstantFor(context))) {
-                    if (!elementSize.isParameterized()) {
+                if (elementSize != null && (!elementSize.isParameterized() || elementSize.isConstantFor(context)))
+                {
+                    if (!elementSize.isParameterized())
+                    {
                         return new StaticListCodec(expr, codec, elementSize);
-                    } else {
+                    } else
+                    {
                         elementSize = elementSize.rescope(context);
                         return new StaticListCodec(expr.rescope(context), codec, elementSize);
                     }
-                } else {
-                    if (expr != null) {
+                } else
+                {
+                    if (expr != null)
+                    {
                         return new BoundedDynamicListCodec(codec, expr);
-                    }
-                    else {
+                    } else
+                    {
                         return new DynamicListCodec(codec);
                     }
                 }
             }
-        } else {
+        } else
+        {
             return null;
         }
-
     }
 
-    private <T> Codec<?> createElementCodec(ResolverContext context, BoundList settings) {
-        if (settings.types().length > 0) {
+    private <T> Codec<?> createElementCodec(ResolverContext context, BoundList settings)
+    {
+        if (settings.types().length > 0)
+        {
             BoundObject objectSettings = getObjectSettings(settings);
             Class typeClass = objectSettings.type() == Void.class ? Object.class : objectSettings.type();
             return delegate.create(toAnnotatedElemented(objectSettings), typeClass, context);
-        } else if (settings.type() != null) {
+        } else if (settings.type() != null)
+        {
             return delegate.create(null, settings.type(), context);
-        } else {
+        } else
+        {
             throw new CodecConstructionException("Failed to determine the type of element.");
         }
     }
 
-    private AnnotatedElement toAnnotatedElemented(BoundObject objectSettings) {
-        if (objectSettings == null) {
+    private AnnotatedElement toAnnotatedElemented(BoundObject objectSettings)
+    {
+        if (objectSettings == null)
+        {
             return null;
-        } else {
+        } else
+        {
             return new AnnotationWrapper(objectSettings);
         }
     }
@@ -173,29 +205,35 @@ public class ListCodecFactory implements CodecFactory {
      * @param settings The {@link BoundList} settings.
      * @return A {@link BoundObject} annotation with settings copied from the {@link BoundList} annotation passed in.
      */
-    private BoundObject getObjectSettings(final BoundList settings) {
-        return new BoundObject() {
+    private BoundObject getObjectSettings(final BoundList settings)
+    {
+        return new BoundObject()
+        {
 
-            public Class<?> type() {
+            public Class<?> type()
+            {
                 return settings.type();
             }
 
-            public Class<?>[] types() {
+            public Class<?>[] types()
+            {
                 return settings.types();
             }
 
-            public Class<? extends Annotation> annotationType() {
+            public Class<? extends Annotation> annotationType()
+            {
                 return BoundObject.class;
             }
 
-            public boolean ommitTypePrefix() {
+            public boolean ommitTypePrefix()
+            {
                 return settings.ommitTypePrefix();
             }
 
-            public Choices selectFrom() {
+            public Choices selectFrom()
+            {
                 return settings.selectFrom();
             }
-
         };
     }
 
@@ -209,7 +247,8 @@ public class ListCodecFactory implements CodecFactory {
      * Note that this class is called <code><em>Static</em>ListCodec</code> since it relies on the fact that the size of
      * the List and the amount of data required for every list member is known in advance. </p
      */
-    private static class StaticListCodec<T> implements Codec<List<T>> {
+    private static class StaticListCodec<T> implements Codec<List<T>>
+    {
 
         /**
          * The number of elements in the list.
@@ -234,7 +273,8 @@ public class ListCodecFactory implements CodecFactory {
          */
         public StaticListCodec(Expression<Integer, Resolver> maxSize,
                                Codec<T> codec,
-                               Expression<Integer, Resolver> elementSize) {
+                               Expression<Integer, Resolver> elementSize)
+        {
             this.size = maxSize;
             this.codec = codec;
             this.elementSize = elementSize;
@@ -242,60 +282,77 @@ public class ListCodecFactory implements CodecFactory {
 
         @SuppressWarnings("unchecked")
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                              Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException
+        {
             return new EvenlyDistributedLazyList(codec, buffer.getBitPos(),
                     buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
-            if (value == null) {
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException
+        {
+            if (value == null)
+            {
                 value = Collections.emptyList();
             }
-            for (T t : value) {
+            for (T t : value)
+            {
                 codec.encode(t, channel, resolver);
             }
         }
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return codec.getTypes();
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return Expressions.multiply(size, elementSize);
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return List.class;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
+            return new CodecDescriptor()
+            {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
-                        final String bufferReference) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final String bufferReference)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.para().text("The number of elements in ")
                                     .document(reference(Adjective.THE, false)).text(
                                     " is ").document(
                                     Documenters.forExpression(size))
                                     .text(".")
                                     .end();
-                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection())
+                            {
                                 target.document(codec.getCodecDescriptor().details(bufferReference));
                             }
                         }
                     };
                 }
 
-                public String getTitle() {
+                public String getTitle()
+                {
                     return null;
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective, final boolean startWithCapital) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final Adjective adjective, final boolean startWithCapital)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor().reference(
@@ -304,21 +361,23 @@ public class ListCodecFactory implements CodecFactory {
                     };
                 }
 
-                public boolean requiresDedicatedSection() {
+                public boolean requiresDedicatedSection()
+                {
                     return false;
                 }
 
-                public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                public <C extends ParaContents<?>> Documenter<C> summary()
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }
-
             };
         }
-
     }
 
     /**
@@ -329,33 +388,41 @@ public class ListCodecFactory implements CodecFactory {
      */
     private Expression<Integer, Resolver> getSizeExpression(
             BoundList listSettings, ResolverContext context)
-            throws CodecConstructionException {
+            throws CodecConstructionException
+    {
         return Expressions.createInteger(context, listSettings.size());
     }
 
-    private static class DynamicListCodec<T> implements Codec<List<T>> {
+    private static class DynamicListCodec<T> implements Codec<List<T>>
+    {
 
         private Codec<T> codec;
 
-        public DynamicListCodec(Codec<T> codec) {
+        public DynamicListCodec(Codec<T> codec)
+        {
             this.codec = codec;
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                              Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException
+        {
             List<T> result = new LinkedList<T>();
             long mark = buffer.getBitPos();
-            try {
-                while (true) {
+            try
+            {
+                while (true)
+                {
                     T value = codec.decode(buffer, resolver, builder);
                     result.add(value);
                     mark = buffer.getBitPos();
                 }
-            } catch (BitBufferUnderflowException oore) {
+            } catch (BitBufferUnderflowException oore)
+            {
                 // Trying to read beyond the end of the file.
                 // TODO: Make a difference between failing half-way and failing
                 // starting to read the next element.
-            } catch (DecodingException de) {
+            } catch (DecodingException de)
+            {
                 // So we can't decode the element. Maybe it's no longer an
                 // element of this List. Let's consider this list to be
                 // completed.
@@ -364,52 +431,66 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
-            for (T valueItem : value) {
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException
+        {
+            for (T valueItem : value)
+            {
                 this.codec.encode(valueItem, channel, resolver);
             }
         }
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return codec.getTypes();
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return null;
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return List.class;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
+            return new CodecDescriptor()
+            {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
-                        final String bufferReference) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final String bufferReference)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target
                                     .para()
                                     .text(
                                             "The number of elements in the list is unknown at forehand. The codec will just decode as many elements as the buffer allows to decode.")
                                     .end();
-                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection())
+                            {
                                 target.document(codec.getCodecDescriptor().details(bufferReference));
                             }
-
                         }
                     };
                 }
 
-                public String getTitle() {
+                public String getTitle()
+                {
                     return null;
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective, final boolean startWithCapital) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final Adjective adjective, final boolean startWithCapital)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor().reference(
@@ -418,50 +499,58 @@ public class ListCodecFactory implements CodecFactory {
                     };
                 }
 
-                public boolean requiresDedicatedSection() {
+                public boolean requiresDedicatedSection()
+                {
                     return false;
                 }
 
-                public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                public <C extends ParaContents<?>> Documenter<C> summary()
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }
-
             };
         }
-
     }
 
-
-    private static class BoundedDynamicListCodec<T> implements Codec<List<T>> {
+    private static class BoundedDynamicListCodec<T> implements Codec<List<T>>
+    {
 
         private Codec<T> codec;
         private Expression<Integer, Resolver> size;
 
-        public BoundedDynamicListCodec(Codec<T> codec, Expression<Integer, Resolver> expression) {
+        public BoundedDynamicListCodec(Codec<T> codec, Expression<Integer, Resolver> expression)
+        {
             this.codec = codec;
             this.size = expression;
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException
+        {
             List<T> result = new LinkedList<T>();
             long mark = buffer.getBitPos();
             int numElements = size.eval(resolver);
-            try {
-                for (int count = 0; count < numElements; count++) {
+            try
+            {
+                for (int count = 0; count < numElements; count++)
+                {
                     T value = codec.decode(buffer, resolver, builder);
                     result.add(value);
                     mark = buffer.getBitPos();
                 }
-            } catch (BitBufferUnderflowException oore) {
+            } catch (BitBufferUnderflowException oore)
+            {
                 // Trying to read beyond the end of the file.
                 // TODO: Make a difference between failing half-way and failing
                 // starting to read the next element.
-            } catch (DecodingException de) {
+            } catch (DecodingException de)
+            {
                 // So we can't decode the element. Maybe it's no longer an
                 // element of this List. Let's consider this list to be
                 // completed.
@@ -470,52 +559,66 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
-            for (T valueItem : value) {
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException
+        {
+            for (T valueItem : value)
+            {
                 this.codec.encode(valueItem, channel, resolver);
             }
         }
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return codec.getTypes();
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return null;
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return List.class;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
+            return new CodecDescriptor()
+            {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
-                        final String bufferReference) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final String bufferReference)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target
                                     .para()
                                     .text(
                                             "The number of elements in the list is unknown at forehand. The codec will just decode as many elements as the buffer allows to decode.")
                                     .end();
-                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection())
+                            {
                                 target.document(codec.getCodecDescriptor().details(bufferReference));
                             }
-
                         }
                     };
                 }
 
-                public String getTitle() {
+                public String getTitle()
+                {
                     return null;
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective, final boolean startWithCapital) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final Adjective adjective, final boolean startWithCapital)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor().reference(
@@ -524,86 +627,98 @@ public class ListCodecFactory implements CodecFactory {
                     };
                 }
 
-                public boolean requiresDedicatedSection() {
+                public boolean requiresDedicatedSection()
+                {
                     return false;
                 }
 
-                public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                public <C extends ParaContents<?>> Documenter<C> summary()
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }
-
             };
         }
-
     }
-
-
-
 
     /**
      * A {@link Codec} for Lists. The type of List that will be created is determined at runtime, right before the
      * actual List is decoded. The {@link #skipListCodec} Codec will be used when the size of the individual list item
      * can be determined before the List is getting constructed.
      */
-    private static class SwitchingListCodec<T> implements Codec<List<T>> {
+    private static class SwitchingListCodec<T> implements Codec<List<T>>
+    {
 
         private Codec<List<T>> skipListCodec;
 
         private Codec<List<T>> nonSkipListCodec;
 
         public SwitchingListCodec(Codec<List<T>> skipListCodec,
-                                  Codec<List<T>> nonSkipListCodec) {
+                                  Codec<List<T>> nonSkipListCodec)
+        {
             this.skipListCodec = skipListCodec;
             this.nonSkipListCodec = nonSkipListCodec;
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                              Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException
+        {
             Expression<Integer, Resolver> sizeExpr = skipListCodec.getSize();
-            if (sizeExpr != null && sizeExpr.eval(resolver) >= 0) {
+            if (sizeExpr != null && sizeExpr.eval(resolver) >= 0)
+            {
                 return skipListCodec.decode(buffer, resolver, builder);
-            } else {
+            } else
+            {
                 return nonSkipListCodec.decode(buffer, resolver, builder);
             }
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
+        public void encode(List<T> value, BitChannel channel, Resolver resolver)
+        {
             throw new UnsupportedOperationException();
         }
 
-        public int getSize(Resolver resolver) {
+        public int getSize(Resolver resolver)
+        {
             int skipSize = skipListCodec.getSize().eval(resolver);
-            if (skipSize >= 0) {
+            if (skipSize >= 0)
+            {
                 return skipSize;
-            } else {
+            } else
+            {
                 return nonSkipListCodec.getSize().eval(resolver);
             }
         }
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return skipListCodec.getTypes();
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return null;
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return skipListCodec.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
             // TODO Auto-generated method stub
             return new NullCodecDescriptor2();
         }
-
     }
 
-    private static class IndexedResolverContext implements ResolverContext {
+    private static class IndexedResolverContext implements ResolverContext
+    {
 
         private ResolverContext context;
 
@@ -612,117 +727,142 @@ public class ListCodecFactory implements CodecFactory {
         private CodecDescriptor descriptor;
 
         public IndexedResolverContext(ResolverContext context,
-                                      CodecDescriptor descriptor) {
+                                      CodecDescriptor descriptor)
+        {
             this.context = context;
             this.descriptor = descriptor;
         }
 
-        public Reference<Resolver> selectAttribute(String name) {
-            if (INDEX.equals(name)) {
+        public Reference<Resolver> selectAttribute(String name)
+        {
+            if (INDEX.equals(name))
+            {
                 return new IndexReference(context, descriptor);
-            } else {
+            } else
+            {
                 return new ContextReplacingReference(this, context
                         .selectAttribute(name));
             }
         }
 
-        public Reference<Resolver> selectItem(String index) {
+        public Reference<Resolver> selectItem(String index)
+        {
             return new ContextReplacingReference(this, context
                     .selectItem(index));
         }
 
         public Reference<Resolver> selectItem(
-                Expression<Integer, Resolver> index) {
+                Expression<Integer, Resolver> index)
+        {
             return new ContextReplacingReference(this, context
                     .selectItem(index));
         }
 
-        public void document(Document target) {
+        public void document(Document target)
+        {
             ParaContentsDocument doc = new ParaContentsDocument(target);
             doc.document(Documenters.forDescriptor(descriptor));
         }
 
-        private static class IndexReference implements Reference<Resolver> {
+        private static class IndexReference implements Reference<Resolver>
+        {
 
             private ReferenceContext<Resolver> context;
 
             private CodecDescriptor descriptor;
 
             public IndexReference(ReferenceContext<Resolver> context,
-                                  CodecDescriptor descriptor) {
+                                  CodecDescriptor descriptor)
+            {
                 this.context = context;
                 this.descriptor = descriptor;
             }
 
-            public ReferenceContext<Resolver> getReferenceContext() {
+            public ReferenceContext<Resolver> getReferenceContext()
+            {
                 return context;
             }
 
-            public boolean isAssignableTo(Class<?> type) {
+            public boolean isAssignableTo(Class<?> type)
+            {
                 return Integer.class.isAssignableFrom(type);
             }
 
-            public Object resolve(Resolver context) {
+            public Object resolve(Resolver context)
+            {
                 return context.get(INDEX);
             }
 
-            public Reference<Resolver> selectAttribute(String name) {
+            public Reference<Resolver> selectAttribute(String name)
+            {
                 throw new BindingException("No attribute selection allowed.");
             }
 
-            public Reference<Resolver> selectItem(String index) {
+            public Reference<Resolver> selectItem(String index)
+            {
                 throw new BindingException("No item selection allowed.");
             }
 
             public Reference<Resolver> selectItem(
-                    Expression<Integer, Resolver> index) {
+                    Expression<Integer, Resolver> index)
+            {
                 throw new BindingException("No item selection allowed.");
             }
 
-            public void document(Document target) {
+            public void document(Document target)
+            {
                 target.text("the position of an element in ");
                 ParaContentsDocument doc = new ParaContentsDocument(target);
                 doc.document(Documenters.forDescriptor(descriptor));
             }
 
-            public Class<?> getType() {
+            public Class<?> getType()
+            {
                 return Integer.class;
             }
 
-            public Reference<Resolver> narrow(Class<?> type) {
-                if (type == Integer.class) {
+            public Reference<Resolver> narrow(Class<?> type)
+            {
+                if (type == Integer.class)
+                {
                     return this;
-                } else {
+                } else
+                {
                     return null;
                 }
             }
 
-            public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+            public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext)
+            {
                 return false;
             }
 
-            public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+            public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext)
+            {
                 return this;
             }
-
         }
-
     }
 
-    private static class IndexResolver implements Resolver {
+    private static class IndexResolver implements Resolver
+    {
 
         private Resolver resolver;
 
         private int index;
 
-        public IndexResolver(Resolver resolver) {
+        public IndexResolver(Resolver resolver)
+        {
             this.resolver = resolver;
         }
 
-        public Object get(String name) {
-            if (IndexedResolverContext.INDEX.equals(name)) {
+        public Object get(String name)
+        {
+            if (IndexedResolverContext.INDEX.equals(name))
+            {
                 return index;
-            } else {
+            } else
+            {
                 return resolver.get(name);
             }
         }
@@ -731,14 +871,15 @@ public class ListCodecFactory implements CodecFactory {
         // // return resolver.getOuter();
         // }
 
-        public void setIndex(int index) {
+        public void setIndex(int index)
+        {
             this.index = index;
         }
 
-        public Resolver getOriginalResolver() {
+        public Resolver getOriginalResolver()
+        {
             return this;
         }
-
     }
 
     /**
@@ -747,7 +888,8 @@ public class ListCodecFactory implements CodecFactory {
      *
      * @param <T>
      */
-    private static class OffsetListCodec<T> implements Codec<List<T>> {
+    private static class OffsetListCodec<T> implements Codec<List<T>>
+    {
 
         /**
          * The expression to calculate the offset. (Note that you can use the 'index' variable to point to the position
@@ -774,29 +916,34 @@ public class ListCodecFactory implements CodecFactory {
          * @param codec   The {@link Codec} to use for decoding individual list elements.
          */
         public OffsetListCodec(Expression<Integer, Resolver> offsets,
-                               Expression<Integer, Resolver> size, Codec<T> codec) {
+                               Expression<Integer, Resolver> size, Codec<T> codec)
+        {
             this.offsets = offsets;
             this.size = size;
             this.codec = codec;
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                              Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException
+        {
             int maxSize = size.eval(resolver);
             List<T> result = new ArrayList<T>(maxSize);
             long curPos = buffer.getBitPos();
             IndexResolver indexResolver = new IndexResolver(resolver);
-            for (int i = 0; i < maxSize; i++) {
+            for (int i = 0; i < maxSize; i++)
+            {
                 indexResolver.setIndex(i);
                 int offset = offsets.eval(indexResolver);
-                if (i < maxSize - 1) {
+                if (i < maxSize - 1)
+                {
                     indexResolver.setIndex(i + 1);
                     int nextOffset = offsets.eval(indexResolver); //- 1;
                     buffer.setBitPos(curPos + offset);
                     T value = codec.decode(new SlicedBitBuffer(buffer,
                             nextOffset - offset), resolver, builder);
                     result.add(value);
-                } else {
+                } else
+                {
                     buffer.setBitPos(curPos + offset);
                     result.add(codec.decode(buffer, resolver, builder));
                 }
@@ -804,29 +951,38 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
+        public void encode(List<T> value, BitChannel channel, Resolver resolver)
+        {
             throw new UnsupportedOperationException();
         }
 
-        public Class<?>[] getTypes() {
+        public Class<?>[] getTypes()
+        {
             return codec.getTypes();
         }
 
-        public Expression<Integer, Resolver> getSize() {
+        public Expression<Integer, Resolver> getSize()
+        {
             return size;
         }
 
-        public Class<?> getType() {
+        public Class<?> getType()
+        {
             return List.class;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor()
+        {
+            return new CodecDescriptor()
+            {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
-                        final String bufferReference) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final String bufferReference)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target
                                     .para()
                                     .text("The number of items in the list is ")
@@ -838,22 +994,26 @@ public class ListCodecFactory implements CodecFactory {
                                     .document(
                                             Documenters.forExpression(offsets))
                                     .text(".").end();
-                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection())
+                            {
                                 target.document(codec.getCodecDescriptor().details(bufferReference));
                             }
-
                         }
                     };
                 }
 
-                public String getTitle() {
+                public String getTitle()
+                {
                     return null;
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective, final boolean startWithCapital) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                        final Adjective adjective, final boolean startWithCapital)
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor().reference(
@@ -862,20 +1022,22 @@ public class ListCodecFactory implements CodecFactory {
                     };
                 }
 
-                public boolean requiresDedicatedSection() {
+                public boolean requiresDedicatedSection()
+                {
                     return false;
                 }
 
-                public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return new Documenter<C>() {
-                        public void document(C target) {
+                public <C extends ParaContents<?>> Documenter<C> summary()
+                {
+                    return new Documenter<C>()
+                    {
+                        public void document(C target)
+                        {
                             target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }
-
             };
         }
     }
-
 }

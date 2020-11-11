@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -33,13 +33,14 @@ import org.codehaus.preon.el.ReferenceContext;
  * A simple convenience class for building {@link Expression} instances, simply
  * encapsulating a {@link ReferenceContext}, allowing clients to be unaware of
  * the particular {@link ReferenceContext} in use.
- * 
+ *
  * @author Wilfred Springer
- * 
+ *
  * @param <E>
  *            The type of environment used to resolve references.
  */
-public class ExpressionBuilder<E> {
+public class ExpressionBuilder<E>
+{
 
     /**
      * The context for constructing references.
@@ -48,17 +49,18 @@ public class ExpressionBuilder<E> {
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param context
      *            The context for constructing references.
      */
-    public ExpressionBuilder(ReferenceContext<E> context) {
+    public ExpressionBuilder(ReferenceContext<E> context)
+    {
         this.context = context;
     }
 
     /**
      * Creates an {@link Expression} of type boolean.
-     * 
+     *
      * @param expr
      *            A character sequence conforming to the el grammar,
      *            returning a boolean.
@@ -69,13 +71,14 @@ public class ExpressionBuilder<E> {
      *             cannot be linked to the {@link #context ReferenceContext}.
      */
     public Expression<Boolean, E> createBoolean(String expr)
-            throws InvalidExpressionException {
+            throws InvalidExpressionException
+    {
         return Expressions.createBoolean(context, expr);
     }
 
     /**
      * Creates an {@link Expression} of type integer.
-     * 
+     *
      * @param expr
      *            A character sequence conforming to the el grammar,
      *            returning an integer.
@@ -86,8 +89,8 @@ public class ExpressionBuilder<E> {
      *             cannot be linked to the {@link #context ReferenceContext}.
      */
     public Expression<Integer, E> createInteger(String expr)
-            throws InvalidExpressionException {
+            throws InvalidExpressionException
+    {
         return Expressions.createInteger(context, expr);
     }
-
 }

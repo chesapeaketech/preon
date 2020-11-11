@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -30,7 +30,8 @@ package org.codehaus.preon.buffer;
  *
  * @author Wilfred Springer
  */
-public abstract class AbstractBitBufferDecorator implements BitBuffer {
+public abstract class AbstractBitBufferDecorator implements BitBuffer
+{
 
     /**
      * Returns the {@link BitBuffer} to which all requests will be delegated.
@@ -44,7 +45,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#getBitBufBitSize()
      */
 
-    public long getBitBufBitSize() {
+    public long getBitBufBitSize()
+    {
         return getDelegate().getBitBufBitSize();
     }
 
@@ -53,7 +55,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#getBitPos()
      */
 
-    public long getBitPos() {
+    public long getBitPos()
+    {
         return getDelegate().getBitPos();
     }
 
@@ -62,7 +65,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsBoolean()
      */
 
-    public boolean readAsBoolean() {
+    public boolean readAsBoolean()
+    {
         return getDelegate().readAsBoolean();
     }
 
@@ -71,7 +75,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsBoolean(long)
      */
 
-    public boolean readAsBoolean(long bitPos) {
+    public boolean readAsBoolean(long bitPos)
+    {
         return getDelegate().readAsBoolean(bitPos);
     }
 
@@ -80,7 +85,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsBoolean(org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public boolean readAsBoolean(ByteOrder endian) {
+    public boolean readAsBoolean(ByteOrder endian)
+    {
         return getDelegate().readAsBoolean(endian);
     }
 
@@ -89,7 +95,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsBoolean(long, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public boolean readAsBoolean(long bitPos, ByteOrder endian) {
+    public boolean readAsBoolean(long bitPos, ByteOrder endian)
+    {
         return getDelegate().readAsBoolean(bitPos, endian);
     }
 
@@ -98,7 +105,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsByte(int)
      */
 
-    public byte readAsByte(int nrBits) {
+    public byte readAsByte(int nrBits)
+    {
         return getDelegate().readAsByte(nrBits);
     }
 
@@ -107,7 +115,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsByte(int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public byte readAsByte(int nrBits, ByteOrder endian) {
+    public byte readAsByte(int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsByte(nrBits, endian);
     }
 
@@ -116,7 +125,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsByte(int, long)
      */
 
-    public byte readAsByte(int nrBits, long bitPos) {
+    public byte readAsByte(int nrBits, long bitPos)
+    {
         return getDelegate().readAsByte(nrBits, bitPos);
     }
 
@@ -125,7 +135,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsByte(long, int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public byte readAsByte(long bitPos, int nrBits, ByteOrder endian) {
+    public byte readAsByte(long bitPos, int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsByte(bitPos, nrBits, endian);
     }
 
@@ -134,7 +145,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsInt(int)
      */
 
-    public int readAsInt(int nrBits) {
+    public int readAsInt(int nrBits)
+    {
         return getDelegate().readAsInt(nrBits);
     }
 
@@ -143,7 +155,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsInt(long, int)
      */
 
-    public int readAsInt(long bitPos, int nrBits) {
+    public int readAsInt(long bitPos, int nrBits)
+    {
         return getDelegate().readAsInt(bitPos, nrBits);
     }
 
@@ -152,7 +165,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsInt(int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public int readAsInt(int nrBits, ByteOrder endian) {
+    public int readAsInt(int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsInt(nrBits, endian);
     }
 
@@ -161,7 +175,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsInt(long, int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public int readAsInt(long bitPos, int nrBits, ByteOrder endian) {
+    public int readAsInt(long bitPos, int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsInt(bitPos, nrBits, endian);
     }
 
@@ -170,7 +185,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsLong(int)
      */
 
-    public long readAsLong(int nrBits) {
+    public long readAsLong(int nrBits)
+    {
         return getDelegate().readAsLong(nrBits);
     }
 
@@ -179,7 +195,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsLong(long, int)
      */
 
-    public long readAsLong(long bitPos, int nrBits) {
+    public long readAsLong(long bitPos, int nrBits)
+    {
         return getDelegate().readAsLong(bitPos, nrBits);
     }
 
@@ -188,7 +205,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsLong(int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public long readAsLong(int nrBits, ByteOrder endian) {
+    public long readAsLong(int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsLong(nrBits, endian);
     }
 
@@ -197,7 +215,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsLong(long, int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public long readAsLong(long bitPos, int nrBits, ByteOrder endian) {
+    public long readAsLong(long bitPos, int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsLong(bitPos, nrBits, endian);
     }
 
@@ -206,7 +225,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsShort(int)
      */
 
-    public short readAsShort(int nrBits) {
+    public short readAsShort(int nrBits)
+    {
         return getDelegate().readAsShort(nrBits);
     }
 
@@ -215,7 +235,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsShort(long, int)
      */
 
-    public short readAsShort(long bitPos, int nrBits) {
+    public short readAsShort(long bitPos, int nrBits)
+    {
         return getDelegate().readAsShort(bitPos, nrBits);
     }
 
@@ -224,7 +245,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsShort(int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public short readAsShort(int nrBits, ByteOrder endian) {
+    public short readAsShort(int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsShort(nrBits, endian);
     }
 
@@ -233,7 +255,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readAsShort(long, int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public short readAsShort(long bitPos, int nrBits, ByteOrder endian) {
+    public short readAsShort(long bitPos, int nrBits, ByteOrder endian)
+    {
         return getDelegate().readAsShort(bitPos, nrBits, endian);
     }
 
@@ -242,7 +265,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readBits(int)
      */
 
-    public long readBits(int nrBits) {
+    public long readBits(int nrBits)
+    {
         return getDelegate().readBits(nrBits);
     }
 
@@ -251,7 +275,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readBits(long, int)
      */
 
-    public long readBits(long bitPos, int nrBits) {
+    public long readBits(long bitPos, int nrBits)
+    {
         return getDelegate().readBits(bitPos, nrBits);
     }
 
@@ -260,7 +285,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readBits(int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public long readBits(int nrBits, ByteOrder endian) {
+    public long readBits(int nrBits, ByteOrder endian)
+    {
         return getDelegate().readBits(nrBits, endian);
     }
 
@@ -269,7 +295,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#readBits(long, int, org.codehaus.preon.buffer.ByteOrder)
      */
 
-    public long readBits(long bitPos, int nrBits, ByteOrder endian) {
+    public long readBits(long bitPos, int nrBits, ByteOrder endian)
+    {
         return getDelegate().readBits(bitPos, nrBits, endian);
     }
 
@@ -278,7 +305,8 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#setBitPos(long)
      */
 
-    public void setBitPos(long bitPos) {
+    public void setBitPos(long bitPos)
+    {
         getDelegate().setBitPos(bitPos);
     }
 
@@ -287,17 +315,18 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * @see org.codehaus.preon.buffer.BitBuffer#slice(long)
      */
 
-    public BitBuffer slice(long length) {
+    public BitBuffer slice(long length)
+    {
         return getDelegate().slice(length);
     }
 
     /*
-    * (non-Javadoc)
-    * @see org.codehaus.preon.buffer.BitBuffer#duplicate()
-    */
+     * (non-Javadoc)
+     * @see org.codehaus.preon.buffer.BitBuffer#duplicate()
+     */
 
-    public BitBuffer duplicate() {
+    public BitBuffer duplicate()
+    {
         return getDelegate().duplicate();
     }
-
 }

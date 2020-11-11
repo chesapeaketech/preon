@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,15 +24,14 @@
  */
 package org.codehaus.preon.el;
 
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Reference;
+import junit.framework.TestCase;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.ResolverContext;
-import junit.framework.TestCase;
 
 import static org.easymock.EasyMock.*;
 
-public class OuterReferenceTest extends TestCase {
+public class OuterReferenceTest extends TestCase
+{
 
     private ResolverContext outerContext;
     private ResolverContext originalContext;
@@ -40,7 +39,8 @@ public class OuterReferenceTest extends TestCase {
     private Resolver outerResolver;
     private Resolver originalResolver;
 
-    public void setUp() {
+    public void setUp()
+    {
         outerContext = createMock(ResolverContext.class);
         originalContext = createMock(ResolverContext.class);
         sampleReference = createMock(Reference.class);
@@ -48,7 +48,8 @@ public class OuterReferenceTest extends TestCase {
         originalResolver = createMock(Resolver.class);
     }
 
-    public void testCreateReference() {
+    public void testCreateReference()
+    {
         expect(outerContext.selectAttribute("foobar")).andReturn(
                 sampleReference);
         expect(originalResolver.get(OuterReference.DEFAULT_OUTER_NAME))
@@ -73,7 +74,8 @@ public class OuterReferenceTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testResolveOuterResolverNull() {
+    public void testResolveOuterResolverNull()
+    {
         expect(outerContext.selectAttribute("foobar")).andReturn(
                 sampleReference);
         expect(originalResolver.get(OuterReference.DEFAULT_OUTER_NAME))
@@ -86,10 +88,12 @@ public class OuterReferenceTest extends TestCase {
         OuterReference reference = new OuterReference(outerContext,
                 originalContext);
         Reference<Resolver> result = reference.selectAttribute("foobar");
-        try {
+        try
+        {
             result.resolve(originalResolver);
             fail("BindingException expected");
-        } catch (BindingException expected) {
+        } catch (BindingException expected)
+        {
         }
     }
 }

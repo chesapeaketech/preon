@@ -65,8 +65,8 @@
         #if ( ( $item.collapse ) && ( $item.collapse.equalsIgnoreCase( "false" ) ) )
             #set ( $collapse = "expanded" )
         #else
-        ## By default collapsed
-              #set ( $collapse = "collapsed" )
+            ## By default collapsed
+            #set ( $collapse = "collapsed" )
         #end
 
         #if ( $currentFileName == $currentItemHref )
@@ -143,8 +143,8 @@
         #if ( $format )
             $dateFormat.applyPattern( $format )
         #end
-    ##$dateFormat.applyPattern( "MM/dd/yyyy" )
-          ##end
+        ##$dateFormat.applyPattern( "MM/dd/yyyy" )
+        ##end
 
         #set ( $dateToday = $dateFormat.format( $currentDate ) )
 
@@ -154,7 +154,8 @@
             #if ( $datePosition.equalsIgnoreCase( "right" ) || $datePosition.equalsIgnoreCase( "bottom" ) )
             &nbsp;| $i18n.getString( "site-plugin", $locale, "template.lastpublished" ): $dateToday
 
-            #elseif ( $datePosition.equalsIgnoreCase( "navigation-bottom" ) || $datePosition.equalsIgnoreCase( "navigation-top" ) )
+            #elseif ( $datePosition.equalsIgnoreCase( "navigation-bottom" ) || $datePosition.equalsIgnoreCase(
+                "navigation-top" ) )
             <div id="lastPublished">$i18n.getString( "site-plugin", $locale, "template.lastpublished" )
                 : $dateToday</div>
 
@@ -248,8 +249,8 @@
             border: none;
         }
 
-            /*	Because the template is slightly different, size-wise, with images, this needs to be set here
-       If you don't want to use the template's images, you can also delete the following two lines. */
+        /*	Because the template is slightly different, size-wise, with images, this needs to be set here
+   If you don't want to use the template's images, you can also delete the following two lines. */
 
         #header {
             margin: 0 !important;
@@ -265,10 +266,10 @@
             width: 740px;
         }
 
-            /* 	To ease the insertion of a personal header image, I have done it in such a way,
-       that you simply drop in an image called 'personalheader.jpg' into your /images/
-       directory. Dimensions should be at least 760px x 200px. Anything above that will
-       get cropped off of the image. */
+        /* 	To ease the insertion of a personal header image, I have done it in such a way,
+   that you simply drop in an image called 'personalheader.jpg' into your /images/
+   directory. Dimensions should be at least 760px x 200px. Anything above that will
+   get cropped off of the image. */
         #headerimg {
             background: url('$relativePath/images/personalheader.png') no-repeat top;
         }
@@ -290,7 +291,7 @@
 </head>
 <body class="composite">
 <div id="page">
-        <!--
+    <!--
     <div id="banner">
       #set ( $banner = "bannerLeft" )
       #banner( $banner )
@@ -301,7 +302,7 @@
       </div>
     </div>
         -->
-        <!--
+    <!--
     <div id="breadcrumbs">
       #publishDate( "left" )
       <div class="xright">#links($decoration.body.links) #publishDate( "right" )</div>
@@ -327,7 +328,7 @@
     </div>
     <div id="footer">
         <p></p>
-            <!--
+        <!--
            <div class="xright">&#169;#copyright()#publishDate( "bottom" )</div>
       <div class="clear">
         <hr/>
@@ -339,10 +340,12 @@
         document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
     </script>
     <script type="text/javascript">
-        try {
+        try
+        {
             var pageTracker = _gat._getTracker("UA-6605806-1");
             pageTracker._trackPageview();
-        } catch(err) {
+        } catch (err)
+        {
         }</script>
 </body>
 </html>

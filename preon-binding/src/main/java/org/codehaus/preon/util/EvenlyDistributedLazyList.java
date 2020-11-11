@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,18 +24,18 @@
  */
 package org.codehaus.preon.util;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecException;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 /**
  * A {@link List} that will lazily load objects from a {@link BitBuffer}. Note that it does <em>not</em> cache the
@@ -45,7 +45,8 @@ import org.codehaus.preon.buffer.BitBuffer;
  * @author Wilfred Springer
  * @param <E> The type of elements in the {@link List}.
  */
-public class EvenlyDistributedLazyList<E> implements List<E> {
+public class EvenlyDistributedLazyList<E> implements List<E>
+{
 
     private CodecExceptionPolicy<E> policy;
 
@@ -87,7 +88,8 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
      * @param resolver The context for evaluating expressions.
      */
     public EvenlyDistributedLazyList(Codec<E> codec, long offset, BitBuffer buffer, int numberOfElements,
-                                     Builder builder, Resolver resolver, int elementSize) {
+                                     Builder builder, Resolver resolver, int elementSize)
+    {
         this.codec = codec;
         this.offset = offset;
         this.buffer = buffer;
@@ -95,264 +97,293 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
         this.maxSize = numberOfElements;
         this.resolver = resolver;
         this.elementSize = elementSize;
-        this.policy = new CodecExceptionPolicy<E>() {
+        this.policy = new CodecExceptionPolicy<E>()
+        {
 
-            public E handle(CodecException ce) {
+            public E handle(CodecException ce)
+            {
                 // There is really no way to be prepared for this.
                 throw new RuntimeException(ce);
             }
-
         };
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#add(java.lang.Object)
      */
 
-    public boolean add(E o) {
+    public boolean add(E o)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#add(int, java.lang.Object)
      */
 
-    public void add(int index, E element) {
+    public void add(int index, E element)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#addAll(java.util.Collection)
      */
 
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(Collection<? extends E> c)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#addAll(int, java.util.Collection)
      */
 
-    public boolean addAll(int index, Collection<? extends E> c) {
+    public boolean addAll(int index, Collection<? extends E> c)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#clear()
      */
 
-    public void clear() {
+    public void clear()
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#contains(java.lang.Object)
      */
 
-    public boolean contains(Object o) {
+    public boolean contains(Object o)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#containsAll(java.util.Collection)
      */
 
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(Collection<?> c)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#get(int)
      */
 
     @SuppressWarnings("unchecked")
-    public E get(int index) {
-        if (index < 0 || index >= maxSize) {
+    public E get(int index)
+    {
+        if (index < 0 || index >= maxSize)
+        {
             throw new IndexOutOfBoundsException();
         }
         buffer.setBitPos(offset + index * elementSize);
-        try {
+        try
+        {
             return codec.decode(buffer, resolver, builder);
-        } catch (DecodingException de) {
+        } catch (DecodingException de)
+        {
             return policy.handle(de);
         }
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#indexOf(java.lang.Object)
      */
 
-    public int indexOf(Object o) {
+    public int indexOf(Object o)
+    {
         // Requires full table scan. Way to expensive.
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#isEmpty()
      */
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return maxSize != 0;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#iterator()
      */
 
-    public Iterator<E> iterator() {
+    public Iterator<E> iterator()
+    {
         return new LazyListIterator();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#lastIndexOf(java.lang.Object)
      */
 
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object o)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#listIterator()
      */
 
-    public ListIterator<E> listIterator() {
+    public ListIterator<E> listIterator()
+    {
         return new LazyListIterator();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#listIterator(int)
      */
 
-    public ListIterator<E> listIterator(int index) {
+    public ListIterator<E> listIterator(int index)
+    {
         return new LazyListIterator(index);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#remove(java.lang.Object)
      */
 
-    public boolean remove(Object o) {
+    public boolean remove(Object o)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#remove(int)
      */
 
-    public E remove(int index) {
+    public E remove(int index)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#removeAll(java.util.Collection)
      */
 
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<?> c)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#retainAll(java.util.Collection)
      */
 
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(Collection<?> c)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#set(int, java.lang.Object)
      */
 
-    public E set(int index, E element) {
+    public E set(int index, E element)
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#size()
      */
 
-    public int size() {
+    public int size()
+    {
         return maxSize;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#subList(int, int)
      */
 
-    public List<E> subList(int fromIndex, int toIndex) {
+    public List<E> subList(int fromIndex, int toIndex)
+    {
         return new EvenlyDistributedLazyList<E>(codec, offset + elementSize * fromIndex, buffer,
                 toIndex - fromIndex, builder, resolver, elementSize);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#toArray()
      */
 
-    public Object[] toArray() {
+    public Object[] toArray()
+    {
         throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.List#toArray(T[])
      */
 
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(T[] a)
+    {
         throw new UnsupportedOperationException();
     }
 
     /** A {@link ListIterator} that will lazily load elements. */
-    private class LazyListIterator implements ListIterator<E> {
+    private class LazyListIterator implements ListIterator<E>
+    {
 
         /** The current referenced by the {@link Iterator}. */
         private int position = -1;
 
-        public LazyListIterator() {
+        public LazyListIterator()
+        {
         }
 
         /**
@@ -360,108 +391,121 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
          *
          * @param position The position to start at.
          */
-        public LazyListIterator(int position) {
+        public LazyListIterator(int position)
+        {
             this.position = position;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#add(java.lang.Object)
          */
 
-        public void add(E o) {
+        public void add(E o)
+        {
             throw new UnsupportedOperationException();
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#hasNext()
          */
 
-        public boolean hasNext() {
+        public boolean hasNext()
+        {
             return position < maxSize - 1;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#hasPrevious()
          */
 
-        public boolean hasPrevious() {
+        public boolean hasPrevious()
+        {
             return position > 0;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#next()
          */
 
-        public E next() {
-            if (!hasNext()) {
+        public E next()
+        {
+            if (!hasNext())
+            {
                 throw new NoSuchElementException();
-            } else {
+            } else
+            {
                 return get(++position);
             }
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#nextIndex()
          */
 
-        public int nextIndex() {
+        public int nextIndex()
+        {
             return position + 1;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#previous()
          */
 
-        public E previous() {
-            if (!hasPrevious()) {
+        public E previous()
+        {
+            if (!hasPrevious())
+            {
                 throw new NoSuchElementException();
-            } else {
+            } else
+            {
                 return get(--position);
             }
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#previousIndex()
          */
 
-        public int previousIndex() {
+        public int previousIndex()
+        {
             return position - 1;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#remove()
          */
 
-        public void remove() {
+        public void remove()
+        {
             throw new UnsupportedOperationException();
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ListIterator#set(java.lang.Object)
          */
 
-        public void set(E o) {
+        public void set(E o)
+        {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -471,10 +515,9 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
      * <p/>
      * TODO Get an alternative here.
      */
-    public interface CodecExceptionPolicy<E> {
+    public interface CodecExceptionPolicy<E>
+    {
 
         E handle(CodecException ce);
-
     }
-
 }

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -25,7 +25,11 @@
 package org.codehaus.preon.emitter;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.Codecs;
+import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.binding.BindingDecorator;
 
 import javax.xml.transform.Transformer;
@@ -34,18 +38,27 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-public class Exporter {
+public class Exporter
+{
 
-    private Exporter() {
+    private Exporter()
+    {
     }
 
     public static <T> T decodeAndExport(Class<T> type,
                                         ByteBuffer buffer,
                                         File structure)
-            throws DecodingException, IOException {
+            throws DecodingException, IOException
+    {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Emitter emitter = new XmlEmitter(new ByteArrayOutputStreamFactory(out));
         EmittingCodecDecorator codecDecorator = new EmittingCodecDecorator(emitter);
@@ -61,38 +74,46 @@ public class Exporter {
         return result;
     }
 
-    private static void saveEmitted(byte[] bytes, File structure) {
+    private static void saveEmitted(byte[] bytes, File structure)
+    {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         OutputStream out = null;
-        try {
+        try
+        {
             out = new FileOutputStream(structure);
             StreamSource xslt = new StreamSource(Exporter.class.getResourceAsStream("/structure-to-html.xsl"));
             Transformer transformer = TransformerFactory.newInstance().newTransformer(xslt);
             transformer.transform(new StreamSource(in), new StreamResult(out));
-        } catch (TransformerConfigurationException e) {
+        } catch (TransformerConfigurationException e)
+        {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (TransformerException e) {
+        } catch (TransformerException e)
+        {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } finally {
+        } finally
+        {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(out);
         }
     }
 
-    private static void exportResource(String resource, File directory) throws IOException {
+    private static void exportResource(String resource, File directory) throws IOException
+    {
         InputStream in = null;
         OutputStream out = null;
         File target = new File(directory, resource);
-        try {
+        try
+        {
             in = Exporter.class.getResourceAsStream(resource);
             out = new FileOutputStream(target);
             IOUtils.copy(in, out);
-        } finally {
+        } finally
+        {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(out);
         }
     }
-
 }

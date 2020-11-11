@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,9 +26,11 @@ package org.codehaus.preon.buffer;
 
 import junit.framework.TestCase;
 
-public class ByteOrderingTest extends TestCase {
+public class ByteOrderingTest extends TestCase
+{
 
-    public void testRightToLeftBigEndian() {
+    public void testRightToLeftBigEndian()
+    {
         byte[] buffer = {0x12 // 0001 0010
                 , 0x34 // 0011 0100
                 , 0x45 // 0100 0101
@@ -49,7 +51,8 @@ public class ByteOrderingTest extends TestCase {
     }
 
     private long readAsLongBigEndianRL(int bytePos, int bitPos, byte[] buffer,
-                                       int nrBits) {
+                                       int nrBits)
+    {
         // Long implies less than 64 bits
         assert nrBits < 64;
         // The number of bits available must be higher than requested
@@ -60,13 +63,15 @@ public class ByteOrderingTest extends TestCase {
 
         // Process first chunk
         long result = (0xFF & buffer[bytePos]) >> bitPos;
-        if (bitPos + nrBits < 8) {
+        if (bitPos + nrBits < 8)
+        {
             result = result & (0xFF >> (8 - nrBits));
         }
         nrBits -= 8 - bitPos;
 
         // Process middle bytes
-        while (nrBits > 8) {
+        while (nrBits > 8)
+        {
             index++;
             result |= (0xFF & buffer[bytePos + index]) << (index * 8 - bitPos);
             nrBits -= 8;
@@ -74,14 +79,15 @@ public class ByteOrderingTest extends TestCase {
 
         // Process last byte
         index++;
-        if (nrBits > 0) {
+        if (nrBits > 0)
+        {
             result |= ((0xFF >> (8 - nrBits)) & buffer[bytePos + index]) << (index * 8 - bitPos);
         }
         return result;
     }
 
-    private static int bytesRequired(long bitPos, int nrBits) {
+    private static int bytesRequired(long bitPos, int nrBits)
+    {
         return (int) (((bitPos % 8) + nrBits + 7) / 8);
     }
-
 }

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,9 +24,9 @@
  */
 package org.codehaus.preon;
 
-import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
+import org.codehaus.preon.el.Expression;
 
 import java.io.IOException;
 
@@ -36,7 +36,8 @@ import java.io.IOException;
  * @author Wilfred Springer
  * @param <T> The type of object the {@link Codec} is able to decode/encode.
  */
-public interface Codec<T> {
+public interface Codec<T>
+{
 
     /**
      * Decodes a value from the {@link BitBuffer}.
@@ -97,5 +98,4 @@ public interface Codec<T> {
      * @return The (common super-) type of object constructed by this {@link Codec}.
      */
     Class<?> getType();
-
 }

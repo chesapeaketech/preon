@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,15 +24,19 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Expressions;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -43,7 +47,8 @@ import java.lang.reflect.Array;
  * immediately. Instead it will create a {@link org.codehaus.preon.util.EvenlyDistributedLazyList}, constructing its
  * elements on the fly, only when it is required.
  */
-class ArrayCodec implements Codec<Object> {
+class ArrayCodec implements Codec<Object>
+{
 
     /** The number of elements in the list. */
     private Expression<Integer, Resolver> size;
@@ -62,7 +67,8 @@ class ArrayCodec implements Codec<Object> {
      * @param codec The {@link org.codehaus.preon.Codec} constructing elements in the {@link java.util.List}.
      */
     public ArrayCodec(Expression<Integer, Resolver> expr, Codec<Object> codec,
-                      Class<?> type) {
+                      Class<?> type)
+    {
         this.size = expr;
         this.codec = codec;
         this.type = type;
@@ -76,19 +82,23 @@ class ArrayCodec implements Codec<Object> {
      */
 
     public Object decode(BitBuffer buffer, Resolver resolver,
-                         Builder builder) throws DecodingException {
+                         Builder builder) throws DecodingException
+    {
         int length = size.eval(resolver).intValue();
         Object result = Array.newInstance(type.getComponentType(), length);
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++)
+        {
             Object value = codec.decode(buffer, resolver, builder);
             Array.set(result, i, value);
         }
         return result;
     }
 
-    public void encode(Object object, BitChannel channel, Resolver resolver) throws IOException {
+    public void encode(Object object, BitChannel channel, Resolver resolver) throws IOException
+    {
         int numberOfElements = size.eval(resolver);
-        for (int i = 0; i < numberOfElements; i++) {
+        for (int i = 0; i < numberOfElements; i++)
+        {
             codec.encode((Object) Array.get(object, i), channel, resolver);
         }
     }
@@ -99,7 +109,8 @@ class ArrayCodec implements Codec<Object> {
      * @see org.codehaus.preon.Codec#getTypes()
      */
 
-    public Class<?>[] getTypes() {
+    public Class<?>[] getTypes()
+    {
         return codec.getTypes();
     }
 
@@ -109,22 +120,30 @@ class ArrayCodec implements Codec<Object> {
      * @see org.codehaus.preon.Codec#getSize()
      */
 
-    public Expression<Integer, Resolver> getSize() {
+    public Expression<Integer, Resolver> getSize()
+    {
         return Expressions.multiply(size, codec.getSize());
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return type;
     }
 
-    public CodecDescriptor getCodecDescriptor() {
-        return new CodecDescriptor() {
+    public CodecDescriptor getCodecDescriptor()
+    {
+        return new CodecDescriptor()
+        {
 
             public <C extends SimpleContents<?>> Documenter<C> details(
-                    final String bufferReference) {
-                return new Documenter<C>() {
-                    public void document(C target) {
-                        if (size != null) {
+                    final String bufferReference)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
+                        if (size != null)
+                        {
                             target
                                     .para()
                                     .text(
@@ -136,7 +155,8 @@ class ArrayCodec implements Codec<Object> {
                                     .text(".").end();
                         }
                         if (!codec.getCodecDescriptor()
-                                .requiresDedicatedSection()) {
+                                .requiresDedicatedSection())
+                        {
                             target.document(codec.getCodecDescriptor()
                                     .details(bufferReference));
                         }
@@ -144,14 +164,18 @@ class ArrayCodec implements Codec<Object> {
                 };
             }
 
-            public String getTitle() {
+            public String getTitle()
+            {
                 return null;
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(
-                    final Adjective adjective, final boolean startWithCapital) {
-                return new Documenter<C>() {
-                    public void document(C target) {
+                    final Adjective adjective, final boolean startWithCapital)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target.text(adjective.asTextPreferA(startWithCapital)).text(
                                 "list of ").document(
                                 codec.getCodecDescriptor().reference(
@@ -160,23 +184,27 @@ class ArrayCodec implements Codec<Object> {
                 };
             }
 
-            public boolean requiresDedicatedSection() {
+            public boolean requiresDedicatedSection()
+            {
                 return false;
             }
 
-            public <C extends ParaContents<?>> Documenter<C> summary() {
-                return new Documenter<C>() {
-                    public void document(C target) {
+            public <C extends ParaContents<?>> Documenter<C> summary()
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target.document(reference(Adjective.A, true));
                         target.text(".");
                     }
                 };
             }
-
         };
     }
 
-    public String toString() {
+    public String toString()
+    {
         return "Codec of array, decoding elements using " + codec;
     }
 }

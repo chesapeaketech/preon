@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,12 +24,9 @@
  */
 package org.codehaus.preon.codec;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecDescriptor;
@@ -42,15 +39,18 @@ import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.el.Expressions;
 
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.pecia.SimpleContents;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 
 /**
  * A {@link org.codehaus.preon.Codec} decoding Strings based on a fixed number of <em>bytes</em>. (Note that it says
  * <i>bytes</i>, not <i>characters</i>.)
  */
-public class FixedLengthStringCodec implements Codec<String> {
+public class FixedLengthStringCodec implements Codec<String>
+{
 
     private final Charset encoding;
 
@@ -66,7 +66,8 @@ public class FixedLengthStringCodec implements Codec<String> {
 
     public FixedLengthStringCodec(Charset encoding,
                                   Expression<Integer, Resolver> sizeExpr, String match,
-                                  BoundString.ByteConverter byteConverter, boolean trim) {
+                                  BoundString.ByteConverter byteConverter, boolean trim)
+    {
         this.encoding = encoding;
         this.sizeExpr = sizeExpr;
         this.match = match;
@@ -77,19 +78,22 @@ public class FixedLengthStringCodec implements Codec<String> {
 
     //keep old behaviour for backwards compatibility
     public FixedLengthStringCodec(Charset encoding, Expression<Integer, Resolver> sizeExpr, String match,
-                                  BoundString.ByteConverter byteConverter) {
+                                  BoundString.ByteConverter byteConverter)
+    {
         this(encoding, sizeExpr, match, byteConverter, true);
     }
 
     public String decode(BitBuffer buffer, Resolver resolver,
-                         Builder builder) throws DecodingException {
-		/* This takes a slice of the BitBuffer as a ByteBuffer,
-		 * and feeds it into encoding.decode.
-		 * */
+                         Builder builder) throws DecodingException
+    {
+        /* This takes a slice of the BitBuffer as a ByteBuffer,
+         * and feeds it into encoding.decode.
+         * */
         int size = sizeExpr.eval(resolver);
         ByteBuffer bytebuffer = ByteBuffer.allocate(size);
         byte readbyte;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++)
+        {
             readbyte = byteConverter.convert(buffer.readAsByte(8));
             bytebuffer.put(readbyte);
         }
@@ -97,9 +101,13 @@ public class FixedLengthStringCodec implements Codec<String> {
         String result;
         result = encoding.decode(bytebuffer).toString();
         if (trim)
+        {
             result = result.trim(); // remove padding characters
-        if (match.length() > 0) {
-            if (!match.equals(result)) {
+        }
+        if (match.length() > 0)
+        {
+            if (!match.equals(result))
+            {
                 throw new DecodingException(new IllegalStateException(
                         "Expected \"" + match + "\", but got \"" + result
                                 + "\"."));
@@ -108,55 +116,68 @@ public class FixedLengthStringCodec implements Codec<String> {
         return result;
     }
 
-    public void encode(String value, BitChannel channel, Resolver resolver) throws IOException {
-        if (value == null) {
+    public void encode(String value, BitChannel channel, Resolver resolver) throws IOException
+    {
+        if (value == null)
+        {
             value = ""; // Fix for NPE
         }
         int size = sizeExpr.eval(resolver);
         ByteBuffer bytebuffer = ByteBuffer.allocate(size);
         encoder.encode(CharBuffer.wrap(value), bytebuffer, true);
 
-        if (bytebuffer.position() < size) { // pad with 0's
+        if (bytebuffer.position() < size)
+        { // pad with 0's
             bytebuffer.put(new byte[size - bytebuffer.position()]);
         }
         bytebuffer.flip(); // switch to reading
 
         byte[] bytes = new byte[size];
         bytebuffer.get(bytes);
-        for (int i = 0; i < bytes.length; i++) {
+        for (int i = 0; i < bytes.length; i++)
+        {
             bytes[i] = byteConverter.revert(bytes[i]);
         }
         //assert (size <= bytes.length); //No longer needed
         channel.write(bytes, 0, size);
     }
 
-    public Class<?>[] getTypes() {
+    public Class<?>[] getTypes()
+    {
         return new Class[]{String.class};
     }
 
-    public Expression<Integer, Resolver> getSize() {
+    public Expression<Integer, Resolver> getSize()
+    {
         return Expressions.multiply(Expressions.createInteger(8,
                 Resolver.class), sizeExpr);
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return String.class;
     }
 
-    public CodecDescriptor getCodecDescriptor() {
-        return new CodecDescriptor() {
+    public CodecDescriptor getCodecDescriptor()
+    {
+        return new CodecDescriptor()
+        {
 
             public <C extends SimpleContents<?>> Documenter<C> details(
-                    String bufferReference) {
-                return new Documenter<C>() {
-                    public void document(C target) {
+                    String bufferReference)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target
                                 .para()
                                 .text("The number of characters of the string is ")
                                 .document(
                                         Documenters.forExpression(sizeExpr))
                                 .text(".").end();
-                        if (match != null && match.length() > 0) {
+                        if (match != null && match.length() > 0)
+                        {
                             target.para().text(
                                     "The string is expected to match \"")
                                     .text(match).text("\".").end();
@@ -165,34 +186,41 @@ public class FixedLengthStringCodec implements Codec<String> {
                 };
             }
 
-            public String getTitle() {
+            public String getTitle()
+            {
                 return null;
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(
-                    final Adjective adjective, boolean startWithCapital) {
-                return new Documenter<C>() {
-                    public void document(C target) {
+                    final Adjective adjective, boolean startWithCapital)
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target.text(adjective.asTextPreferA(false)).text(
                                 "string of characters");
                     }
                 };
             }
 
-            public boolean requiresDedicatedSection() {
+            public boolean requiresDedicatedSection()
+            {
                 return false;
             }
 
-            public <C extends ParaContents<?>> Documenter<C> summary() {
-                return new Documenter<C>() {
-                    public void document(C target) {
+            public <C extends ParaContents<?>> Documenter<C> summary()
+            {
+                return new Documenter<C>()
+                {
+                    public void document(C target)
+                    {
                         target
                                 .text("A sequence of characters, encoded in "
                                         + encoding + ".");
                     }
                 };
             }
-
         };
     }
 }

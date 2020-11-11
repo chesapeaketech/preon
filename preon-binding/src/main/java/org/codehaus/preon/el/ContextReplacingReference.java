@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,14 +24,10 @@
  */
 package org.codehaus.preon.el;
 
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Reference;
-import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.Resolver;
 
-public class ContextReplacingReference implements Reference<Resolver> {
+public class ContextReplacingReference implements Reference<Resolver>
+{
 
     private ReferenceContext<Resolver> alternativeContext;
 
@@ -39,63 +35,76 @@ public class ContextReplacingReference implements Reference<Resolver> {
 
     public ContextReplacingReference(
             ReferenceContext<Resolver> alternativeContext,
-            Reference<Resolver> reference) {
+            Reference<Resolver> reference)
+    {
         this.alternativeContext = alternativeContext;
         this.reference = reference;
     }
 
-    public ReferenceContext<Resolver> getReferenceContext() {
+    public ReferenceContext<Resolver> getReferenceContext()
+    {
         return alternativeContext;
     }
 
-    public Class<?> getType() {
+    public Class<?> getType()
+    {
         return reference.getType();
     }
 
-    public boolean isAssignableTo(Class<?> type) {
+    public boolean isAssignableTo(Class<?> type)
+    {
         return reference.isAssignableTo(type);
     }
 
-    public Object resolve(Resolver context) {
+    public Object resolve(Resolver context)
+    {
         return reference.resolve(context);
     }
 
     public Reference<Resolver> selectAttribute(String name)
-            throws BindingException {
+            throws BindingException
+    {
         return new ContextReplacingReference(alternativeContext, reference
                 .selectAttribute(name));
     }
 
-    public Reference<Resolver> selectItem(String index) throws BindingException {
+    public Reference<Resolver> selectItem(String index) throws BindingException
+    {
         return new ContextReplacingReference(alternativeContext, reference
                 .selectItem(index));
     }
 
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
-            throws BindingException {
+            throws BindingException
+    {
         return new ContextReplacingReference(alternativeContext, reference
                 .selectItem(index));
     }
 
-    public void document(Document target) {
+    public void document(Document target)
+    {
         reference.document(target);
     }
 
-    public Reference<Resolver> narrow(Class<?> type) {
+    public Reference<Resolver> narrow(Class<?> type)
+    {
         Reference<Resolver> narrowed = this.reference.narrow(type);
-        if (narrowed == null) {
+        if (narrowed == null)
+        {
             return null;
-        } else {
+        } else
+        {
             return new ContextReplacingReference(alternativeContext, narrowed);
         }
     }
 
-    public boolean isBasedOn(ReferenceContext<Resolver> other) {
+    public boolean isBasedOn(ReferenceContext<Resolver> other)
+    {
         return reference.isBasedOn(other);
     }
 
-    public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> context)
+    {
         return reference.rescope(context);
     }
-
 }

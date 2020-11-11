@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,35 +26,46 @@ package org.codehaus.preon.hex;
 
 import java.io.IOException;
 
-public class AppendableHexDumpTarget implements HexDumpTarget {
+public class AppendableHexDumpTarget implements HexDumpTarget
+{
 
     private final Appendable out;
 
-    public AppendableHexDumpTarget(Appendable out) {
+    public AppendableHexDumpTarget(Appendable out)
+    {
         this.out = out;
     }
 
-    public void writeStartElement(String name) {
+    public void writeStartElement(String name)
+    {
     }
 
-    public void writeAttribute(String name, String value) {
+    public void writeAttribute(String name, String value)
+    {
     }
 
-    public void writeText(String text) {
-        try {
+    public void writeText(String text)
+    {
+        try
+        {
             out.append(text);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             throw new HexDumperException(e);
         }
     }
 
-    public void writeEndElement() {
+    public void writeEndElement()
+    {
     }
 
-    public void writeText(char c) throws HexDumperException {
-        try {
+    public void writeText(char c) throws HexDumperException
+    {
+        try
+        {
             out.append(c);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             throw new HexDumperException(e);
         }
     }

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,15 +26,16 @@ package org.codehaus.preon.el.util;
 
 /**
  * The interface defining an object capable of converting instances of {@code T} to {@code V}.
- * 
+ *
  * @param <T> The type of object to be converted.
  * @param <V> The target type.
  */
-public interface Converter<T, V> {
+public interface Converter<T, V>
+{
 
     /**
      * Accepts an instance of {@code T} and turns it into the target type.
-     * 
+     *
      * @param instance The object to be converted.
      * @return A new instance of {@code V}.
      */
@@ -42,9 +43,8 @@ public interface Converter<T, V> {
 
     /**
      * The target type.
-     * 
+     *
      * @return The target type.
      */
     Class<V> getTargetType();
-
 }

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,6 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.DecodingException;
@@ -32,6 +31,7 @@ import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.channel.BoundedBitChannel;
+import org.codehaus.preon.el.Expression;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -41,15 +41,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SlicingCodecTest {
+public class SlicingCodecTest
+{
 
     @Mock
     private Codec<String> wrapped;
@@ -73,7 +73,8 @@ public class SlicingCodecTest {
     private BitChannel channel;
 
     @Test
-    public void testDecoding() throws DecodingException {
+    public void testDecoding() throws DecodingException
+    {
         SlicingCodec<String> codec = new SlicingCodec(wrapped, sizeExpr);
         when(sizeExpr.eval(resolver)).thenReturn(13);
         when(buffer.slice(Mockito.anyInt())).thenReturn(slice);
@@ -86,7 +87,8 @@ public class SlicingCodecTest {
     }
 
     @Test
-    public void testEncoding() throws IOException {
+    public void testEncoding() throws IOException
+    {
         SlicingCodec<String> codec = new SlicingCodec(wrapped, sizeExpr);
         when(sizeExpr.eval(resolver)).thenReturn(3);
         codec.encode("DONE", channel, resolver);
@@ -112,5 +114,4 @@ public class SlicingCodecTest {
 //        public byte[] value;
 //
 //    }
-
 }

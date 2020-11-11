@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,6 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
@@ -33,37 +32,38 @@ import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.DefaultBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.channel.OutputStreamBitChannel;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
+import org.codehaus.preon.el.Expression;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 @RunWith(org.mockito.runners.MockitoJUnitRunner.class)
-public class FixedLengthStringCodecTest {
+public class FixedLengthStringCodecTest
+{
 
     @Mock
     private Resolver resolver;
 
     @Mock
     private Expression<Integer, Resolver> sizeExpr;
-    
+
     @Mock
     private Builder builder;
 
     @Test
-    public void shouldEncodeCorrectly() throws IOException, NullPointerException {
-		Charset charset = Charset.availableCharsets().get(BoundString.Encoding.ASCII);
+    public void shouldEncodeCorrectly() throws IOException, NullPointerException
+    {
+        Charset charset = Charset.availableCharsets().get(BoundString.Encoding.ASCII);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         BitChannel channel = new OutputStreamBitChannel(out);
         when(sizeExpr.eval(Matchers.any(Resolver.class))).thenReturn(4);
@@ -78,7 +78,8 @@ public class FixedLengthStringCodecTest {
 
     @Test
     public void shouldPadStringsShorterThanDeclared() throws DecodingException,
-            IOException {
+            IOException
+    {
         int size = 16;
         String original = "short\u0100";
         when(sizeExpr.eval(Matchers.any(Resolver.class))).thenReturn(size);

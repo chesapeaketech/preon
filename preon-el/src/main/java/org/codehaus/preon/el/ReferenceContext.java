@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,7 +28,7 @@ package org.codehaus.preon.el;
  * A context for building references to elements in an environment of E. The
  * {@link ReferenceContext} interface allows us to build references relying on
  * different types of environments.
- * 
+ *
  * <p>
  * The main reason for having the {@link ReferenceContext} interface is to have
  * a better abstraction from the environment in which a Limbo expression is
@@ -37,21 +37,22 @@ package org.codehaus.preon.el;
  * particular context. This allows Quarks to build meaningful descriptions of
  * references by taking Codec information into account.
  * </p>
- * 
+ *
  * @author Wilfred Springer
- * 
+ *
  * @param <E>
  *            The type of environment that needs to be passed in in order to
  *            resolve a {@link Reference} created from this
  *            {@link ReferenceContext}.
  */
-public interface ReferenceContext<E> extends Descriptive {
+public interface ReferenceContext<E> extends Descriptive
+{
 
     /**
      * Creates a new {@link Reference}; the new {@link Reference} will be
      * resolved by first resolving the current reference, and then use the name
      * to navigate to another object associated to that object.
-     * 
+     *
      * @param name
      *            The name to be used to resolve the Reference.
      * @return A new Reference, pointing to the object that is related to the
@@ -64,7 +65,7 @@ public interface ReferenceContext<E> extends Descriptive {
      * Creates a new {@link Reference}; the new {@link Reference} will be
      * resolved by first resolving the current reference, and then use the index
      * to navigate to the associated object.
-     * 
+     *
      * @param index
      *            The index to be used. (A Limbo expression.)
      * @return A new Reference, pointing to the object that is related to the
@@ -77,7 +78,7 @@ public interface ReferenceContext<E> extends Descriptive {
      * Creates a new {@link Reference}; the new {@link Reference} will be
      * resolved by first resolving the current reference, and then use the index
      * to navigate to the associated object.
-     * 
+     *
      * @param index
      *            The index to be used. (An object representation of an
      *            Expression on the same context.)
@@ -86,5 +87,4 @@ public interface ReferenceContext<E> extends Descriptive {
      */
     Reference<E> selectItem(Expression<Integer, E> index)
             throws BindingException;
-
 }

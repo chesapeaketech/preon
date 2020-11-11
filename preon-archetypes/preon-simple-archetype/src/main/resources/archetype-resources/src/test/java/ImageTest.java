@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -22,23 +22,26 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.Codecs;
+import org.codehaus.preon.DecodingException;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 #set($symbol_pound='#')
         #set($symbol_dollar='$')
         #set($symbol_escape='\' )
-        package ${packageInPathFormat};
+        package ${packageInPathFormat};{packageInPathFormat}.Image;
 
-import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
-import org.codehaus.preon.Codecs;
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.DecodingException;
-import ${packageInPathFormat}.Image;
-
-public class ImageTest {
+public class ImageTest
+{
 
     @Test
-    public void shouldDecodeCorrectly() throws DecodingException {
+    public void shouldDecodeCorrectly() throws DecodingException
+    {
         Codec<Image> codec = Codecs.create(Image.class);
         byte[] buffer = new byte[]{
                 0, 0, 0, 1,
@@ -54,5 +57,4 @@ public class ImageTest {
         assertThat(image.getPixels()[0].getGreen(), is((byte) 2));
         assertThat(image.getPixels()[0].getBlue(), is((byte) 3));
     }
-
 }

@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,30 +24,30 @@
  */
 package org.codehaus.preon.el;
 
-import org.codehaus.preon.el.ast.ArithmeticNode;
-import org.codehaus.preon.el.ast.ExpressionNode;
-import org.codehaus.preon.el.ast.IntegerNode;
-import org.codehaus.preon.el.ast.Node;
-import org.codehaus.preon.el.ast.ArithmeticNode.Operator;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.codehaus.preon.el.ast.ArithmeticNode;
+import org.codehaus.preon.el.ast.ArithmeticNode.Operator;
+import org.codehaus.preon.el.ast.ExpressionNode;
+import org.codehaus.preon.el.ast.IntegerNode;
+import org.codehaus.preon.el.ast.Node;
 
 /**
  * A convenience class for creating Expressions.
- * 
+ *
  * @author Wilfred Springer
- * 
+ *
  */
-public class Expressions {
+public class Expressions
+{
 
     /**
      * Creates an {@link Expression} from the Limbo expression passed in. (Will
      * fail if the expression passed in does not return a boolean value.)
-     * 
+     *
      * @param <E>
      *            The type of environment that will be passed in when evaluating
      *            the expression.
@@ -63,18 +63,20 @@ public class Expressions {
      *             parser fails to parse the Limbo expression.)
      */
     public static <E> Expression<Boolean, E> createBoolean(ReferenceContext<E> context, String expr)
-            throws InvalidExpressionException {
+            throws InvalidExpressionException
+    {
         return condition(context, expr);
     }
 
-    public static <E> Expression<Object, E> create(ReferenceContext<E> context, String expr) {
+    public static <E> Expression<Object, E> create(ReferenceContext<E> context, String expr)
+    {
         return any(context, expr);
     }
 
     /**
      * Creates an {@link Expression} from the Limbo expression passed in. (Will
      * fail if the expression passed in does not return a integer value.)
-     * 
+     *
      * @param <E>
      *            The type of environment that will be passed in when evaluating
      *            the expression.
@@ -90,13 +92,14 @@ public class Expressions {
      *             parser fails to parse the Limbo expression.)
      */
     public static <E> Expression<Integer, E> createInteger(ReferenceContext<E> context, String expr)
-            throws InvalidExpressionException {
+            throws InvalidExpressionException
+    {
         return arithmetic(context, expr);
     }
 
     /**
      * Creates an {@link Expression} wrapping around a number.
-     * 
+     *
      * @param <E>
      *            The type of context to which this expression should be
      *            applied.
@@ -106,42 +109,53 @@ public class Expressions {
      *            The type of context expected by the Expression.
      * @return An {@link Expression} evaluating to <code>value</code>.
      */
-    public static <E> Expression<Integer, E> createInteger(int value, Class<E> cl) {
+    public static <E> Expression<Integer, E> createInteger(int value, Class<E> cl)
+    {
         return new IntegerNode<E>(value);
     }
 
     @SuppressWarnings("unchecked")
     private static <E> Node<Integer, E> arithmetic(ReferenceContext<E> context, String expr)
-            throws InvalidExpressionException {
-        try {
+            throws InvalidExpressionException
+    {
+        try
+        {
             return (Node<Integer, E>) buildWalker(context, expr).vexpr();
-        } catch (RecognitionException re) {
+        } catch (RecognitionException re)
+        {
             throw new InvalidExpressionException(re);
         }
     }
 
     @SuppressWarnings("unchecked")
     private static <E> Node<Boolean, E> condition(ReferenceContext<E> context, String expr)
-            throws InvalidExpressionException {
-        try {
+            throws InvalidExpressionException
+    {
+        try
+        {
             return (Node<Boolean, E>) buildWalker(context, expr).zexpr();
-        } catch (RecognitionException re) {
+        } catch (RecognitionException re)
+        {
             throw new InvalidExpressionException(re);
         }
     }
 
     @SuppressWarnings("unchecked")
     private static <E> Node<Object, E> any(ReferenceContext<E> context, String expr)
-            throws InvalidExpressionException {
-        try {
+            throws InvalidExpressionException
+    {
+        try
+        {
             return (Node<Object, E>) buildWalker(context, expr).fexpr();
-        } catch (RecognitionException re) {
+        } catch (RecognitionException re)
+        {
             throw new InvalidExpressionException(re);
         }
     }
 
     private static <E> LimboWalker buildWalker(ReferenceContext<E> context, String expr)
-            throws RecognitionException {
+            throws RecognitionException
+    {
         ANTLRStringStream in = new ANTLRStringStream(expr);
         LimboLexer lexer = new LimboLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -153,34 +167,37 @@ public class Expressions {
         return walker;
     }
 
-    public static <C> ContextualizedExpressionBuilder<C> from(Class<C> contextType) {
+    public static <C> ContextualizedExpressionBuilder<C> from(Class<C> contextType)
+    {
         return new ContextualizedExpressionBuilderImpl<C>(contextType);
     }
 
-    public static <C> BoundExpressionBuilder<C> from(ReferenceContext<C> contextType) {
+    public static <C> BoundExpressionBuilder<C> from(ReferenceContext<C> contextType)
+    {
         return new BoundExpressionBuilderImpl<C>(contextType);
     }
 
-    public interface ContextualizedExpressionBuilder<C> extends BoundExpressionBuilder<C> {
+    public interface ContextualizedExpressionBuilder<C> extends BoundExpressionBuilder<C>
+    {
 
         BoundExpressionBuilder<C> using(Binding binding);
-
     }
 
     /**
      * An expression builder that has already been tied to a
      * {@link ReferenceContext}.
-     * 
+     *
      * @author Wilfred Springer
-     * 
+     *
      * @param <C>
      *            The type of context to which the expressions will be bound.
      */
-    public interface BoundExpressionBuilder<C> {
+    public interface BoundExpressionBuilder<C>
+    {
 
         /**
          * Constructs an expression that is supposed to evaluate to a boolean.
-         * 
+         *
          * @param expr
          *            The Limbo expression, as text.
          * @return An {@link Expression} object, encapsulating the expression
@@ -196,7 +213,7 @@ public class Expressions {
 
         /**
          * Constructs an expression that is supposed to evaluate to a integer.
-         * 
+         *
          * @param expr
          *            The Limbo expression, as text.
          * @return An {@link Expression} object, encapsulating the expression
@@ -209,63 +226,69 @@ public class Expressions {
          */
         Expression<Integer, C> toInteger(String expr) throws BindingException,
                 InvalidExpressionException;
-
     }
 
-    private static class BoundExpressionBuilderImpl<C> implements BoundExpressionBuilder<C> {
+    private static class BoundExpressionBuilderImpl<C> implements BoundExpressionBuilder<C>
+    {
 
         private ReferenceContext<C> context;
 
-        public BoundExpressionBuilderImpl(ReferenceContext<C> context) {
+        public BoundExpressionBuilderImpl(ReferenceContext<C> context)
+        {
             this.context = context;
         }
 
         public Expression<Boolean, C> toBoolean(String expr) throws BindingException,
-                InvalidExpressionException {
+                InvalidExpressionException
+        {
             return createBoolean(context, expr);
         }
 
         public Expression<Integer, C> toInteger(String expr) throws BindingException,
-                InvalidExpressionException {
+                InvalidExpressionException
+        {
             return createInteger(context, expr);
         }
-
     }
 
     private static class ContextualizedExpressionBuilderImpl<C> implements
-            ContextualizedExpressionBuilder<C> {
+            ContextualizedExpressionBuilder<C>
+    {
 
         private static Binding DEFAULT = Bindings.EarlyBinding;
 
         private Class<?> type;
 
-        public ContextualizedExpressionBuilderImpl(Class<?> type) {
+        public ContextualizedExpressionBuilderImpl(Class<?> type)
+        {
             this.type = type;
         }
 
         @SuppressWarnings("unchecked")
-        public BoundExpressionBuilder<C> using(Binding binding) {
+        public BoundExpressionBuilder<C> using(Binding binding)
+        {
             return new BoundExpressionBuilderImpl(DEFAULT.create(type));
         }
 
         @SuppressWarnings("unchecked")
         public Expression<Boolean, C> toBoolean(String expr) throws BindingException,
-                InvalidExpressionException {
+                InvalidExpressionException
+        {
             return (Expression<Boolean, C>) createBoolean(DEFAULT.create(type), expr);
         }
 
         @SuppressWarnings("unchecked")
         public Expression<Integer, C> toInteger(String expr) throws BindingException,
-                InvalidExpressionException {
+                InvalidExpressionException
+        {
             return (Expression<Integer, C>) createInteger(DEFAULT.create(type), expr);
         }
-
     }
 
     /**
      * Returns a new expression, representing the multiplication of the two
      * {@link Expression}s passed in.
-     * 
+     *
      * @param <C>
      *            The type of context of the expressions.
      * @param first
@@ -277,14 +300,15 @@ public class Expressions {
      *         of the arguments is <code>null</code>.
      */
     public static <C> Expression<Integer, C> multiply(Expression<Integer, C> first,
-            Expression<Integer, C> second) {
+                                                      Expression<Integer, C> second)
+    {
         return combine(Operator.mult, first, second);
     }
 
     /**
      * Returns a new expression, representing the sum of the two
      * {@link Expression}s passed in.
-     * 
+     *
      * @param <C>
      *            The type of context of the expressions.
      * @param first
@@ -296,7 +320,8 @@ public class Expressions {
      *         the arguments is <code>null</code>.
      */
     public static <C> Expression<Integer, C> add(Expression<Integer, C> first,
-            Expression<Integer, C> second) {
+                                                 Expression<Integer, C> second)
+    {
         return combine(Operator.plus, first, second);
     }
 
@@ -315,7 +340,8 @@ public class Expressions {
      *         is <code>null</code>.
      */
     public static <C> Expression<Integer, C> subtract(Expression<Integer, C> first,
-                                                 Expression<Integer, C> second) {
+                                                      Expression<Integer, C> second)
+    {
         return combine(Operator.minus, first, second);
     }
 
@@ -334,7 +360,8 @@ public class Expressions {
      *         is <code>null</code>.
      */
     public static <C> Expression<Integer, C> divide(Expression<Integer, C> first,
-                                                      Expression<Integer, C> second) {
+                                                    Expression<Integer, C> second)
+    {
         return combine(Operator.div, first, second);
     }
 
@@ -353,13 +380,14 @@ public class Expressions {
      *         is <code>null</code>.
      */
     public static <C> Expression<Integer, C> modulo(Expression<Integer, C> first,
-                                                    Expression<Integer, C> second) {
+                                                    Expression<Integer, C> second)
+    {
         return combine(Operator.mod, first, second);
     }
 
     /**
      * Returns a new {@link Node}.
-     * 
+     *
      * @param <C>
      *            The type of context to be passed in into the Node in order to
      *            calculate a result.
@@ -372,23 +400,28 @@ public class Expressions {
      * @return A new {@link Node}.
      */
     private static <C> Node<Integer, C> combine(Operator operator, Expression<Integer, C> first,
-            Expression<Integer, C> second) {
-        if (first == null || second == null) {
+                                                Expression<Integer, C> second)
+    {
+        if (first == null || second == null)
+        {
             return null;
         }
         Node<Integer, C> firstNode;
         Node<Integer, C> secondNode;
-        if (first instanceof Node) {
+        if (first instanceof Node)
+        {
             firstNode = (Node<Integer, C>) first;
-        } else {
+        } else
+        {
             firstNode = new ExpressionNode<Integer, C>(first);
         }
-        if (second instanceof Node) {
+        if (second instanceof Node)
+        {
             secondNode = (Node<Integer, C>) second;
-        } else {
+        } else
+        {
             secondNode = new ExpressionNode<Integer, C>(second);
         }
         return new ArithmeticNode<C>(operator, firstNode, secondNode);
     }
-
 }

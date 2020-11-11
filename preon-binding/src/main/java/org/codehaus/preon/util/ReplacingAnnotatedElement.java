@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,7 +32,8 @@ import java.lang.reflect.AnnotatedElement;
  *
  * @author Wilfred Springer (wis)
  */
-public class ReplacingAnnotatedElement implements AnnotatedElement {
+public class ReplacingAnnotatedElement implements AnnotatedElement
+{
 
     /** The replacement annotation. */
     private Annotation replacement;
@@ -40,20 +41,24 @@ public class ReplacingAnnotatedElement implements AnnotatedElement {
     /** The other annotations. */
     private AnnotatedElement wrapped;
 
-    public ReplacingAnnotatedElement(AnnotatedElement wrapped, Annotation replacement) {
+    public ReplacingAnnotatedElement(AnnotatedElement wrapped, Annotation replacement)
+    {
         this.wrapped = wrapped;
         this.replacement = replacement;
     }
 
     /*
-    * (non-Javadoc)
-    * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
-    */
+     * (non-Javadoc)
+     * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
+     */
 
-    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        if (annotationType.isAssignableFrom(replacement.getClass())) {
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
+    {
+        if (annotationType.isAssignableFrom(replacement.getClass()))
+        {
             return (T) replacement;
-        } else {
+        } else
+        {
             return wrapped.getAnnotation(annotationType);
         }
     }
@@ -63,10 +68,13 @@ public class ReplacingAnnotatedElement implements AnnotatedElement {
      * @see java.lang.reflect.AnnotatedElement#getAnnotations()
      */
 
-    public Annotation[] getAnnotations() {
+    public Annotation[] getAnnotations()
+    {
         Annotation[] annotations = wrapped.getAnnotations();
-        for (int i = 0; i < annotations.length; i++) {
-            if (annotations[i].getClass().isAssignableFrom(replacement.getClass())) {
+        for (int i = 0; i < annotations.length; i++)
+        {
+            if (annotations[i].getClass().isAssignableFrom(replacement.getClass()))
+            {
                 annotations[i] = replacement;
             }
         }
@@ -78,10 +86,13 @@ public class ReplacingAnnotatedElement implements AnnotatedElement {
      * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
      */
 
-    public Annotation[] getDeclaredAnnotations() {
+    public Annotation[] getDeclaredAnnotations()
+    {
         Annotation[] annotations = wrapped.getDeclaredAnnotations();
-        for (int i = 0; i < annotations.length; i++) {
-            if (annotations[i].getClass() == replacement.getClass()) {
+        for (int i = 0; i < annotations.length; i++)
+        {
+            if (annotations[i].getClass() == replacement.getClass())
+            {
                 annotations[i] = replacement;
             }
         }
@@ -93,12 +104,14 @@ public class ReplacingAnnotatedElement implements AnnotatedElement {
      * @see java.lang.reflect.AnnotatedElement#isAnnotationPresent(java.lang.Class)
      */
 
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        if (wrapped.isAnnotationPresent(annotationType)) {
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
+    {
+        if (wrapped.isAnnotationPresent(annotationType))
+        {
             return true;
-        } else {
+        } else
+        {
             return replacement.getClass() == annotationType;
         }
     }
-
 }

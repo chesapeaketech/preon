@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,18 +24,17 @@
  */
 package org.codehaus.preon.codec;
 
+import junit.framework.TestCase;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecFactory;
+import org.easymock.EasyMock;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Date;
 
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.CodecFactory;
-
-import org.easymock.EasyMock;
-
-import junit.framework.TestCase;
-
-public class CachingCodecFactoryTest extends TestCase {
+public class CachingCodecFactoryTest extends TestCase
+{
 
     private CodecFactory delegate;
 
@@ -46,7 +45,8 @@ public class CachingCodecFactoryTest extends TestCase {
     private AnnotatedElement metadata;
 
     @SuppressWarnings("unchecked")
-    public void setUp() {
+    public void setUp()
+    {
         delegate = EasyMock.createMock(CodecFactory.class);
         codec1 = EasyMock.createMock(Codec.class);
         codec2 = EasyMock.createMock(Codec.class);
@@ -54,7 +54,8 @@ public class CachingCodecFactoryTest extends TestCase {
     }
 
     /** Tests if the {@link CachingCodecFactory} correctly returns the same codec for identical requests. */
-    public void testCachingStrategy() {
+    public void testCachingStrategy()
+    {
         EasyMock.expect(delegate.create(metadata, String.class, null))
                 .andReturn(codec1);
         EasyMock.expect(delegate.create(metadata, Date.class, null)).andReturn(
@@ -69,5 +70,4 @@ public class CachingCodecFactoryTest extends TestCase {
         assertNotNull(cacheRef);
         EasyMock.verify(metadata, delegate, codec1, codec2);
     }
-
 }

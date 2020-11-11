@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,15 +28,17 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
-public class HexUtilsTest {
+public class HexUtilsTest
+{
 
     private String line = "Wondering how this works out. I would expect it's all going to work out fine, but it's hard to tell";
 
     @Test
-    public void shouldRenderCorrectlyWithoutAddress() throws IOException {
+    public void shouldRenderCorrectlyWithoutAddress() throws IOException
+    {
         byte[] buffer = line.getBytes("UTF-8");
         StringBuilder builder = new StringBuilder();
         HexUtils.dump(buffer, builder, 16);
@@ -50,6 +52,4 @@ public class HexUtilsTest {
         assertThat(lines[5], is("74 20 69 74 27 73 20 68  61 72 64 20 74 6f 20 74  |t.it.s.hard.to.t|"));
         assertThat(lines[6], is("65 6c 6c                                          |ell             |"));
     }
-
-
 }
