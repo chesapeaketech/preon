@@ -26,6 +26,10 @@ subprojects {
 
         repositories {
             maven {
+                credentials {
+                    username "$mavenUser"
+                    password "$mavenPassword"
+                }
                 url "${mavenPublishUrl}"
             }
         }
