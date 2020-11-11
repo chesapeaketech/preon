@@ -3,6 +3,9 @@ variables:
 
 image: $PIPELINE_DOCKER_IMAGE
 
+before_script:
+  - echo "$TASK_ARGUMENTS"
+
 build:
   stage: build
   script:
@@ -17,9 +20,8 @@ test:
     reports:
       junit: ./**/build/test-results/test/**/TEST-*.xml
 
-deploy-snapshot:
-  stage: deploy
+deploy:
   script:
     - ./gradlew build publish $TASK_ARGUMENTS
-  only:
-    - develop
+#  only:
+#    - develop
