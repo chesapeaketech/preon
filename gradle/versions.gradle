@@ -1,0 +1,23 @@
+ext {
+    // override these properties to publish to the specified URL with the supplied credentials
+    mavenPublishUrl = "publish"
+    mavenUser = "user"
+    mavenPassword = "password"
+
+    // compile dependency versions
+    antlrVersion = '3.5.2'
+    cglibVersion = '3.3.0'
+    commonsIoVersion = '2.8.0'
+    commonsLangVersion = '2.6'
+    commonsLoggingVersion = '1.2'
+    findbugsJsr305Version = '3.0.2'
+    multithreadedtcVersion = '1.01'
+    peciaVersion = '1.0'
+
+    // testCompile dependency versions
+    easyMockVersion = '2.3'
+    hamcrestVersion = '1.3'
+    jUnitVersion = '4.13.1'
+    mockitoVersion = '1.10.19'
+
+}
