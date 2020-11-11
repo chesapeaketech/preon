@@ -3,7 +3,7 @@ dependencies {
     compile project(':preon-binding')
     compile project(':preon-io')
     compile project(':preon-el')
-    compile group: 'nl.flotsam.pecia', name: 'pecia', version: '1.0'
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.5'
-    testCompile group: 'junit', name: 'junit', version: '4.8.1'
+    compile group: 'nl.flotsam.pecia', name: 'pecia', version: peciaVersion
+    testCompile group: 'org.mockito', name: 'mockito-all', version: mockitoVersion
+    testCompile group: 'junit', name: 'junit', version: jUnitVersion
 }
