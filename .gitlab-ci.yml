@@ -1,0 +1,25 @@
+variables:
+  PIPELINE_DOCKER_IMAGE: "adoptopenjdk/openjdk11"
+
+image: $PIPELINE_DOCKER_IMAGE
+
+build:
+  stage: build
+  script:
+    - ./gradlew build -x test $TASK_ARGUMENTS
+
+test:
+  stage: test
+  script:
+    - ./gradlew test $TASK_ARGUMENTS
+  artifacts:
+    when: always
+    reports:
+      junit: ./**/build/test-results/test/**/TEST-*.xml
+
+deploy-snapshot:
+  stage: deploy
+  script:
+    - ./gradlew build publish $TASK_ARGUMENTS
+  only:
+    - develop
