@@ -21,6 +21,7 @@ test:
       junit: ./**/build/test-results/test/**/TEST-*.xml
 
 deploy:
+  stage: deploy
   script:
     - ./gradlew build publish $TASK_ARGUMENTS
 #  only:
