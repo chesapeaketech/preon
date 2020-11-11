@@ -26,9 +26,7 @@ subprojects {
 
         repositories {
             maven {
-                if (Project.hasProperty("mavenPublishUrl")) {
-                    url "${mavenPublishUrl}"
-                }
+                url "${mavenPublishUrl}"
             }
         }
     }
