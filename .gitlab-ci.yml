@@ -1,5 +1,5 @@
 variables:
-  PIPELINE_DOCKER_IMAGE: "adoptopenjdk/openjdk11"
+  PIPELINE_DOCKER_IMAGE: "adoptopenjdk/openjdk8"
 
 image: $PIPELINE_DOCKER_IMAGE
 
