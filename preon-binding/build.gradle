@@ -1,3 +1,13 @@
+plugins {
+    id "biz.aQute.bnd.builder"
+}
+
+import aQute.bnd.gradle.Bundle
+
+tasks.register('bundle', Bundle) {
+    from sourceSets.main.output
+}
+
 description = 'Preon Binding'
 dependencies {
     compile group: 'cglib', name: 'cglib', version: cglibVersion
@@ -9,4 +19,11 @@ dependencies {
     testCompile group: 'org.easymock', name: 'easymock', version: easyMockVersion
     testCompile group: 'org.mockito', name: 'mockito-all', version: mockitoVersion
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
+}
+
+jar {
+    bnd('Bundle-Name': 'preon-binding-osgi',
+            'Bundle-SymbolicName': 'preon-binding-osgi',
+            'Bundle-Vendor': 'CTI',
+            'Bundle-Description': 'Preon Bindings Module')
 }

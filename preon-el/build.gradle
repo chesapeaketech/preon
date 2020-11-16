@@ -1,5 +1,12 @@
 plugins {
+    id "biz.aQute.bnd.builder"
     id 'antlr'
+}
+
+import aQute.bnd.gradle.Bundle
+
+tasks.register('bundle', Bundle) {
+    from sourceSets.main.output
 }
 
 description = 'Preon EL'
@@ -9,5 +16,12 @@ dependencies {
     antlr group: 'org.antlr', name: 'antlr', version: antlrVersion
     testCompile group: 'junit', name: 'junit', version: jUnitVersion
     testCompile group: 'org.easymock', name: 'easymock', version: easyMockVersion
+}
+
+jar {
+    bnd('Bundle-Name': 'preon-el-osgi',
+            'Bundle-SymbolicName': 'preon-el-osgi',
+            'Bundle-Vendor': 'CTI',
+            'Bundle-Description': 'Preon module for evaluating limbo expressions')
 }
 

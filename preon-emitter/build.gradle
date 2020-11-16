@@ -1,7 +1,24 @@
+plugins {
+    id "biz.aQute.bnd.builder"
+}
+
+import aQute.bnd.gradle.Bundle
+
+tasks.register('bundle',  Bundle) {
+    from sourceSets.main.output
+}
+
 description = 'Preon Emitter'
 dependencies {
     compile project(':preon-binding')
     testCompile group: 'junit', name: 'junit', version: jUnitVersion
     testCompile group: 'org.mockito', name: 'mockito-all', version: mockitoVersion
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
+}
+
+jar {
+    bnd('Bundle-Name': 'preon-emitter-osgi',
+            'Bundle-SymbolicName': 'preon-emitter-osgi',
+            'Bundle-Vendor': 'CTI',
+            'Bundle-Description': 'Preon Emitter Module')
 }
