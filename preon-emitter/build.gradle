@@ -2,12 +2,6 @@ plugins {
     id "biz.aQute.bnd.builder"
 }
 
-import aQute.bnd.gradle.Bundle
-
-tasks.register('bundle',  Bundle) {
-    from sourceSets.main.output
-}
-
 description = 'Preon Emitter'
 dependencies {
     compile project(':preon-binding')

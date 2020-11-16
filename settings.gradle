@@ -1,28 +1,10 @@
 rootProject.name = 'preon'
 include ':preon-io'
 include ':preon-binding'
-//include ':preon-samples:preon-sample-bmp'
-//include ':preon-samples:preon-sample-bytecode'
-//include ':preon-samples:preon-sample-mpeg'
-//include ':preon-samples:preon-sample-snoop'
-//include ':preon-samples:preon-sample-rtp'
-//include ':preon-samples:preon-sample-varlength-encoding'
-//include ':preon-samples'
-//include ':preon-archetypes:preon-simple-archetype'
-//include ':preon-archetypes'
 include ':preon-el'
 include ':preon-emitter'
 
 project(':preon-io').projectDir = "$rootDir/preon-io" as File
 project(':preon-binding').projectDir = "$rootDir/preon-binding" as File
-//project(':preon-samples:preon-sample-bmp').projectDir = "$rootDir/preon-samples/preon-sample-bmp" as File
-//project(':preon-samples:preon-sample-bytecode').projectDir = "$rootDir/preon-samples/preon-sample-bytecode" as File
-//project(':preon-samples:preon-sample-mpeg').projectDir = "$rootDir/preon-samples/preon-sample-mpeg" as File
-//project(':preon-samples:preon-sample-snoop').projectDir = "$rootDir/preon-samples/preon-sample-snoop" as File
-//project(':preon-samples:preon-sample-rtp').projectDir = "$rootDir/preon-samples/preon-sample-rtp" as File
-//project(':preon-samples:preon-sample-varlength-encoding').projectDir = "$rootDir/preon-samples/preon-sample-varlength-encoding" as File
-//project(':preon-samples').projectDir = "$rootDir/preon-samples" as File
-//project(':preon-archetypes:preon-simple-archetype').projectDir = "$rootDir/preon-archetypes/preon-simple-archetype" as File
-//project(':preon-archetypes').projectDir = "$rootDir/preon-archetypes" as File
 project(':preon-el').projectDir = "$rootDir/preon-el" as File
 project(':preon-emitter').projectDir = "$rootDir/preon-emitter" as File

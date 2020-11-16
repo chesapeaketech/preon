@@ -3,12 +3,6 @@ plugins {
     id 'antlr'
 }
 
-import aQute.bnd.gradle.Bundle
-
-tasks.register('bundle', Bundle) {
-    from sourceSets.main.output
-}
-
 description = 'Preon EL'
 
 dependencies {
