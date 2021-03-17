@@ -7,17 +7,17 @@ import org.codehaus.preon.channel.BitChannel;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public enum NumericUnsignedType implements INumericType
+public enum NumericUnsignedType implements IIntegerType
 {
-    UByte(NumericType.Byte),
-    UShort(NumericType.Short),
-    UInteger(NumericType.Integer),
-    ULong(NumericType.Long),
+    UByte(IntegerType.Byte),
+    UShort(IntegerType.Short),
+    UInteger(IntegerType.Integer),
+    ULong(IntegerType.Long),
     ;
 
-    private final NumericType delegate;
+    private final IntegerType delegate;
 
-    private NumericUnsignedType(NumericType delegate)
+    private NumericUnsignedType(IntegerType delegate)
     {
         this.delegate = delegate;
     }
@@ -68,5 +68,23 @@ public enum NumericUnsignedType implements INumericType
     public Class<?>[] getNumericTypes()
     {
         return delegate.getNumericTypes();
+    }
+
+    @Override
+    public int getVarIntSize(Number number)
+    {
+        return 0;
+    }
+
+    @Override
+    public Object decodeVarInt()
+    {
+        return null;
+    }
+
+    @Override
+    public void encodeVarInt(BitChannel channel, Object value)
+    {
+
     }
 }

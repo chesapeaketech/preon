@@ -39,6 +39,7 @@ import org.codehaus.preon.annotation.BEUnsigned;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
 import org.codehaus.preon.annotation.LEUnsigned;
+import org.codehaus.preon.annotation.VarInt;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
@@ -62,7 +63,6 @@ public class NumericCodec implements Codec<Object>
 {
 
     static Map<Class<?>, INumericType> NUMERIC_TYPES = new HashMap<Class<?>, INumericType>(8);
-
     static Map<Class<?>, INumericType> UNSIGNED_TYPES = new HashMap<Class<?>, INumericType>(8);
 
     static
@@ -71,6 +71,12 @@ public class NumericCodec implements Codec<Object>
         {
             NUMERIC_TYPES.put(numType.getType(), numType);
             NUMERIC_TYPES.put(numType.getPrimitiveType(), numType);
+        }
+
+        for(IIntegerType intType : IntegerType.values())
+        {
+            NUMERIC_TYPES.put(intType.getType(), intType);
+            NUMERIC_TYPES.put(intType.getPrimitiveType(), intType);
         }
 
         for (INumericType numType : NumericUnsignedType.values())
@@ -282,6 +288,10 @@ public class NumericCodec implements Codec<Object>
                     int size = numericType.getDefaultSize();
                     Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, Integer.toString(size));
                     return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, null, unsigned);
+                }
+                if (numericType instanceof IIntegerType && overrides.isAnnotationPresent(VarInt.class))
+                {
+                    return (Codec<T>) new VarIntCodec((IIntegerType) numericType);
                 }
             }
             return null;
