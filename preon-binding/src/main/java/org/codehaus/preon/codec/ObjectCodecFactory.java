@@ -35,6 +35,7 @@ import org.codehaus.preon.CodecSelectorFactory;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundObject;
+import org.codehaus.preon.annotation.FieldOrder;
 import org.codehaus.preon.binding.Binding;
 import org.codehaus.preon.binding.BindingFactory;
 import org.codehaus.preon.binding.StandardBindingFactory;
@@ -48,17 +49,22 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** The {@link CodecFactory} for {@link ObjectCodec}s. */
+/**
+ * The {@link CodecFactory} for {@link ObjectCodec}s.
+ */
 public class ObjectCodecFactory implements CodecFactory
 {
 
     private static final Logger LOGGER = Logger.getLogger(ObjectCodecFactory.class.getName());
 
-    /** The object that will be used to construct {@link org.codehaus.preon.binding.Binding} instances. */
+    /**
+     * The object that will be used to construct {@link org.codehaus.preon.binding.Binding} instances.
+     */
     private BindingFactory bindingFactory;
 
     /**
@@ -67,7 +73,9 @@ public class ObjectCodecFactory implements CodecFactory
      */
     private CodecFactory codecFactory;
 
-    /** The object used to turn Java identifiers into something that is potentially readable by humans. */
+    /**
+     * The object used to turn Java identifiers into something that is potentially readable by humans.
+     */
     private IdentifierRewriter rewriter = new ClassNameRewriter();
 
     /**
@@ -188,6 +196,10 @@ public class ObjectCodecFactory implements CodecFactory
         return new HidingAnnotatedElement(BoundObject.class, metadata);
     }
 
+    private boolean hasFieldOrders(Field[] fields) {
+        return Arrays.stream(fields).anyMatch(field -> field.getAnnotation(FieldOrder.class) != null);
+    }
+
     private <T> void harvestBindings(Class<T> type,
                                      ObjectResolverContext context, CodecReference reference)
     {
@@ -197,6 +209,28 @@ public class ObjectCodecFactory implements CodecFactory
         }
         harvestBindings(type.getSuperclass(), context, reference);
         Field[] fields = type.getDeclaredFields();
+        if (hasFieldOrders(fields))
+        {
+            // getDeclaredFields() doesn't guarantee order, so make sure they're sorted.
+            Arrays.sort(fields, (field1, field2) -> {
+                FieldOrder orderField1 = field1.getAnnotation(FieldOrder.class);
+                FieldOrder orderField2 = field2.getAnnotation(FieldOrder.class);
+
+                // Fields without a specified order will go last
+                if (orderField1 != null && orderField2 != null)
+                {
+                    return orderField1.index() - orderField2.index();
+                } else if (orderField1 != null)
+                {
+                    return -1;
+                } else if (orderField2 != null)
+                {
+                    return 1;
+                }
+                // If no annotation is specified on either, sort them alphabetically for consistency.
+                return field1.getName().compareTo(field2.getName());
+            });
+        }
         // For creating the Codecs, we already need a modified
         // ReferenceContext, allowing us to incrementally bind to references
         // of fields declared before.
