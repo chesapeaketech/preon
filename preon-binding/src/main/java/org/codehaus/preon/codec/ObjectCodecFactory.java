@@ -196,7 +196,6 @@ public class ObjectCodecFactory implements CodecFactory
         return new HidingAnnotatedElement(BoundObject.class, metadata);
     }
 
-    // TODO: Remove this. It's in to prevent breaking of current usage of Preon.
     private boolean hasFieldOrders(Field[] fields) {
         return Arrays.stream(fields).anyMatch(field -> field.getAnnotation(FieldOrder.class) != null);
     }
@@ -210,7 +209,6 @@ public class ObjectCodecFactory implements CodecFactory
         }
         harvestBindings(type.getSuperclass(), context, reference);
         Field[] fields = type.getDeclaredFields();
-        // TODO: Remove this check. It's here to prevent breaking of current usage of Preon.
         if (hasFieldOrders(fields))
         {
             // getDeclaredFields() doesn't guarantee order, so make sure they're sorted.
