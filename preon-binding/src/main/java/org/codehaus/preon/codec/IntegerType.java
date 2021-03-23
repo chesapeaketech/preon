@@ -12,40 +12,51 @@
 
 package org.codehaus.preon.codec;
 
+import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.codec.IIntegerType;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /**
- * TODO: class description
+ * Integer types of numerics, since some things can be done with integer types that you wouldn't want to do with a
+ * floating point type.
  *
  * @author Copyright &#169; 2021 Chesapeake Technology International Corp.
- * @since
  */
 public enum IntegerType implements IIntegerType
 {
     Integer
             {
                 @Override
-                public int getVarIntSize(Number number)
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    return 0;
-                }
+                    int result = 0;
+                    int cur;
+                    int count = 0;
+                    int signBits = -1;
 
-                @Override
-                public Object decodeVarInt()
-                {
-                    return null;
-                }
+                    do
+                    {
+                        cur = buffer.readAsByte(8) & 0xff;
+                        result |= (cur & 0x7f) << (count * 7);
+                        signBits <<= 7;
+                        count++;
+                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Integer.BYTES);
 
-                @Override
-                public void encodeVarInt(BitChannel channel, Object value)
-                {
+                    if ((cur & 0x80) == 0x80)
+                    {
+                        throw new DecodingException("Invalid LEB128 sequence for an int.");
+                    }
 
+                    // Sign extend if appropriate
+                    if (((signBits >> 1) & result) != 0)
+                    {
+                        result |= signBits;
+                    }
+
+                    return result;
                 }
 
                 public int getDefaultSize()
@@ -84,51 +95,33 @@ public enum IntegerType implements IIntegerType
     Long
             {
                 @Override
-                public int getVarIntSize(Number number)
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    // TODO: This could be much cleverer.
-                    java.lang.Long value = (java.lang.Long) number;
-                    long remaining = value >> 7;
+                    long result = 0;
+                    long cur;
                     int count = 0;
-                    boolean hasMore = true;
-                    int end = ((value & java.lang.Long.MIN_VALUE) == 0) ? 0 : -1;
+                    long signBits = -1L;
 
-                    while (hasMore) {
-                        hasMore = (remaining != end)
-                                || ((remaining & 1) != ((value >> 6) & 1));
-
-                        value = remaining;
-                        remaining >>= 7;
+                    do
+                    {
+                        cur = buffer.readAsByte(8) & 0xff;
+                        result |= (cur & 0x7f) << (count * 7);
+                        signBits <<= 7;
                         count++;
+                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Long.BYTES);
+
+                    if ((cur & 0x80) == 0x80)
+                    {
+                        throw new DecodingException("Invalid LEB128 sequence for a long.");
                     }
 
-                    return count;
-                }
-
-                @Override
-                public Object decodeVarInt()
-                {
-                    return null;
-                }
-
-                @Override
-                public void encodeVarInt(BitChannel channel, Object value) throws IOException
-                {
-                    java.lang.Long longValue = (java.lang.Long) value;
-                    Long remaining = longValue >> 7;
-                    boolean hasMore = true;
-                    Long end = ((longValue & java.lang.Long.MIN_VALUE) == 0) ? 0L : -1L;
-                    ByteBuffer buffer = ByteBuffer.allocate(getVarIntSize(longValue));
-                    buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
-                    while (hasMore) {
-                        hasMore = (remaining != end)
-                                || ((remaining & 1) != ((longValue >> 6) & 1));
-
-                        buffer.put((byte) ((longValue & 0x7f) | (hasMore ? 0x80 : 0)));
-                        longValue = remaining;
-                        remaining >>= 7;
+                    // Sign extend if appropriate
+                    if (((signBits >> 1) & result) != 0)
+                    {
+                        result |= signBits;
                     }
-                    channel.write(buffer);
+
+                    return result;
                 }
 
                 public int getDefaultSize()
@@ -167,21 +160,33 @@ public enum IntegerType implements IIntegerType
     Short
             {
                 @Override
-                public int getVarIntSize(Number number)
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    return 0;
-                }
+                    short result = 0;
+                    short cur;
+                    int count = 0;
+                    short signBits = -1;
 
-                @Override
-                public Object decodeVarInt()
-                {
-                    return null;
-                }
+                    do
+                    {
+                        cur = (short) (buffer.readAsByte(8) & 0xff);
+                        result |= (cur & 0x7f) << (count * 7);
+                        signBits <<= 7;
+                        count++;
+                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Short.BYTES);
 
-                @Override
-                public void encodeVarInt(BitChannel channel, Object value)
-                {
+                    if ((cur & 0x80) == 0x80)
+                    {
+                        throw new DecodingException("Invalid LEB128 sequence for a short.");
+                    }
 
+                    // Sign extend if appropriate
+                    if (((signBits >> 1) & result) != 0)
+                    {
+                        result |= signBits;
+                    }
+
+                    return result;
                 }
 
                 public int getDefaultSize()
@@ -220,21 +225,33 @@ public enum IntegerType implements IIntegerType
     Byte
             {
                 @Override
-                public int getVarIntSize(Number number)
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    return 0;
-                }
+                    byte result = 0;
+                    byte cur;
+                    int count = 0;
+                    byte signBits = -1;
 
-                @Override
-                public Object decodeVarInt()
-                {
-                    return null;
-                }
+                    do
+                    {
+                        cur = (byte) (buffer.readAsByte(8) & 0xff);
+                        result |= (cur & 0x7f) << (count * 7);
+                        signBits <<= 7;
+                        count++;
+                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Byte.BYTES);
 
-                @Override
-                public void encodeVarInt(BitChannel channel, Object value)
-                {
+                    if ((cur & 0x80) == 0x80)
+                    {
+                        throw new DecodingException("Invalid LEB128 sequence for a byte.");
+                    }
 
+                    // Sign extend if appropriate
+                    if (((signBits >> 1) & result) != 0)
+                    {
+                        result |= signBits;
+                    }
+
+                    return result;
                 }
 
                 public int getDefaultSize()
@@ -269,4 +286,49 @@ public enum IntegerType implements IIntegerType
                     return new Class<?>[]{getType()};
                 }
             };
+
+    @Override
+    public int getLeb128Size(Number number)
+    {
+        long value = (long) number;
+        long remaining = value >> 7;
+        int count = 0;
+        boolean hasMore = true;
+        int end = ((value & java.lang.Long.MIN_VALUE) == 0) ? 0 : -1;
+
+        while (hasMore)
+        {
+            hasMore = (remaining != end)
+                    || ((remaining & 1) != ((value >> 6) & 1));
+
+            value = remaining;
+            remaining >>= 7;
+            count++;
+        }
+
+        return count;
+    }
+
+    @Override
+    public void encodeLeb128(BitChannel channel, Object value) throws IOException
+    {
+        // TODO: BigInteger instead?
+        long longValue = (long) value;
+        long remaining = longValue >> 7;
+        boolean hasMore = true;
+        int count = 0;
+        long end = ((longValue & java.lang.Long.MIN_VALUE) == 0) ? 0L : -1L;
+        byte[] bytes = new byte[getLeb128Size(longValue)];
+        while (hasMore)
+        {
+            hasMore = (remaining != end)
+                    || ((remaining & 1) != ((longValue >> 6) & 1));
+
+            bytes[count] = (byte) ((longValue & 0x7f) | (hasMore ? 0x80 : 0));
+            count++;
+            longValue = remaining;
+            remaining >>= 7;
+        }
+        channel.write(bytes, 0, bytes.length);
+    }
 }

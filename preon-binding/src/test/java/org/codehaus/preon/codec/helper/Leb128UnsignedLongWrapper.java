@@ -10,24 +10,25 @@
 //  DFARS 252.227-7013 (OCT 1988).
 //=======================================================================
 
-package org.codehaus.preon.codec;
+package org.codehaus.preon.codec.helper;
 
-import org.codehaus.preon.DecodingException;
-import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.codec.INumericType;
-
-import java.io.IOException;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.LEB128;
 
 /**
- * Operations only applicable to whole number (integer) numeric types.
+ * Helper class for verifying decoding/encoding
  *
  * @author Copyright &#169; 2021 Chesapeake Technology International Corp.
- *
  */
-public interface IIntegerType extends INumericType
+public class Leb128UnsignedLongWrapper
 {
-    int getLeb128Size(Number number);
-    Object decodeLeb128(BitBuffer bitBuffer) throws DecodingException;
-    void encodeLeb128(BitChannel channel, Object value) throws IOException;
+    @BoundNumber(unsinged = true)
+    @LEB128
+    public Long value;
+
+    public Leb128UnsignedLongWrapper(){}
+    public Leb128UnsignedLongWrapper(Long value)
+    {
+        this.value = value;
+    }
 }

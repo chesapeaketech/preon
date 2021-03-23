@@ -18,33 +18,25 @@ import org.codehaus.preon.CodecDescriptor;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.el.Expression;
 
 import java.io.IOException;
 
 /**
- * TODO: class description
+ * Codec for handling integer type values in LEB128 format.
  *
  * @author Copyright &#169; 2021 Chesapeake Technology International Corp.
- * @since
  */
-public class VarIntCodec implements Codec<Object>
+public class Leb128Codec implements Codec<Object>
 {
     private IIntegerType type;
-    private ByteOrder byteOrder;
-    private int base;
 
-    public VarIntCodec(IIntegerType type) {
-        this(type, 128, ByteOrder.LittleEndian);
-    }
-
-    private VarIntCodec (IIntegerType type, int base, ByteOrder byteOrder) {
+    public Leb128Codec(IIntegerType type)
+    {
         this.type = type;
-        this.base = base;
-        this.byteOrder = byteOrder;
     }
+
     /**
      * Decodes a value from the {@link BitBuffer}.
      *
@@ -60,7 +52,7 @@ public class VarIntCodec implements Codec<Object>
     @Override
     public Object decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException
     {
-        throw new DecodingException("Decode not currently implemented for VarInt.");
+        return type.decodeLeb128(buffer);
     }
 
     /**
@@ -73,7 +65,7 @@ public class VarIntCodec implements Codec<Object>
     @Override
     public void encode(Object value, BitChannel channel, Resolver resolver) throws IOException
     {
-        type.encodeVarInt(channel, value);
+        type.encodeLeb128(channel, value);
     }
 
     /**

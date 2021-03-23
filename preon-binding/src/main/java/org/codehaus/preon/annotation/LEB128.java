@@ -27,20 +27,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface VarInt
+public @interface LEB128
 {
-    /**
-     * The type of endianness: either {@link ByteOrder#LittleEndian} or {@link ByteOrder#BigEndian}.
-     *
-     * @return The type of endianness. Defaults to {@link ByteOrder#LittleEndian}.
-     */
-//    ByteOrder byteOrder() default ByteOrder.LittleEndian;
-
-    /**
-     * The base to encode in.
-     *
-     * @return The type of endianness. Defaults to 128.
-     */
-    int base() default 128;
-    boolean unsinged() default false;
 }

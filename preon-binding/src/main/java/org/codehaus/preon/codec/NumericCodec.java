@@ -39,7 +39,7 @@ import org.codehaus.preon.annotation.BEUnsigned;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
 import org.codehaus.preon.annotation.LEUnsigned;
-import org.codehaus.preon.annotation.VarInt;
+import org.codehaus.preon.annotation.LEB128;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
@@ -260,6 +260,10 @@ public class NumericCodec implements Codec<Object>
                     Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, Integer.toString(size));
                     return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, null, unsigned);
                 }
+                if (numericType instanceof IIntegerType && overrides.isAnnotationPresent(LEB128.class))
+                {
+                    return (Codec<T>) new Leb128Codec((IIntegerType) numericType);
+                }
                 if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class))
                 {
                     BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
@@ -288,10 +292,6 @@ public class NumericCodec implements Codec<Object>
                     int size = numericType.getDefaultSize();
                     Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, Integer.toString(size));
                     return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, null, unsigned);
-                }
-                if (numericType instanceof IIntegerType && overrides.isAnnotationPresent(VarInt.class))
-                {
-                    return (Codec<T>) new VarIntCodec((IIntegerType) numericType);
                 }
             }
             return null;
