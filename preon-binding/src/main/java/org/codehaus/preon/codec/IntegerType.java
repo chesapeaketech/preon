@@ -43,7 +43,7 @@ public enum IntegerType implements IIntegerType
                         result |= (cur & 0x7f) << (count * 7);
                         signBits <<= 7;
                         count++;
-                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Integer.BYTES);
+                    } while (((cur & 0x80) == 0x80) && count < MAX_INT_LEB128_BYTES);
 
                     if ((cur & 0x80) == 0x80)
                     {
@@ -108,7 +108,7 @@ public enum IntegerType implements IIntegerType
                         result |= (cur & 0x7f) << (count * 7);
                         signBits <<= 7;
                         count++;
-                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Long.BYTES);
+                    } while (((cur & 0x80) == 0x80) && count < MAX_LONG_LEB128_BYTES);
 
                     if ((cur & 0x80) == 0x80)
                     {
@@ -173,7 +173,7 @@ public enum IntegerType implements IIntegerType
                         result |= (cur & 0x7f) << (count * 7);
                         signBits <<= 7;
                         count++;
-                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Short.BYTES);
+                    } while (((cur & 0x80) == 0x80) && count < MAX_SHORT_LEB128_BYTES);
 
                     if ((cur & 0x80) == 0x80)
                     {
@@ -238,7 +238,7 @@ public enum IntegerType implements IIntegerType
                         result |= (cur & 0x7f) << (count * 7);
                         signBits <<= 7;
                         count++;
-                    } while (((cur & 0x80) == 0x80) && count <= java.lang.Byte.BYTES);
+                    } while (((cur & 0x80) == 0x80) && count < MAX_BYTE_LEB128_BYTES);
 
                     if ((cur & 0x80) == 0x80)
                     {
@@ -312,8 +312,8 @@ public enum IntegerType implements IIntegerType
     @Override
     public void encodeLeb128(BitChannel channel, Object value) throws IOException
     {
-        // TODO: BigInteger instead?
-        long longValue = (long) value;
+        // TODO: If we want to add in handling for BigInteger, should probably use it here, too
+        long longValue = ((Number) value).longValue();
         long remaining = longValue >> 7;
         boolean hasMore = true;
         int count = 0;

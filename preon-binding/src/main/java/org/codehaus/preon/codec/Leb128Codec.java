@@ -12,6 +12,9 @@
 
 package org.codehaus.preon.codec;
 
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecDescriptor;
@@ -19,6 +22,8 @@ import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
+import org.codehaus.preon.descriptor.Documenters;
+import org.codehaus.preon.descriptor.NullDocumenter;
 import org.codehaus.preon.el.Expression;
 
 import java.io.IOException;
@@ -77,8 +82,7 @@ public class Leb128Codec implements Codec<Object>
      * Resolver} to resolve variables inside this expression, <em>unless {@link Expression#isParameterized()} returns
      * <code>false</code></em> . </p>
      *
-     * @return A Limbo {@link Expression}, expressing the number of bits occupied by instance loaded and stored by this
-     * Codec.
+     * @return null since the size can vary depending on the value.
      */
     @Override
     public Expression<Integer, Resolver> getSize()
@@ -95,7 +99,60 @@ public class Leb128Codec implements Codec<Object>
     @Override
     public CodecDescriptor getCodecDescriptor()
     {
-        return null;
+        return new CodecDescriptor()
+        {
+            @Override
+            public <C extends ParaContents<?>> Documenter<C> summary()
+            {
+                return new Documenter<C>()
+                {
+                    @Override
+                    public void document(C target)
+                    {
+                        target.document(reference(Adjective.A, true)).text(". ");
+                    }
+                };
+            }
+
+            @Override
+            public <C extends ParaContents<?>> Documenter<C> reference(Adjective adjective, boolean startWithCapital)
+            {
+                return new Documenter<C>()
+                {
+                    @Override
+                    public void document(C target)
+                    {
+                        String unsignedDesc = "";
+
+                        if (type.getClass().isAssignableFrom(NumericUnsignedType.class))
+                        {
+                            unsignedDesc = "unsigned, ";
+                        }
+
+                        target.text(adjective.asTextPreferA(startWithCapital)).text("variable length (").text(unsignedDesc)
+                                .text(")").text(" integer value in LEB128 format");
+                    }
+                };
+            }
+
+            @Override
+            public <C extends SimpleContents<?>> Documenter<C> details(String bufferReference)
+            {
+                return new NullDocumenter<>();
+            }
+
+            @Override
+            public boolean requiresDedicatedSection()
+            {
+                return false;
+            }
+
+            @Override
+            public String getTitle()
+            {
+                return null;
+            }
+        };
     }
 
     /**
@@ -106,7 +163,7 @@ public class Leb128Codec implements Codec<Object>
     @Override
     public Class<?>[] getTypes()
     {
-        return new Class[0];
+        return new Class[]{type.getType()};
     }
 
     /**
@@ -117,6 +174,6 @@ public class Leb128Codec implements Codec<Object>
     @Override
     public Class<?> getType()
     {
-        return null;
+        return type.getType();
     }
 }
