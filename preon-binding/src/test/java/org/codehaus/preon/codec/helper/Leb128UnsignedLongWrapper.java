@@ -26,7 +26,10 @@ public class Leb128UnsignedLongWrapper
     @LEB128
     public Long value;
 
-    public Leb128UnsignedLongWrapper(){}
+    public Leb128UnsignedLongWrapper()
+    {
+    }
+
     public Leb128UnsignedLongWrapper(Long value)
     {
         this.value = value;

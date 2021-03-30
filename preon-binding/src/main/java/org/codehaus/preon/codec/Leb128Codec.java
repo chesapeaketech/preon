@@ -22,7 +22,6 @@ import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.descriptor.NullDocumenter;
 import org.codehaus.preon.el.Expression;
 
@@ -130,7 +129,7 @@ public class Leb128Codec implements Codec<Object>
                         }
 
                         target.text(adjective.asTextPreferA(startWithCapital)).text("variable length (").text(unsignedDesc)
-                                .text(")").text(" integer value in LEB128 format");
+                              .text(")").text(" integer value in LEB128 format");
                     }
                 };
             }
@@ -163,7 +162,7 @@ public class Leb128Codec implements Codec<Object>
     @Override
     public Class<?>[] getTypes()
     {
-        return new Class[]{type.getType()};
+        return new Class[] { type.getType() };
     }
 
     /**

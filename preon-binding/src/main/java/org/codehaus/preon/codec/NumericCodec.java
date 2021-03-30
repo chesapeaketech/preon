@@ -22,6 +22,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
 package org.codehaus.preon.codec;
 
 import nl.flotsam.pecia.Documenter;
@@ -38,8 +39,8 @@ import org.codehaus.preon.annotation.BESigned;
 import org.codehaus.preon.annotation.BEUnsigned;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
-import org.codehaus.preon.annotation.LEUnsigned;
 import org.codehaus.preon.annotation.LEB128;
+import org.codehaus.preon.annotation.LEUnsigned;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
@@ -62,7 +63,7 @@ import java.util.Map;
 public class NumericCodec implements Codec<Object>
 {
 
-    static Map<Class<?>, INumericType> NUMERIC_TYPES = new HashMap<Class<?>, INumericType>(8);
+    static Map<Class<?>, INumericType> NUMERIC_TYPES  = new HashMap<Class<?>, INumericType>(8);
     static Map<Class<?>, INumericType> UNSIGNED_TYPES = new HashMap<Class<?>, INumericType>(8);
 
     static
@@ -73,7 +74,7 @@ public class NumericCodec implements Codec<Object>
             NUMERIC_TYPES.put(numType.getPrimitiveType(), numType);
         }
 
-        for(IIntegerType intType : IntegerType.values())
+        for (IIntegerType intType : IntegerType.values())
         {
             NUMERIC_TYPES.put(intType.getType(), intType);
             NUMERIC_TYPES.put(intType.getPrimitiveType(), intType);
@@ -119,7 +120,8 @@ public class NumericCodec implements Codec<Object>
                 if (matchExpr.isParameterized())
                 {
                     stringBuilder.append("Expected different value than " + result);
-                } else
+                }
+                else
                 {
                     stringBuilder.append("Expected ");
                     matchExpr.document(document);
@@ -139,7 +141,7 @@ public class NumericCodec implements Codec<Object>
 
     public Class<?>[] getTypes()
     {
-        return new Class[]{type.getType()};
+        return new Class[] { type.getType() };
     }
 
     public Expression<Integer, Resolver> getSize()
@@ -169,7 +171,8 @@ public class NumericCodec implements Codec<Object>
                             ).text(".").end();
                         }
                     };
-                } else
+                }
+                else
                 {
                     return new NullDocumenter<C>();
                 }
@@ -181,7 +184,7 @@ public class NumericCodec implements Codec<Object>
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(final Adjective adjective, final boolean
-                    startWithCapital)
+                                                                                                   startWithCapital)
             {
                 return new Documenter<C>()
                 {
@@ -197,13 +200,16 @@ public class NumericCodec implements Codec<Object>
                         if (sizeExpr.isParameterized())
                         {
                             target.text(adjective.asTextPreferAn(startWithCapital)).text(unsignedDesc).text(" integer" +
-                                    " value (").text(unsignedDesc).document(Documenters.forByteOrder(byteOrder)).text
-                                    (")");
-                        } else
+                                                                                                            " value (").text(unsignedDesc)
+                                  .document(Documenters.forByteOrder(byteOrder)).text
+                                                                                  (")");
+                        }
+                        else
                         {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(" ").document(Documenters
-                                    .forExpression(sizeExpr)).text("-bit integer value (").text(unsignedDesc)
-                                    .document(Documenters.forByteOrder(byteOrder)).text(")");
+                                                                                                       .forExpression(sizeExpr)).text("-bit integer value (")
+                                  .text(unsignedDesc)
+                                  .document(Documenters.forByteOrder(byteOrder)).text(")");
                         }
                     }
                 };
@@ -243,7 +249,7 @@ public class NumericCodec implements Codec<Object>
     public static class Factory implements CodecFactory
     {
 
-        @SuppressWarnings({"unchecked"})
+        @SuppressWarnings({ "unchecked" })
         public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type, ResolverContext context)
         {
 
@@ -269,9 +275,9 @@ public class NumericCodec implements Codec<Object>
                     BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
                     ByteOrder endian = numericMetadata.byteOrder();
                     String size = numericMetadata.size();
-//                    if(NUMERIC_TYPES.containsKey(numericMetadata.type())) {
-//                    	numericType = NUMERIC_TYPES.get(numericMetadata.type());
-//                    }
+                    //                    if(NUMERIC_TYPES.containsKey(numericMetadata.type())) {
+                    //                    	numericType = NUMERIC_TYPES.get(numericMetadata.type());
+                    //                    }
 
                     if (size.length() == 0)
                     {
@@ -286,7 +292,7 @@ public class NumericCodec implements Codec<Object>
                     return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, matchExpr, unsigned);
                 }
                 if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides
-                        .isAnnotationPresent(BESigned.class)))
+                                                                                              .isAnnotationPresent(BESigned.class)))
                 {
                     ByteOrder endian = ByteOrder.BigEndian;
                     int size = numericType.getDefaultSize();
@@ -314,7 +320,7 @@ public class NumericCodec implements Codec<Object>
                 return numericMetadata.unsinged();
             }
             if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides
-                    .isAnnotationPresent(LEUnsigned.class)))
+                                                                                          .isAnnotationPresent(LEUnsigned.class)))
             {
                 return true;
             }

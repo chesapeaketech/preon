@@ -24,7 +24,10 @@ public class Leb128SignedShortWrapper
     @LEB128
     public Short value;
 
-    public Leb128SignedShortWrapper(){}
+    public Leb128SignedShortWrapper()
+    {
+    }
+
     public Leb128SignedShortWrapper(Short value)
     {
         this.value = value;

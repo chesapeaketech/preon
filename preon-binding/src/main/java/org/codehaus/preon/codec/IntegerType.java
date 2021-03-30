@@ -28,264 +28,268 @@ import java.io.IOException;
 public enum IntegerType implements IIntegerType
 {
     Integer
-            {
-                @Override
-                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
-                {
-                    int result = 0;
-                    int cur;
-                    int count = 0;
-                    int signBits = -1;
+     {
+         @Override
+         public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+         {
+             int result = 0;
+             int cur;
+             int count = 0;
+             int signBits = -1;
 
-                    do
-                    {
-                        cur = buffer.readAsByte(8) & 0xff;
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    } while (((cur & 0x80) == 0x80) && count < MAX_INT_LEB128_BYTES);
+             do
+             {
+                 cur = buffer.readAsByte(8) & 0xff;
+                 result |= (cur & 0x7f) << (count * 7);
+                 signBits <<= 7;
+                 count++;
+             }
+             while (((cur & 0x80) == 0x80) && count < MAX_INT_LEB128_BYTES);
 
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for an int.");
-                    }
+             if ((cur & 0x80) == 0x80)
+             {
+                 throw new DecodingException("Invalid LEB128 sequence for an int.");
+             }
 
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
+             // Sign extend if appropriate
+             if (((signBits >> 1) & result) != 0)
+             {
+                 result |= signBits;
+             }
 
-                    return result;
-                }
+             return result;
+         }
 
-                public int getDefaultSize()
-                {
-                    return 32;
-                }
+         public int getDefaultSize()
+         {
+             return 32;
+         }
 
-                public Integer decode(BitBuffer buffer, int size, ByteOrder endian)
-                {
-                    return buffer.readAsInt(size, endian);
-                }
+         public Integer decode(BitBuffer buffer, int size, ByteOrder endian)
+         {
+             return buffer.readAsInt(size, endian);
+         }
 
-                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
-                {
-                    channel.write(size, (Integer) value, endian);
-                }
+         public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+         {
+             channel.write(size, (Integer) value, endian);
+         }
 
-                public Class<?> getType()
-                {
-                    return Integer.class;
-                }
+         public Class<?> getType()
+         {
+             return Integer.class;
+         }
 
-                @Override
-                public Class<?> getPrimitiveType()
-                {
-                    return java.lang.Integer.TYPE;
-                }
+         @Override
+         public Class<?> getPrimitiveType()
+         {
+             return java.lang.Integer.TYPE;
+         }
 
-                @Override
-                public Class<?>[] getNumericTypes()
-                {
-                    return new Class<?>[]{getType()};
-                }
-            },
+         @Override
+         public Class<?>[] getNumericTypes()
+         {
+             return new Class<?>[] { getType() };
+         }
+     },
 
     Long
-            {
-                @Override
-                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
-                {
-                    long result = 0;
-                    long cur;
-                    int count = 0;
-                    long signBits = -1L;
+     {
+         @Override
+         public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+         {
+             long result = 0;
+             long cur;
+             int count = 0;
+             long signBits = -1L;
 
-                    do
-                    {
-                        cur = buffer.readAsByte(8) & 0xff;
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    } while (((cur & 0x80) == 0x80) && count < MAX_LONG_LEB128_BYTES);
+             do
+             {
+                 cur = buffer.readAsByte(8) & 0xff;
+                 result |= (cur & 0x7f) << (count * 7);
+                 signBits <<= 7;
+                 count++;
+             }
+             while (((cur & 0x80) == 0x80) && count < MAX_LONG_LEB128_BYTES);
 
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for a long.");
-                    }
+             if ((cur & 0x80) == 0x80)
+             {
+                 throw new DecodingException("Invalid LEB128 sequence for a long.");
+             }
 
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
+             // Sign extend if appropriate
+             if (((signBits >> 1) & result) != 0)
+             {
+                 result |= signBits;
+             }
 
-                    return result;
-                }
+             return result;
+         }
 
-                public int getDefaultSize()
-                {
-                    return 64;
-                }
+         public int getDefaultSize()
+         {
+             return 64;
+         }
 
-                public Long decode(BitBuffer buffer, int size, ByteOrder endian)
-                {
-                    return buffer.readAsLong(size, endian);
-                }
+         public Long decode(BitBuffer buffer, int size, ByteOrder endian)
+         {
+             return buffer.readAsLong(size, endian);
+         }
 
-                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
-                {
-                    channel.write(size, (Long) value, endian);
-                }
+         public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+         {
+             channel.write(size, (Long) value, endian);
+         }
 
-                public Class<?> getType()
-                {
-                    return Long.class;
-                }
+         public Class<?> getType()
+         {
+             return Long.class;
+         }
 
-                @Override
-                public Class<?> getPrimitiveType()
-                {
-                    return java.lang.Long.TYPE;
-                }
+         @Override
+         public Class<?> getPrimitiveType()
+         {
+             return java.lang.Long.TYPE;
+         }
 
-                @Override
-                public Class<?>[] getNumericTypes()
-                {
-                    return new Class<?>[]{getType()};
-                }
-            },
+         @Override
+         public Class<?>[] getNumericTypes()
+         {
+             return new Class<?>[] { getType() };
+         }
+     },
 
     Short
-            {
-                @Override
-                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
-                {
-                    short result = 0;
-                    short cur;
-                    int count = 0;
-                    short signBits = -1;
+     {
+         @Override
+         public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+         {
+             short result = 0;
+             short cur;
+             int count = 0;
+             short signBits = -1;
 
-                    do
-                    {
-                        cur = (short) (buffer.readAsByte(8) & 0xff);
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    } while (((cur & 0x80) == 0x80) && count < MAX_SHORT_LEB128_BYTES);
+             do
+             {
+                 cur = (short) (buffer.readAsByte(8) & 0xff);
+                 result |= (cur & 0x7f) << (count * 7);
+                 signBits <<= 7;
+                 count++;
+             }
+             while (((cur & 0x80) == 0x80) && count < MAX_SHORT_LEB128_BYTES);
 
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for a short.");
-                    }
+             if ((cur & 0x80) == 0x80)
+             {
+                 throw new DecodingException("Invalid LEB128 sequence for a short.");
+             }
 
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
+             // Sign extend if appropriate
+             if (((signBits >> 1) & result) != 0)
+             {
+                 result |= signBits;
+             }
 
-                    return result;
-                }
+             return result;
+         }
 
-                public int getDefaultSize()
-                {
-                    return 16;
-                }
+         public int getDefaultSize()
+         {
+             return 16;
+         }
 
-                public Short decode(BitBuffer buffer, int size, ByteOrder endian)
-                {
-                    return buffer.readAsShort(size, endian);
-                }
+         public Short decode(BitBuffer buffer, int size, ByteOrder endian)
+         {
+             return buffer.readAsShort(size, endian);
+         }
 
-                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
-                {
-                    channel.write(size, (Short) value, endian);
-                }
+         public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+         {
+             channel.write(size, (Short) value, endian);
+         }
 
-                public Class<?> getType()
-                {
-                    return Short.class;
-                }
+         public Class<?> getType()
+         {
+             return Short.class;
+         }
 
-                @Override
-                public Class<?> getPrimitiveType()
-                {
-                    return java.lang.Short.TYPE;
-                }
+         @Override
+         public Class<?> getPrimitiveType()
+         {
+             return java.lang.Short.TYPE;
+         }
 
-                @Override
-                public Class<?>[] getNumericTypes()
-                {
-                    return new Class<?>[]{getType()};
-                }
-            },
+         @Override
+         public Class<?>[] getNumericTypes()
+         {
+             return new Class<?>[] { getType() };
+         }
+     },
 
     Byte
-            {
-                @Override
-                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
-                {
-                    byte result = 0;
-                    byte cur;
-                    int count = 0;
-                    byte signBits = -1;
+     {
+         @Override
+         public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+         {
+             byte result = 0;
+             byte cur;
+             int count = 0;
+             byte signBits = -1;
 
-                    do
-                    {
-                        cur = (byte) (buffer.readAsByte(8) & 0xff);
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    } while (((cur & 0x80) == 0x80) && count < MAX_BYTE_LEB128_BYTES);
+             do
+             {
+                 cur = (byte) (buffer.readAsByte(8) & 0xff);
+                 result |= (cur & 0x7f) << (count * 7);
+                 signBits <<= 7;
+                 count++;
+             }
+             while (((cur & 0x80) == 0x80) && count < MAX_BYTE_LEB128_BYTES);
 
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for a byte.");
-                    }
+             if ((cur & 0x80) == 0x80)
+             {
+                 throw new DecodingException("Invalid LEB128 sequence for a byte.");
+             }
 
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
+             // Sign extend if appropriate
+             if (((signBits >> 1) & result) != 0)
+             {
+                 result |= signBits;
+             }
 
-                    return result;
-                }
+             return result;
+         }
 
-                public int getDefaultSize()
-                {
-                    return 8;
-                }
+         public int getDefaultSize()
+         {
+             return 8;
+         }
 
-                public Byte decode(BitBuffer buffer, int size, ByteOrder endian)
-                {
-                    return buffer.readAsByte(size, endian);
-                }
+         public Byte decode(BitBuffer buffer, int size, ByteOrder endian)
+         {
+             return buffer.readAsByte(size, endian);
+         }
 
-                public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
-                {
-                    channel.write(size, (Byte) value);
-                }
+         public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException
+         {
+             channel.write(size, (Byte) value);
+         }
 
-                public Class<?> getType()
-                {
-                    return Byte.class;
-                }
+         public Class<?> getType()
+         {
+             return Byte.class;
+         }
 
-                @Override
-                public Class<?> getPrimitiveType()
-                {
-                    return java.lang.Byte.TYPE;
-                }
+         @Override
+         public Class<?> getPrimitiveType()
+         {
+             return java.lang.Byte.TYPE;
+         }
 
-                @Override
-                public Class<?>[] getNumericTypes()
-                {
-                    return new Class<?>[]{getType()};
-                }
-            };
+         @Override
+         public Class<?>[] getNumericTypes()
+         {
+             return new Class<?>[] { getType() };
+         }
+     };
 
     @Override
     public int getLeb128Size(Number number)
@@ -299,7 +303,7 @@ public enum IntegerType implements IIntegerType
         while (hasMore)
         {
             hasMore = (remaining != end)
-                    || ((remaining & 1) != ((value >> 6) & 1));
+                      || ((remaining & 1) != ((value >> 6) & 1));
 
             value = remaining;
             remaining >>= 7;
@@ -322,7 +326,7 @@ public enum IntegerType implements IIntegerType
         while (hasMore)
         {
             hasMore = (remaining != end)
-                    || ((remaining & 1) != ((longValue >> 6) & 1));
+                      || ((remaining & 1) != ((longValue >> 6) & 1));
 
             bytes[count] = (byte) ((longValue & 0x7f) | (hasMore ? 0x80 : 0));
             count++;

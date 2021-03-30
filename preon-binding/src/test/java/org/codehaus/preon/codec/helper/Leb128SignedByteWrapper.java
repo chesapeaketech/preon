@@ -24,7 +24,10 @@ public class Leb128SignedByteWrapper
     @LEB128
     public Byte value;
 
-    public Leb128SignedByteWrapper(){}
+    public Leb128SignedByteWrapper()
+    {
+    }
+
     public Leb128SignedByteWrapper(Byte value)
     {
         this.value = value;

@@ -26,7 +26,10 @@ public class Leb128UnsignedByteWrapper
     @LEB128
     public Byte value;
 
-    public Leb128UnsignedByteWrapper(){}
+    public Leb128UnsignedByteWrapper()
+    {
+    }
+
     public Leb128UnsignedByteWrapper(Byte value)
     {
         this.value = value;

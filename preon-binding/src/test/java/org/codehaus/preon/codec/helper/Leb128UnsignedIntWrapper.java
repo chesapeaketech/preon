@@ -26,7 +26,10 @@ public class Leb128UnsignedIntWrapper
     @LEB128
     public Integer value;
 
-    public Leb128UnsignedIntWrapper(){}
+    public Leb128UnsignedIntWrapper()
+    {
+    }
+
     public Leb128UnsignedIntWrapper(Integer value)
     {
         this.value = value;
