@@ -27,9 +27,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Testing for LEB128 encoding/decoding.
@@ -38,27 +36,27 @@ import static org.junit.Assert.fail;
  */
 public class Leb128CodecTest
 {
-    byte[] biggerThanMaxLongBytes   = { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
-                                        (byte) 0xFF, (byte) 0x01 };
-    byte[] unsignedLongEncodedBytes = { (byte) 0x80, (byte) 0xF2, (byte) 0x8B, (byte) 0xA8, (byte) 0x09 };
-    long   unsignedLong             = 2_500_000_000L;
-    byte[] signedLongEncodedBytes   = { (byte) 0x80, (byte) 0x8E, (byte) 0xF4, (byte) 0xD7, (byte) 0x76 };
-    long   signedLong               = -2_500_000_000L;
+    byte[] biggerThanMaxLongBytes = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+            (byte) 0xFF, (byte) 0x01};
+    byte[] unsignedLongEncodedBytes = {(byte) 0x80, (byte) 0xF2, (byte) 0x8B, (byte) 0xA8, (byte) 0x09};
+    long unsignedLong = 2_500_000_000L;
+    byte[] signedLongEncodedBytes = {(byte) 0x80, (byte) 0x8E, (byte) 0xF4, (byte) 0xD7, (byte) 0x76};
+    long signedLong = -2_500_000_000L;
 
-    byte[] unsignedIntEncodedBytes = { (byte) 0xB8, (byte) 0x91, (byte) 0x02 };
-    int    unsignedInt             = 35_000;
-    byte[] signedIntEncodedBytes   = { (byte) 0xC8, (byte) 0xEE, (byte) 0x7D };
-    int    signedInt               = -35_000;
+    byte[] unsignedIntEncodedBytes = {(byte) 0xB8, (byte) 0x91, (byte) 0x02};
+    int unsignedInt = 35_000;
+    byte[] signedIntEncodedBytes = {(byte) 0xC8, (byte) 0xEE, (byte) 0x7D};
+    int signedInt = -35_000;
 
-    byte[] unsignedShortEncodedBytes = { (byte) 0x96, (byte) 0x01 };
-    short  unsignedShort             = 150;
-    byte[] signedShortEncodedBytes   = { (byte) 0xEA, (byte) 0x7E };
-    short  signedShort               = -150;
+    byte[] unsignedShortEncodedBytes = {(byte) 0x96, (byte) 0x01};
+    short unsignedShort = 150;
+    byte[] signedShortEncodedBytes = {(byte) 0xEA, (byte) 0x7E};
+    short signedShort = -150;
 
-    byte[] unsignedByteEncodedBytes = { (byte) 0x78 };
-    byte   unsignedByte             = 120;
-    byte[] signedByteEncodedBytes   = { (byte) 0x88, (byte) 0x7F };
-    byte   signedByte               = -120;
+    byte[] unsignedByteEncodedBytes = {(byte) 0x78};
+    byte unsignedByte = 120;
+    byte[] signedByteEncodedBytes = {(byte) 0x88, (byte) 0x7F};
+    byte signedByte = -120;
 
     /**
      * Validates that an unsigned long is properly encoded in LEB128.
@@ -76,8 +74,7 @@ public class Leb128CodecTest
             {
                 assertEquals(unsignedLongEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -94,8 +91,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, unsignedLongEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Long bytes.");
             return;
@@ -119,8 +115,7 @@ public class Leb128CodecTest
             {
                 assertEquals(signedLongEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -137,8 +132,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, signedLongEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Long bytes.");
             return;
@@ -182,8 +176,7 @@ public class Leb128CodecTest
             {
                 assertEquals(unsignedIntEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -200,8 +193,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, unsignedIntEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Integer bytes.");
             return;
@@ -225,8 +217,7 @@ public class Leb128CodecTest
             {
                 assertEquals(signedIntEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -243,8 +234,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, signedIntEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Integer bytes.");
             return;
@@ -288,8 +278,7 @@ public class Leb128CodecTest
             {
                 assertEquals(unsignedShortEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -306,8 +295,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, unsignedShortEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Short bytes.");
             return;
@@ -331,8 +319,7 @@ public class Leb128CodecTest
             {
                 assertEquals(signedShortEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -349,8 +336,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, signedShortEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Short bytes.");
             return;
@@ -394,8 +380,7 @@ public class Leb128CodecTest
             {
                 assertEquals(unsignedByteEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -412,8 +397,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, unsignedByteEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Byte bytes.");
             return;
@@ -437,8 +421,7 @@ public class Leb128CodecTest
             {
                 assertEquals(signedByteEncodedBytes[i], bytes[i]);
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.out.println("Something bad happened.");
         }
@@ -455,8 +438,7 @@ public class Leb128CodecTest
         try
         {
             wrapper = Codecs.decode(codec, signedByteEncodedBytes);
-        }
-        catch (DecodingException e)
+        } catch (DecodingException e)
         {
             fail("Could not decode the Byte bytes.");
             return;
