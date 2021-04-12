@@ -1,5 +1,6 @@
 package org.codehaus.preon.codec;
 
+import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
@@ -7,17 +8,45 @@ import org.codehaus.preon.channel.BitChannel;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public enum NumericUnsignedType implements INumericType
+public enum NumericUnsignedType implements IIntegerType
 {
-    UByte(NumericType.Byte),
-    UShort(NumericType.Short),
-    UInteger(NumericType.Integer),
-    ULong(NumericType.Long),
+    UByte(IntegerType.Byte)
+            {
+                @Override
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+                {
+                    return decodeAnyLeb128(buffer, MAX_BYTE_LEB128_BYTES).byteValue();
+                }
+            },
+    UShort(IntegerType.Short)
+            {
+                @Override
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+                {
+                    return decodeAnyLeb128(buffer, MAX_SHORT_LEB128_BYTES).shortValue();
+                }
+            },
+    UInteger(IntegerType.Integer)
+            {
+                @Override
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+                {
+                    return decodeAnyLeb128(buffer, MAX_INT_LEB128_BYTES).intValue();
+                }
+            },
+    ULong(IntegerType.Long)
+            {
+                @Override
+                public Object decodeLeb128(BitBuffer buffer) throws DecodingException
+                {
+                    return decodeAnyLeb128(buffer, MAX_LONG_LEB128_BYTES);
+                }
+            },
     ;
 
-    private final NumericType delegate;
+    private final IntegerType delegate;
 
-    private NumericUnsignedType(NumericType delegate)
+    private NumericUnsignedType(IntegerType delegate)
     {
         this.delegate = delegate;
     }
@@ -69,4 +98,66 @@ public enum NumericUnsignedType implements INumericType
     {
         return delegate.getNumericTypes();
     }
+
+    @Override
+    public int getLeb128Size(Number number)
+    {
+        long value = (long) number;
+        long remaining = value >> 7;
+        int count = 0;
+
+        while (remaining != 0)
+        {
+            remaining >>= 7;
+            count++;
+        }
+
+        return count + 1;
+    }
+
+    @Override
+    public void encodeLeb128(BitChannel channel, Object value) throws IOException
+    {
+        //TODO Allow for BigInteger?
+        long longVal = ((Number) value).longValue();
+        byte[] bytes = new byte[getLeb128Size(longVal)];
+        int byteCount = 0;
+        if (longVal < 0)
+        {
+            throw new IllegalArgumentException("Value " + longVal + " is negative, can not be encoded as unsigned.");
+        }
+        long remaining = longVal >>> 7;
+
+        while (remaining != 0)
+        {
+            bytes[byteCount] = ((byte) ((longVal & 0x7f) | 0x80));
+            byteCount++;
+            longVal = remaining;
+            remaining >>>= 7;
+        }
+        // When there's nothing left in remaining, longVal contains the last byte
+        bytes[byteCount] = (byte) longVal;
+        channel.write(bytes, 0, bytes.length);
+    }
+
+    private static Long decodeAnyLeb128(BitBuffer buffer, int size) throws DecodingException {
+        long result = 0;
+        long cur;
+        int bytesRead = 0;
+
+        do
+        {
+            cur = buffer.readAsByte(8) & 0xff;
+            result |= (cur & 0x7f) << (bytesRead * 7);
+            bytesRead++;
+        } while (((cur & 0x80) == 0x80) && bytesRead < size);
+
+        if ((cur & 0x80) == 0x80)
+        {
+            throw new DecodingException("Invalid LEB128 sequence. More than " + bytesRead + " bytes may be too large.");
+        }
+
+        return result;
+    }
+
 }

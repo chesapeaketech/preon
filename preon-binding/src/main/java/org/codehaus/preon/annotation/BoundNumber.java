@@ -76,5 +76,9 @@ public @interface BoundNumber
      */
     Class<? extends Number> type() default Number.class;
 
-    boolean unsinged() default false;
+    /**
+     * Helps decide how to do the decoding/encoding based on whether the number is signed or not. Defaults to false (signed).
+     * @return if the value is unsigned.
+     */
+    boolean unsigned() default false;
 }
