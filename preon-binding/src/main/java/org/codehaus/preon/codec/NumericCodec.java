@@ -267,14 +267,11 @@ public class NumericCodec implements Codec<Object>
                 {
                     return (Codec<T>) new Leb128Codec((IIntegerType) numericType);
                 }
-                if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class))
+                if (overrides.isAnnotationPresent(BoundNumber.class))
                 {
                     BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
                     ByteOrder endian = numericMetadata.byteOrder();
                     String size = numericMetadata.size();
-                    //                    if(NUMERIC_TYPES.containsKey(numericMetadata.type())) {
-                    //                    	numericType = NUMERIC_TYPES.get(numericMetadata.type());
-                    //                    }
 
                     if (size.length() == 0)
                     {
@@ -288,8 +285,8 @@ public class NumericCodec implements Codec<Object>
                     }
                     return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, matchExpr, unsigned);
                 }
-                if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides
-                        .isAnnotationPresent(BESigned.class)))
+                if (overrides.isAnnotationPresent(BEUnsigned.class) || overrides
+                        .isAnnotationPresent(BESigned.class))
                 {
                     ByteOrder endian = ByteOrder.BigEndian;
                     int size = numericType.getDefaultSize();
@@ -314,7 +311,7 @@ public class NumericCodec implements Codec<Object>
             if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class))
             {
                 BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
-                return numericMetadata.unsinged();
+                return numericMetadata.unsigned();
             }
             if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides
                     .isAnnotationPresent(LEUnsigned.class)))

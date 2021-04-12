@@ -1,15 +1,3 @@
-//========================================================================
-//
-//                       U N C L A S S I F I E D
-//
-//========================================================================
-//  Copyright (c) 2021 Chesapeake Technology International Corp.
-//  ALL RIGHTS RESERVED
-//  This material may be reproduced by or for the U.S. Government
-//  pursuant to the copyright license under the clause at
-//  DFARS 252.227-7013 (OCT 1988).
-//=======================================================================
-
 package org.codehaus.preon.codec;
 
 import org.codehaus.preon.DecodingException;
@@ -32,32 +20,7 @@ public enum IntegerType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    int result = 0;
-                    int cur;
-                    int count = 0;
-                    int signBits = -1;
-
-                    do
-                    {
-                        cur = buffer.readAsByte(8) & 0xff;
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    }
-                    while (((cur & 0x80) == 0x80) && count < MAX_INT_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for an int.");
-                    }
-
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_INT_LEB128_BYTES).intValue();
                 }
 
                 public int getDefaultSize()
@@ -98,32 +61,7 @@ public enum IntegerType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    long result = 0;
-                    long cur;
-                    int count = 0;
-                    long signBits = -1L;
-
-                    do
-                    {
-                        cur = buffer.readAsByte(8) & 0xff;
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    }
-                    while (((cur & 0x80) == 0x80) && count < MAX_LONG_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for a long.");
-                    }
-
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_LONG_LEB128_BYTES);
                 }
 
                 public int getDefaultSize()
@@ -164,32 +102,7 @@ public enum IntegerType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    short result = 0;
-                    short cur;
-                    int count = 0;
-                    short signBits = -1;
-
-                    do
-                    {
-                        cur = (short) (buffer.readAsByte(8) & 0xff);
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    }
-                    while (((cur & 0x80) == 0x80) && count < MAX_SHORT_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for a short.");
-                    }
-
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_SHORT_LEB128_BYTES).shortValue();
                 }
 
                 public int getDefaultSize()
@@ -230,32 +143,7 @@ public enum IntegerType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    byte result = 0;
-                    byte cur;
-                    int count = 0;
-                    byte signBits = -1;
-
-                    do
-                    {
-                        cur = (byte) (buffer.readAsByte(8) & 0xff);
-                        result |= (cur & 0x7f) << (count * 7);
-                        signBits <<= 7;
-                        count++;
-                    }
-                    while (((cur & 0x80) == 0x80) && count < MAX_BYTE_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence for a byte.");
-                    }
-
-                    // Sign extend if appropriate
-                    if (((signBits >> 1) & result) != 0)
-                    {
-                        result |= signBits;
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_BYTE_LEB128_BYTES).byteValue();
                 }
 
                 public int getDefaultSize()
@@ -334,5 +222,34 @@ public enum IntegerType implements IIntegerType
             remaining >>= 7;
         }
         channel.write(bytes, 0, bytes.length);
+    }
+
+    private static Long decodeAnyLeb128(BitBuffer buffer, int size) throws DecodingException {
+        long result = 0;
+        long cur;
+        int count = 0;
+        long signBits = -1;
+
+        do
+        {
+            cur = (byte) (buffer.readAsByte(8) & 0xff);
+            result |= (cur & 0x7f) << (count * 7);
+            signBits <<= 7;
+            count++;
+        }
+        while (((cur & 0x80) == 0x80) && count < size);
+
+        if ((cur & 0x80) == 0x80)
+        {
+            throw new DecodingException("Invalid LEB128 sequence.");
+        }
+
+        // Sign extend if appropriate
+        if (((signBits >> 1) & result) != 0)
+        {
+            result |= signBits;
+        }
+
+        return result;
     }
 }

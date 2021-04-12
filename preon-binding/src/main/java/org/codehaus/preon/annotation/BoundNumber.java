@@ -80,5 +80,5 @@ public @interface BoundNumber
      * Helps decide how to do the decoding/encoding based on whether the number is signed or not. Defaults to false (signed).
      * @return if the value is unsigned.
      */
-    boolean unsinged() default false;
+    boolean unsigned() default false;
 }

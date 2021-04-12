@@ -168,7 +168,7 @@ public class NumberCodecFactoryTest extends TestCase
                     .andReturn(true);
             expect(metadata.getAnnotation(BoundNumber.class))
                     .andReturn(boundNumber);
-            expect(boundNumber.unsinged()).andReturn(false);
+            expect(boundNumber.unsigned()).andReturn(false);
             expect(metadata.isAnnotationPresent(Bound.class))
                     .andReturn(false);
             expect(metadata.isAnnotationPresent(BoundNumber.class))

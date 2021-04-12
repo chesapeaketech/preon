@@ -15,23 +15,7 @@ public enum NumericUnsignedType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    byte result = 0;
-                    byte cur;
-                    int bytesRead = 0;
-
-                    do
-                    {
-                        cur = (byte) (buffer.readAsByte(8) & 0xff);
-                        result |= (cur & 0x7f) << (bytesRead * 7);
-                        bytesRead++;
-                    } while (((cur & 0x80) == 0x80) && bytesRead < MAX_BYTE_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence. More than " + bytesRead + " bytes may be too large.");
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_BYTE_LEB128_BYTES).byteValue();
                 }
             },
     UShort(IntegerType.Short)
@@ -39,23 +23,7 @@ public enum NumericUnsignedType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    short result = 0;
-                    short cur;
-                    int bytesRead = 0;
-
-                    do
-                    {
-                        cur = (short) (buffer.readAsByte(8) & 0xff);
-                        result |= (cur & 0x7f) << (bytesRead * 7);
-                        bytesRead++;
-                    } while (((cur & 0x80) == 0x80) && bytesRead < MAX_SHORT_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence. More than " + bytesRead + " bytes may be too large.");
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_SHORT_LEB128_BYTES).shortValue();
                 }
             },
     UInteger(IntegerType.Integer)
@@ -63,23 +31,7 @@ public enum NumericUnsignedType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    int result = 0;
-                    int cur;
-                    int bytesRead = 0;
-
-                    do
-                    {
-                        cur = buffer.readAsByte(8) & 0xff;
-                        result |= (cur & 0x7f) << (bytesRead * 7);
-                        bytesRead++;
-                    } while (((cur & 0x80) == 0x80) && bytesRead < MAX_INT_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence. More than " + bytesRead + " bytes may be too large.");
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_INT_LEB128_BYTES).intValue();
                 }
             },
     ULong(IntegerType.Long)
@@ -87,23 +39,7 @@ public enum NumericUnsignedType implements IIntegerType
                 @Override
                 public Object decodeLeb128(BitBuffer buffer) throws DecodingException
                 {
-                    long result = 0;
-                    long cur;
-                    int bytesRead = 0;
-
-                    do
-                    {
-                        cur = buffer.readAsByte(8) & 0xff;
-                        result |= (cur & 0x7f) << (bytesRead * 7);
-                        bytesRead++;
-                    } while (((cur & 0x80) == 0x80) && bytesRead < MAX_LONG_LEB128_BYTES);
-
-                    if ((cur & 0x80) == 0x80)
-                    {
-                        throw new DecodingException("Invalid LEB128 sequence. More than " + bytesRead + " bytes may be too large.");
-                    }
-
-                    return result;
+                    return decodeAnyLeb128(buffer, MAX_LONG_LEB128_BYTES);
                 }
             },
     ;
@@ -203,4 +139,25 @@ public enum NumericUnsignedType implements IIntegerType
         bytes[byteCount] = (byte) longVal;
         channel.write(bytes, 0, bytes.length);
     }
+
+    private static Long decodeAnyLeb128(BitBuffer buffer, int size) throws DecodingException {
+        long result = 0;
+        long cur;
+        int bytesRead = 0;
+
+        do
+        {
+            cur = buffer.readAsByte(8) & 0xff;
+            result |= (cur & 0x7f) << (bytesRead * 7);
+            bytesRead++;
+        } while (((cur & 0x80) == 0x80) && bytesRead < size);
+
+        if ((cur & 0x80) == 0x80)
+        {
+            throw new DecodingException("Invalid LEB128 sequence. More than " + bytesRead + " bytes may be too large.");
+        }
+
+        return result;
+    }
+
 }
