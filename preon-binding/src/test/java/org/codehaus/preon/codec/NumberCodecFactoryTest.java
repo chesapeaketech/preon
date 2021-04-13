@@ -31,6 +31,7 @@ import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.LEB128;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 
@@ -78,86 +79,86 @@ public class NumberCodecFactoryTest extends TestCase
     public void testDecodingInteger() throws DecodingException
     {
         Kit<Integer> kit = new IntegerKit();
-        kit.test(ByteOrder.BigEndian, "", 32, 256, null, false);
-        kit.test(ByteOrder.LittleEndian, "", 32, 256, null, false);
-        kit.test(ByteOrder.BigEndian, "4", 4, 16, null, false);
-        kit.test(ByteOrder.BigEndian, "8", 8, 256, null, false);
+        kit.test(ByteOrder.BigEndian, "", 32, 256, null, false, true);
+        kit.test(ByteOrder.LittleEndian, "", 32, 256, null, false, true);
+        kit.test(ByteOrder.BigEndian, "4", 4, 16, null, false, true);
+        kit.test(ByteOrder.BigEndian, "8", 8, 256, null, false, true);
     }
 
     public void testDecodingShort() throws DecodingException
     {
         Kit<Short> kit = new ShortKit();
-        kit.test(ByteOrder.BigEndian, "", 16, (short) 256, null, false);
-        kit.test(ByteOrder.LittleEndian, "", 16, (short) 256, null, false);
-        kit.test(ByteOrder.BigEndian, "4", 4, (short) 16, null, false);
-        kit.test(ByteOrder.BigEndian, "8", 8, (short) 256, null, false);
-        kit.test(ByteOrder.LittleEndian, "", 16, (short) 256, "256", false);
-        kit.test(ByteOrder.LittleEndian, "", 16, (short) 256, "25", true);
+        kit.test(ByteOrder.BigEndian, "", 16, (short) 256, null, false, true);
+        kit.test(ByteOrder.LittleEndian, "", 16, (short) 256, null, false, true);
+        kit.test(ByteOrder.BigEndian, "4", 4, (short) 16, null, false, true);
+        kit.test(ByteOrder.BigEndian, "8", 8, (short) 256, null, false, true);
+        kit.test(ByteOrder.LittleEndian, "", 16, (short) 256, "256", false, true);
+        kit.test(ByteOrder.LittleEndian, "", 16, (short) 256, "25", true, true);
     }
 
     public void testDecodingByte() throws DecodingException
     {
         Kit<Byte> kit = new ByteKit();
-        kit.test(ByteOrder.BigEndian, "", 8, (byte) 256, null, false);
-        kit.test(ByteOrder.LittleEndian, "", 8, (byte) 256, null, false);
-        kit.test(ByteOrder.BigEndian, "4", 4, (byte) 16, null, false);
-        kit.test(ByteOrder.BigEndian, "8", 8, (byte) 256, null, false);
+        kit.test(ByteOrder.BigEndian, "", 8, (byte) 256, null, false, true);
+        kit.test(ByteOrder.LittleEndian, "", 8, (byte) 256, null, false, true);
+        kit.test(ByteOrder.BigEndian, "4", 4, (byte) 16, null, false, true);
+        kit.test(ByteOrder.BigEndian, "8", 8, (byte) 256, null, false, true);
     }
 
     public void testDecodingLong() throws DecodingException
     {
         Kit<Long> kit = new LongKit();
-        kit.test(ByteOrder.BigEndian, "", 64, 256L, null, false);
-        kit.test(ByteOrder.LittleEndian, "", 64, 256L, null, false);
-        kit.test(ByteOrder.BigEndian, "4", 4, 16L, null, false);
-        kit.test(ByteOrder.BigEndian, "8", 8, 256L, null, false);
+        kit.test(ByteOrder.BigEndian, "", 64, 256L, null, false, true);
+        kit.test(ByteOrder.LittleEndian, "", 64, 256L, null, false, true);
+        kit.test(ByteOrder.BigEndian, "4", 4, 16L, null, false, true);
+        kit.test(ByteOrder.BigEndian, "8", 8, 256L, null, false, true);
     }
 
     public void testDecodingFloat() throws DecodingException
     {
         Kit<Float> kit = new FloatKit();
-        kit.test(ByteOrder.BigEndian, "", 32, 5.0f, null, false);
-        kit.test(ByteOrder.BigEndian, "", 32, Float.MAX_VALUE, null, false);
-        kit.test(ByteOrder.BigEndian, "", 32, Float.MIN_VALUE, null, false);
-        kit.test(ByteOrder.BigEndian, "", 32, Float.NaN, null, false);
+        kit.test(ByteOrder.BigEndian, "", 32, 5.0f, null, false, false);
+        kit.test(ByteOrder.BigEndian, "", 32, Float.MAX_VALUE, null, false, false);
+        kit.test(ByteOrder.BigEndian, "", 32, Float.MIN_VALUE, null, false, false);
+        kit.test(ByteOrder.BigEndian, "", 32, Float.NaN, null, false, false);
     }
 
     public void testDecodingDouble() throws DecodingException
     {
         Kit<Double> kit = new DoubleKit();
-        kit.test(ByteOrder.BigEndian, "", 64, 5.0d, null, false);
-        kit.test(ByteOrder.BigEndian, "", 64, Double.MAX_VALUE, null, false);
-        kit.test(ByteOrder.BigEndian, "", 64, Double.MIN_VALUE, null, false);
-        kit.test(ByteOrder.BigEndian, "", 64, Double.NaN, null, false);
-        kit.test(ByteOrder.BigEndian, "32", 32, 5.0d, null, false);
+        kit.test(ByteOrder.BigEndian, "", 64, 5.0d, null, false, false);
+        kit.test(ByteOrder.BigEndian, "", 64, Double.MAX_VALUE, null, false, false);
+        kit.test(ByteOrder.BigEndian, "", 64, Double.MIN_VALUE, null, false, false);
+        kit.test(ByteOrder.BigEndian, "", 64, Double.NaN, null, false, false);
+        kit.test(ByteOrder.BigEndian, "32", 32, 5.0d, null, false, false);
     }
 
     public void testDecodingWithTypeOverrideDoubleInteger() throws DecodingException
     {
         Kit<Integer> kit = new DoubleAsIntegerKit();
-        kit.test(ByteOrder.BigEndian, "", 64, 5, Double.class, null, false);
-        kit.test(ByteOrder.BigEndian, "32", 32, 5, Double.class, null, false);
+        kit.test(ByteOrder.BigEndian, "", 64, 5, Double.class, null, false, false);
+        kit.test(ByteOrder.BigEndian, "32", 32, 5, Double.class, null, false, false);
     }
 
     public void testDecodingWithTypeOverrideIntegerDouble() throws DecodingException
     {
         Kit<Double> kit = new IntegerAsDoubleKit();
-        kit.test(ByteOrder.BigEndian, "", 32, 5.0, Integer.class, null, false);
-        kit.test(ByteOrder.BigEndian, "64", 64, 5.0, Integer.class, null, false);
+        kit.test(ByteOrder.BigEndian, "", 32, 5.0, Integer.class, null, false, true);
+        kit.test(ByteOrder.BigEndian, "64", 64, 5.0, Integer.class, null, false, true);
     }
 
     public abstract class Kit<T>
     {
 
         public void test(ByteOrder endian, String size, int readSize, T value,
-                         String match, boolean expectException) throws DecodingException
+                         String match, boolean expectException, boolean integerType) throws DecodingException
         {
-            test(endian, size, readSize, value, Number.class, match, expectException);
+            test(endian, size, readSize, value, Number.class, match, expectException, integerType);
         }
 
         @SuppressWarnings("unchecked")
         public void test(ByteOrder endian, String size, int readSize, T value, Class<? extends Number> typeOverride,
-                         String match, boolean expectException) throws DecodingException
+                         String match, boolean expectException, boolean integerType) throws DecodingException
         {
             expect(metadata.isAnnotationPresent(BoundNumber.class))
                     .andReturn(true);
@@ -171,6 +172,11 @@ public class NumberCodecFactoryTest extends TestCase
             expect(boundNumber.unsigned()).andReturn(false);
             expect(metadata.isAnnotationPresent(Bound.class))
                     .andReturn(false);
+            if(integerType)
+            {
+                expect(metadata.isAnnotationPresent(LEB128.class))
+                        .andReturn(false);
+            }
             expect(metadata.isAnnotationPresent(BoundNumber.class))
                     .andReturn(true);
             expect(metadata.getAnnotation(BoundNumber.class))
