@@ -22,7 +22,17 @@ test:
 
 deploy:
   stage: deploy
+  dependencies:
+    - build
+  before_script:
+    - chmod +x gradlew
+    - curl -o $CERT_INT_AD $CERT_ADDR/$CERT_INT_AD
+    - curl -o $CERT_ROOT $CERT_ADDR/$CERT_ROOT
+    - CERTS_PATH="jre/lib/security/cacerts"
+    - keytool -keystore $JAVA_HOME/$CERTS_PATH -trustcacerts -importcert -alias cti-root -file ./$CERT_ROOT -storepass $ROOT_PASS -noprompt
+    - keytool -keystore $JAVA_HOME/$CERTS_PATH -trustcacerts -importcert -alias cti-ad-ca -file ./$CERT_INT_AD -storepass $STORE_PASS -noprompt
+
   script:
     - ./gradlew build publish $TASK_ARGUMENTS
-#  only:
-#    - develop
+  only:
+    - develop
